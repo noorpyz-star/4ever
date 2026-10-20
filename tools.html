@@ -1,0 +1,617 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tools — 4ever.ai.id</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  body {
+    font-family: 'Segoe UI', Arial, sans-serif;
+    background: radial-gradient(circle at 50% 8%, #181818 0%, #000000 60%, #000000 100%);
+    color: #eee; min-height: 100vh; text-align: center;
+  }
+  .wrap { max-width: 480px; margin: 0 auto; padding: 44px 20px 40px; }
+  h1 { color: #fff; font-size: 1.5rem; }
+  .sub { color: #d4af37; letter-spacing: 2px; font-size: .8rem; margin-top: 6px; }
+  .tool {
+    margin: 26px 0; padding: 20px 16px; border: 1px solid #444; border-radius: 16px;
+    background: rgba(255,255,255,.04); text-align: left;
+  }
+  .tool h2 { color: #fff; font-size: 1.12rem; margin-bottom: 6px; }
+  .tool .d { color: #999; font-size: .87rem; line-height: 1.55; margin-bottom: 12px; }
+  .field {
+    width: 100%; padding: 12px 14px; border-radius: 10px; border: 1px solid #555;
+    background: #101010; color: #fff; font-size: 1rem; font-family: inherit; margin-top: 8px;
+  }
+  .btn {
+    width: 100%; margin-top: 10px; padding: 13px; border: none; border-radius: 10px; cursor: pointer;
+    background: linear-gradient(90deg, #d4af37, #f5e08c); color: #111;
+    font-size: 1rem; font-weight: bold; font-family: inherit;
+  }
+  .btn:active { transform: scale(.98); }
+  .btn.ghost { background: transparent; border: 1px solid #d4af37; color: #fff; }
+  .out {
+    margin-top: 12px; padding: 12px 14px; border-radius: 10px; background: #0b0b0b;
+    border: 1px solid #333; color: #f0e6c8; font-size: .98rem; line-height: 1.65;
+    white-space: pre-wrap; word-break: break-word; display: none;
+  }
+  .out.show { display: block; }
+  .fancy-row {
+    margin-top: 10px; padding: 12px 14px; border-radius: 10px; background: #0b0b0b; border: 1px solid #333;
+    display: flex; align-items: center; gap: 10px;
+  }
+  .fancy-row .ft { flex: 1; font-size: 1.1rem; color: #fff; word-break: break-word; }
+  .mini-btn {
+    border: 1px solid #d4af37; background: transparent; color: #f5e08c; border-radius: 8px;
+    padding: 7px 12px; cursor: pointer; font-family: inherit; font-size: .85rem; white-space: nowrap;
+  }
+  table.jadwal { width: 100%; border-collapse: collapse; margin-top: 8px; }
+  table.jadwal td { padding: 9px 6px; border-bottom: 1px solid #2c2c2c; color: #ddd; font-size: .98rem; }
+  table.jadwal td:last-child { text-align: right; color: #fff; font-weight: bold; }
+  tr.next-row td { color: #f5e08c !important; }
+  .big-count { font-size: 1.3rem; color: #f5e08c; font-weight: bold; margin-top: 10px; }
+  .row2 { display: flex; gap: 10px; }
+  .row2 > * { flex: 1; }
+  .wx-day { display: flex; justify-content: space-between; padding: 8px 2px; border-bottom: 1px solid #2c2c2c; color: #ddd; font-size: .95rem; }
+  img.qr-img { width: 240px; height: 240px; border-radius: 12px; background: #fff; padding: 8px; display: block; margin: 14px auto 4px; }
+  img.prev { max-width: 100%; border-radius: 10px; margin-top: 10px; }
+  .back { display: inline-block; margin-top: 26px; color: #d4af37; text-decoration: none; }
+  footer { color: #555; font-size: .78rem; padding: 22px 0 6px; text-align: center; }
+  label.lbl { color: #bbb; font-size: .85rem; display: block; margin-top: 10px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>🛠️ Tools</h1>
+  <div class="sub">4EVER.AI.ID</div>
+
+  <!-- 1. FANCY TEXT -->
+  <div class="tool">
+    <h2>✨ 1. Fancy Text Generator</h2>
+    <div class="d">Ketik teks, ubah jadi huruf keren buat bio &amp; caption. Tap "Salin" buat copy.</div>
+    <input class="field" id="fancyIn" type="text" placeholder="ketik teks kamu di sini…">
+    <div id="fancyOut"></div>
+  </div>
+
+  <!-- 2. CAPTION + HASHTAG -->
+  <div class="tool">
+    <h2>#️⃣ 2. Generator Caption + Hashtag</h2>
+    <div class="d">Pilih kategori, pencet tombolnya — caption + hashtag siap copy buat postinganmu.</div>
+    <select class="field" id="capCat">
+      <option value="sg">🐜🐘 Video Semut &amp; Gajah</option>
+      <option value="cinta">💙 Romantis</option>
+      <option value="jualan">🛒 Affiliate / Jualan</option>
+      <option value="motivasi">💪 Motivasi</option>
+    </select>
+    <button class="btn" id="capBtn">🎲 Buat Caption</button>
+    <div class="out" id="capOut"></div>
+    <button class="btn ghost" id="capCopy" style="display:none">📋 Salin Caption + Hashtag</button>
+  </div>
+
+  <!-- 3. JADWAL SHOLAT -->
+  <div class="tool">
+    <h2>🕌 3. Jadwal Sholat</h2>
+    <div class="d">Jadwal sholat hari ini (metode Kemenag RI). Ganti kota kalau perlu.</div>
+    <div class="row2">
+      <input class="field" id="kotaSholat" type="text" value="Bumiayu">
+      <button class="btn" id="sholatBtn" style="margin-top:8px">🔍 Cek</button>
+    </div>
+    <div class="big-count" id="sholatCount"></div>
+    <table class="jadwal" id="sholatTable"></table>
+  </div>
+
+  <!-- 4. CUACA -->
+  <div class="tool">
+    <h2>🌦️ 4. Cek Cuaca</h2>
+    <div class="d">Cuaca sekarang + ramalan 7 hari. Ganti kota sesukamu.</div>
+    <div class="row2">
+      <input class="field" id="kotaCuaca" type="text" value="Bumiayu">
+      <button class="btn" id="cuacaBtn" style="margin-top:8px">🔍 Cek</button>
+    </div>
+    <div class="out" id="cuacaNow"></div>
+    <div id="cuacaDays" style="margin-top:6px"></div>
+  </div>
+
+  <!-- 5. KOMPRES FOTO -->
+  <div class="tool">
+    <h2>🖼️ 5. Kompres &amp; Resize Foto</h2>
+    <div class="d">Kecilin ukuran foto langsung di HP kamu — fotonya nggak di-upload ke mana-mana, aman.</div>
+    <input class="field" id="imgFile" type="file" accept="image/*">
+    <label class="lbl">Ukuran maksimal (lebar/tinggi):</label>
+    <select class="field" id="imgSize">
+      <option value="720">720px (kecil)</option>
+      <option value="1080" selected>1080px (sedang)</option>
+      <option value="1440">1440px (besar)</option>
+    </select>
+    <label class="lbl">Kualitas: <span id="qVal">80</span>%</label>
+    <input class="field" id="imgQ" type="range" min="30" max="95" value="80" style="padding:4px">
+    <div class="out" id="imgInfo"></div>
+    <img class="prev" id="imgPrev" style="display:none">
+    <a class="btn" id="imgDl" style="display:none;text-decoration:none;text-align:center" download="foto-kompres.jpg">⬇️ Download Hasilnya</a>
+  </div>
+
+  <!-- 6. QR CODE -->
+  <div class="tool">
+    <h2>🔳 6. QR Code Generator</h2>
+    <div class="d">Bikin QR dari link/teks apa aja. Tahan gambarnya buat menyimpan.</div>
+    <input class="field" id="qrIn" type="text" value="https://4ever.ai.id">
+    <button class="btn" id="qrBtn">🔳 Buat QR</button>
+    <img class="qr-img" id="qrImg" alt="QR code">
+  </div>
+
+  <!-- 7. KALKULATOR DISKON & KOMISI -->
+  <div class="tool">
+    <h2>🧮 7. Kalkulator Diskon &amp; Komisi</h2>
+    <div class="d">Hitung harga setelah diskon + perkiraan komisi affiliate kamu.</div>
+    <label class="lbl">Harga awal (Rp):</label>
+    <input class="field" id="kHarga" type="number" placeholder="contoh: 100000">
+    <label class="lbl">Diskon (%):</label>
+    <input class="field" id="kDiskon" type="number" placeholder="contoh: 30">
+    <label class="lbl">Komisi affiliate (%):</label>
+    <input class="field" id="kKomisi" type="number" placeholder="contoh: 10">
+    <label class="lbl">Perkiraan jumlah terjual:</label>
+    <input class="field" id="kQty" type="number" placeholder="contoh: 20">
+    <button class="btn" id="kBtn">🧮 Hitung</button>
+    <div class="out" id="kOut"></div>
+  </div>
+
+  <!-- 8. PASSWORD GENERATOR -->
+  <div class="tool">
+    <h2>🔐 8. Password Generator</h2>
+    <div class="d">Bikin password kuat &amp; acak. Geser panjangnya, centang opsinya.</div>
+    <label class="lbl">Panjang: <span id="pwLenVal">16</span> karakter</label>
+    <input class="field" id="pwLen" type="range" min="8" max="40" value="16" style="padding:4px">
+    <label class="lbl"><input type="checkbox" id="pwUpper" checked> huruf BESAR (A-Z)</label>
+    <label class="lbl"><input type="checkbox" id="pwNum" checked> angka (0-9)</label>
+    <label class="lbl"><input type="checkbox" id="pwSym" checked> simbol (!@#$%)</label>
+    <button class="btn" id="pwBtn">🔐 Buat Password</button>
+    <div class="out" id="pwOut" style="font-size:1.1rem;text-align:center"></div>
+    <button class="btn ghost" id="pwCopy" style="display:none">📋 Salin Password</button>
+  </div>
+
+  <!-- 9. HITUNG UMUR & SELISIH -->
+  <div class="tool">
+    <h2>🎂 9. Hitung Umur &amp; Selisih Hari</h2>
+    <div class="d">Isi tanggal lahir → keluar umur lengkap + total hari hidup. Di bawahnya ada hitung selisih 2 tanggal.</div>
+    <label class="lbl">Tanggal lahir:</label>
+    <input class="field" id="ageBirth" type="date">
+    <button class="btn" id="ageBtn">🎂 Hitung Umur</button>
+    <div class="out" id="ageOut"></div>
+    <label class="lbl">Selisih tanggal — dari:</label>
+    <input class="field" id="diffA" type="date">
+    <label class="lbl">sampai:</label>
+    <input class="field" id="diffB" type="date">
+    <button class="btn ghost" id="diffBtn">📅 Hitung Selisih</button>
+    <div class="out" id="diffOut"></div>
+  </div>
+
+  <!-- 10. PENGHITUNG KATA -->
+  <div class="tool">
+    <h2>🔤 10. Penghitung Kata &amp; Karakter</h2>
+    <div class="d">Tempel naskah/caption di sini — langsung kehitung kata, karakter, kalimat, dan perkiraan waktu bacanya.</div>
+    <textarea class="field" id="wcIn" rows="5" placeholder="tempel teks di sini…"></textarea>
+    <div class="out show" id="wcOut">kata: 0 • karakter: 0 • tanpa spasi: 0 • kalimat: 0 • waktu baca: 0 detik</div>
+  </div>
+
+  <!-- 11. KONVERTER SATUAN -->
+  <div class="tool">
+    <h2>🔁 11. Konverter Satuan</h2>
+    <div class="d">Ubah-ubah satuan panjang, berat, dan suhu.</div>
+    <label class="lbl">Jenis:</label>
+    <select class="field" id="cvType">
+      <option value="panjang">📏 Panjang</option>
+      <option value="berat">⚖️ Berat</option>
+      <option value="suhu">🌡️ Suhu</option>
+    </select>
+    <input class="field" id="cvVal" type="number" placeholder="nilai…">
+    <div class="row2">
+      <select class="field" id="cvFrom"></select>
+      <select class="field" id="cvTo"></select>
+    </div>
+    <button class="btn" id="cvBtn">🔁 Ubah</button>
+    <div class="out" id="cvOut"></div>
+  </div>
+
+  <!-- 12. KURS MATA UANG -->
+  <div class="tool">
+    <h2>💱 12. Kurs Mata Uang</h2>
+    <div class="d">Kurs hari ini (otomatis dari internet).</div>
+    <input class="field" id="fxAmt" type="number" value="1">
+    <div class="row2">
+      <select class="field" id="fxFrom">
+        <option>USD</option><option>IDR</option><option>SGD</option><option>MYR</option><option>EUR</option><option>JPY</option><option>AUD</option>
+      </select>
+      <select class="field" id="fxTo">
+        <option>IDR</option><option>USD</option><option>SGD</option><option>MYR</option><option>EUR</option><option>JPY</option><option>AUD</option>
+      </select>
+    </div>
+    <button class="btn" id="fxBtn">💱 Cek Kurs</button>
+    <div class="out" id="fxOut"></div>
+  </div>
+
+  <!-- 13. ACAK & UNDI -->
+  <div class="tool">
+    <h2>🎲 13. Acak Angka &amp; Undi Nama</h2>
+    <div class="d">Buat giveaway atau sekadar milih acak. Tulis nama-nama (satu per baris), terus undi pemenangnya!</div>
+    <textarea class="field" id="undiIn" rows="4" placeholder="nama 1&#10;nama 2&#10;nama 3"></textarea>
+    <button class="btn" id="undiBtn">🎉 Undi Pemenang</button>
+    <div class="out" id="undiOut" style="text-align:center;font-size:1.15rem"></div>
+    <label class="lbl">atau angka acak dari:</label>
+    <div class="row2">
+      <input class="field" id="rndMin" type="number" value="1">
+      <input class="field" id="rndMax" type="number" value="100">
+    </div>
+    <button class="btn ghost" id="rndBtn">🎲 Acak Angka</button>
+    <div class="out" id="rndOut" style="text-align:center;font-size:1.15rem"></div>
+  </div>
+
+  <a class="back" href="https://4ever.ai.id/">← kembali ke halaman utama</a>
+  <footer>© 2026 4ever.ai.id</footer>
+</div>
+
+<script>
+function copyText(t, btn) {
+  const done = () => { if (btn) { const o = btn.textContent; btn.textContent = '✅ Tersalin!'; setTimeout(() => btn.textContent = o, 1600); } };
+  if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(t).then(done).catch(done);
+  else {
+    const ta = document.createElement('textarea'); ta.value = t; document.body.appendChild(ta);
+    ta.select(); try { document.execCommand('copy'); } catch (e) {} ta.remove(); done();
+  }
+}
+const rp = n => 'Rp ' + Math.round(n).toLocaleString('id-ID');
+
+/* ============ 1. FANCY TEXT ============ */
+const STYLES = [
+  { name: 'Tebal', up: 0x1D400, lo: 0x1D41A, dg: 0x1D7CE },
+  { name: 'Miring', up: 0x1D434, lo: 0x1D44E, dg: null, ex: { h: '\u210E' } },
+  { name: 'Script', up: 0x1D49C, lo: 0x1D4B6, dg: null, ex: { B: '\u212C', E: '\u2130', F: '\u2131', H: '\u210B', I: '\u2110', L: '\u2112', M: '\u2133', R: '\u211B', e: '\u212F', g: '\u210A', o: '\u2134' } },
+  { name: 'Script Tebal', up: 0x1D4D0, lo: 0x1D4EA, dg: null },
+  { name: 'Monospace', up: 0x1D670, lo: 0x1D68A, dg: 0x1D7F6 },
+  { name: 'Garis Ganda', up: 0x1D538, lo: 0x1D552, dg: 0x1D7D8, ex: { C: '\u2102', H: '\u210D', N: '\u2115', P: '\u2119', Q: '\u211A', R: '\u211D', Z: '\u2124' } },
+  { name: 'Lingkaran', up: 0x24B6, lo: 0x24D0, dg: null, circle: true },
+  { name: 'Fullwidth', up: 0xFF21, lo: 0xFF41, dg: 0xFF10 },
+];
+function fancyConvert(text, st) {
+  return text.split('').map(ch => {
+    if (st.ex && st.ex[ch]) return st.ex[ch];
+    const c = ch.charCodeAt(0);
+    if (c >= 65 && c <= 90) return String.fromCodePoint(st.up + c - 65);
+    if (c >= 97 && c <= 122) return String.fromCodePoint(st.lo + c - 97);
+    if (c >= 48 && c <= 57) {
+      if (st.circle) return ch === '0' ? '\u24EA' : String.fromCodePoint(0x2460 + c - 49);
+      return st.dg ? String.fromCodePoint(st.dg + c - 48) : ch;
+    }
+    return ch;
+  }).join('');
+}
+const fancyIn = document.getElementById('fancyIn');
+function renderFancy() {
+  const t = fancyIn.value || '4ever';
+  const box = document.getElementById('fancyOut');
+  box.innerHTML = '';
+  STYLES.forEach(st => {
+    const row = document.createElement('div'); row.className = 'fancy-row';
+    const span = document.createElement('span'); span.className = 'ft'; span.textContent = fancyConvert(t, st);
+    const b = document.createElement('button'); b.className = 'mini-btn'; b.textContent = '📋 Salin';
+    b.onclick = () => copyText(fancyConvert(t, st), b);
+    row.appendChild(span); row.appendChild(b); box.appendChild(row);
+  });
+}
+fancyIn.addEventListener('input', renderFancy);
+renderFancy();
+
+/* ============ 2. CAPTION + HASHTAG ============ */
+const CAPTIONS = {
+  sg: {
+    cap: [
+      'Persahabatan kecil, hati yang besar 🐜🐘 tonton sampai habis ya!',
+      'Yang kecil jangan diremehkan, yang besar jangan sombong 🤝',
+      'Episode baru! Si kecil nolong si besar lagi 😍',
+      'Beda ukuran, tapi satu hati 💙',
+      'Kebaikan itu nggak kenal ukuran ✨',
+      'Siapa sangka semut sekecil itu bisa nyelametin gajah sebesar itu 🥺'
+    ],
+    tag: '#semutdangajah #animasilucu #kartunlucu #fyp #videolucu #persahabatan #dongenganak #fypindonesia #viral #shorts'
+  },
+  cinta: {
+    cap: [
+      'Buat kamu yang selalu spesial 💙',
+      'Nggak butuh alasan buat sayang kamu, ini cuma salah satunya 😘',
+      'Setiap hari bersamamu adalah hadiah 🎁',
+      '4ever itu forever — kayak kita ♾️💙'
+    ],
+    tag: '#katakataromantis #buatkamu #sayang #couplegoals #4ever'
+  },
+  jualan: {
+    cap: [
+      'Promo receh tapi nampol! 🔥 cek linknya sebelum kehabisan',
+      'Yang kemarin nanya-nanya, ini dia barangnya 😍',
+      'Harga segini nggak datang dua kali, gaskeun! 🛒',
+      'Racun hari ini check ✅ jangan sampai nyesel'
+    ],
+    tag: '#racunshopee #shopeeaffiliate #promoshopee #diskon #fyp #belanjahemat'
+  },
+  motivasi: {
+    cap: [
+      'Pelan-pelan, yang penting jalan terus 💪',
+      'Rezeki nggak akan salah alamat ✨',
+      'Hari ini capek, besok panen 🌱'
+    ],
+    tag: '#motivasi #semangat #pejuangrezeki #fyp'
+  }
+};
+let capText = '';
+document.getElementById('capBtn').onclick = () => {
+  const cat = CAPTIONS[document.getElementById('capCat').value];
+  const c = cat.cap[(Math.random() * cat.cap.length) | 0];
+  capText = c + '\n\n' + cat.tag;
+  const out = document.getElementById('capOut');
+  out.textContent = capText; out.classList.add('show');
+  document.getElementById('capCopy').style.display = 'block';
+};
+document.getElementById('capCopy').onclick = e => copyText(capText, e.target);
+
+/* ============ 3. JADWAL SHOLAT ============ */
+let sholatTimes = null;
+async function loadSholat() {
+  const kota = document.getElementById('kotaSholat').value.trim() || 'Bumiayu';
+  const tbl = document.getElementById('sholatTable');
+  const cnt = document.getElementById('sholatCount');
+  tbl.innerHTML = ''; cnt.textContent = '⏳ ngambil jadwal…';
+  try {
+    const now = new Date();
+    const dd = String(now.getDate()).padStart(2, '0'), mm = String(now.getMonth() + 1).padStart(2, '0'), yy = now.getFullYear();
+    const res = await fetch('https://api.aladhan.com/v1/timingsByCity/' + dd + '-' + mm + '-' + yy + '?city=' + encodeURIComponent(kota) + '&country=Indonesia&method=20');
+    const json = await res.json();
+    const t = json.data.timings;
+    const rows = [['Imsak', t.Imsak], ['Subuh', t.Fajr], ['Terbit', t.Sunrise], ['Dzuhur', t.Dhuhr], ['Ashar', t.Asr], ['Maghrib', t.Maghrib], ['Isya', t.Isha]];
+    sholatTimes = rows.map(([n, v]) => [n, v.slice(0, 5)]);
+    tbl.innerHTML = sholatTimes.map(([n, v]) => '<tr data-name="' + n + '"><td>' + n + '</td><td>' + v + '</td></tr>').join('');
+    tickSholat();
+  } catch (e) {
+    cnt.textContent = '❌ gagal ngambil jadwal. Cek koneksi / nama kotanya ya.';
+  }
+}
+function tickSholat() {
+  if (!sholatTimes) return;
+  const now = new Date();
+  const cur = now.getHours() * 3600 + now.getMinutes() * 60 + now.getSeconds();
+  let next = null;
+  for (const [n, v] of sholatTimes) {
+    const [h, m] = v.split(':').map(Number);
+    const sec = h * 3600 + m * 60;
+    if (sec > cur) { next = [n, sec]; break; }
+  }
+  if (!next) { const [h, m] = sholatTimes[0][1].split(':').map(Number); next = [sholatTimes[0][0] + ' besok', h * 3600 + m * 60 + 86400]; }
+  let diff = next[1] - cur;
+  const hh = String(Math.floor(diff / 3600)).padStart(2, '0');
+  const mi = String(Math.floor(diff % 3600 / 60)).padStart(2, '0');
+  const ss = String(diff % 60).padStart(2, '0');
+  document.getElementById('sholatCount').textContent = '⏰ ' + hh + ':' + mi + ':' + ss + ' menuju ' + next[0];
+  document.querySelectorAll('#sholatTable tr').forEach(tr => {
+    tr.classList.toggle('next-row', tr.dataset.name === next[0]);
+  });
+}
+document.getElementById('sholatBtn').onclick = loadSholat;
+loadSholat();
+setInterval(tickSholat, 1000);
+
+/* ============ 4. CUACA ============ */
+const WX = { 0: ['☀️', 'Cerah'], 1: ['🌤️', 'Cerah berawan'], 2: ['⛅', 'Sebagian berawan'], 3: ['☁️', 'Berawan'], 45: ['🌫️', 'Berkabut'], 48: ['🌫️', 'Berkabut'], 51: ['🌦️', 'Gerimis ringan'], 53: ['🌦️', 'Gerimis'], 55: ['🌦️', 'Gerimis lebat'], 61: ['🌧️', 'Hujan ringan'], 63: ['🌧️', 'Hujan'], 65: ['🌧️', 'Hujan lebat'], 80: ['🌦️', 'Hujan lokal ringan'], 81: ['🌦️', 'Hujan lokal'], 82: ['🌧️', 'Hujan lokal lebat'], 95: ['⛈️', 'Badai petir'], 96: ['⛈️', 'Badai petir + hujan es'], 99: ['⛈️', 'Badai petir + hujan es'] };
+async function loadCuaca() {
+  const kota = document.getElementById('kotaCuaca').value.trim() || 'Bumiayu';
+  const now = document.getElementById('cuacaNow');
+  const days = document.getElementById('cuacaDays');
+  now.textContent = '⏳ ngambil cuaca…'; now.classList.add('show'); days.innerHTML = '';
+  try {
+    const g = await (await fetch('https://geocoding-api.open-meteo.com/v1/search?name=' + encodeURIComponent(kota) + '&count=1&language=id')).json();
+    if (!g.results || !g.results.length) { now.textContent = '❌ kotanya nggak ketemu.'; return; }
+    const { latitude, longitude, name, admin1 } = g.results[0];
+    const f = await (await fetch('https://api.open-meteo.com/v1/forecast?latitude=' + latitude + '&longitude=' + longitude + '&current=temperature_2m,weather_code,wind_speed_10m&daily=weather_code,temperature_2m_max,temperature_2m_min&timezone=Asia%2FJakarta')).json();
+    const cw = WX[f.current.weather_code] || ['🌡️', '—'];
+    now.textContent = cw[0] + ' ' + name + (admin1 ? ', ' + admin1 : '') + '\n' + cw[1] + ' • ' + f.current.temperature_2m + '°C • angin ' + f.current.wind_speed_10m + ' km/jam';
+    days.innerHTML = f.daily.time.map((tgl, i) => {
+      const w = WX[f.daily.weather_code[i]] || ['🌡️', '—'];
+      const nm = new Date(tgl + 'T00:00:00').toLocaleDateString('id-ID', { weekday: 'short', day: 'numeric', month: 'short' });
+      return '<div class="wx-day"><span>' + nm + '</span><span>' + w[0] + ' ' + w[1] + '</span><span>' + Math.round(f.daily.temperature_2m_min[i]) + '°–' + Math.round(f.daily.temperature_2m_max[i]) + '°C</span></div>';
+    }).join('');
+  } catch (e) {
+    now.textContent = '❌ gagal ngambil cuaca. Cek koneksinya ya.';
+  }
+}
+document.getElementById('cuacaBtn').onclick = loadCuaca;
+loadCuaca();
+
+/* ============ 5. KOMPRES FOTO ============ */
+let imgFileObj = null;
+document.getElementById('qVal').textContent = document.getElementById('imgQ').value;
+document.getElementById('imgQ').addEventListener('input', e => {
+  document.getElementById('qVal').textContent = e.target.value;
+  if (imgFileObj) processImg();
+});
+document.getElementById('imgSize').addEventListener('change', () => { if (imgFileObj) processImg(); });
+document.getElementById('imgFile').addEventListener('change', e => {
+  imgFileObj = e.target.files[0] || null;
+  if (imgFileObj) processImg();
+});
+function processImg() {
+  const maxDim = +document.getElementById('imgSize').value;
+  const q = +document.getElementById('imgQ').value / 100;
+  const img = new Image();
+  img.onload = () => {
+    const scale = Math.min(1, maxDim / Math.max(img.width, img.height));
+    const w = Math.round(img.width * scale), h = Math.round(img.height * scale);
+    const cv = document.createElement('canvas'); cv.width = w; cv.height = h;
+    cv.getContext('2d').drawImage(img, 0, 0, w, h);
+    cv.toBlob(blob => {
+      const url = URL.createObjectURL(blob);
+      const prev = document.getElementById('imgPrev');
+      prev.src = url; prev.style.display = 'block';
+      const dl = document.getElementById('imgDl');
+      dl.href = url; dl.style.display = 'block';
+      const info = document.getElementById('imgInfo');
+      info.textContent = 'ukuran awal: ' + (imgFileObj.size / 1024).toFixed(0) + ' KB (' + img.width + '×' + img.height + ')\nhasil: ' + (blob.size / 1024).toFixed(0) + ' KB (' + w + '×' + h + ') — hemat ' + Math.max(0, (100 - blob.size / imgFileObj.size * 100)).toFixed(0) + '% 🎉';
+      info.classList.add('show');
+      URL.revokeObjectURL(img.src);
+    }, 'image/jpeg', q);
+  };
+  img.src = URL.createObjectURL(imgFileObj);
+}
+
+/* ============ 6. QR CODE ============ */
+function buatQR() {
+  const v = document.getElementById('qrIn').value.trim() || 'https://4ever.ai.id';
+  document.getElementById('qrImg').src = 'https://api.qrserver.com/v1/create-qr-code/?size=240x240&margin=6&data=' + encodeURIComponent(v);
+}
+document.getElementById('qrBtn').onclick = buatQR;
+buatQR();
+
+/* ============ 7. KALKULATOR ============ */
+document.getElementById('kBtn').onclick = () => {
+  const harga = +document.getElementById('kHarga').value || 0;
+  const diskon = +document.getElementById('kDiskon').value || 0;
+  const komisi = +document.getElementById('kKomisi').value || 0;
+  const qty = +document.getElementById('kQty').value || 0;
+  const akhir = harga * (1 - diskon / 100);
+  const perPcs = akhir * komisi / 100;
+  const out = document.getElementById('kOut');
+  out.textContent =
+    'harga awal: ' + rp(harga) + '\n' +
+    'setelah diskon ' + diskon + '%: ' + rp(akhir) + ' (hemat ' + rp(harga - akhir) + ')\n' +
+    'komisi per pcs (' + komisi + '%): ' + rp(perPcs) + '\n' +
+    (qty ? 'kalau laku ' + qty + ' pcs: komisi total ' + rp(perPcs * qty) + ' 💰' : '');
+  out.classList.add('show');
+};
+
+/* ============ 8. PASSWORD GENERATOR ============ */
+let pwText = '';
+document.getElementById('pwLen').addEventListener('input', e => document.getElementById('pwLenVal').textContent = e.target.value);
+document.getElementById('pwBtn').onclick = () => {
+  let chars = 'abcdefghijkmnpqrstuvwxyz';
+  if (document.getElementById('pwUpper').checked) chars += 'ABCDEFGHJKLMNPQRSTUVWXYZ';
+  if (document.getElementById('pwNum').checked) chars += '23456789';
+  if (document.getElementById('pwSym').checked) chars += '!@#$%^&*_-+=';
+  const len = +document.getElementById('pwLen').value;
+  const arr = new Uint32Array(len);
+  crypto.getRandomValues(arr);
+  pwText = Array.from(arr).map(n => chars[n % chars.length]).join('');
+  const out = document.getElementById('pwOut');
+  out.textContent = pwText; out.classList.add('show');
+  document.getElementById('pwCopy').style.display = 'block';
+};
+document.getElementById('pwCopy').onclick = e => copyText(pwText, e.target);
+
+/* ============ 9. HITUNG UMUR & SELISIH ============ */
+document.getElementById('ageBtn').onclick = () => {
+  const v = document.getElementById('ageBirth').value;
+  const out = document.getElementById('ageOut');
+  if (!v) { out.textContent = '⚠️ pilih dulu tanggal lahirnya'; out.classList.add('show'); return; }
+  const b = new Date(v + 'T00:00:00'), now = new Date();
+  if (b > now) { out.textContent = '⚠️ tanggal lahirnya kok di masa depan 😄'; out.classList.add('show'); return; }
+  let y = now.getFullYear() - b.getFullYear(), m = now.getMonth() - b.getMonth(), d = now.getDate() - b.getDate();
+  if (d < 0) { m--; d += new Date(now.getFullYear(), now.getMonth(), 0).getDate(); }
+  if (m < 0) { y--; m += 12; }
+  const days = Math.floor((now - b) / 86400000);
+  out.textContent = 'umurnya: ' + y + ' tahun, ' + m + ' bulan, ' + d + ' hari 🎂\ntotal hari hidup: ' + days.toLocaleString('id-ID') + ' hari\natau ' + Math.floor(days / 7).toLocaleString('id-ID') + ' minggu • ' + (days * 24).toLocaleString('id-ID') + ' jam';
+  out.classList.add('show');
+};
+document.getElementById('diffBtn').onclick = () => {
+  const a = document.getElementById('diffA').value, bb = document.getElementById('diffB').value;
+  const out = document.getElementById('diffOut');
+  if (!a || !bb) { out.textContent = '⚠️ isi dulu dua tanggalnya'; out.classList.add('show'); return; }
+  const d = Math.abs(Math.round((new Date(bb) - new Date(a)) / 86400000));
+  out.textContent = 'selisihnya: ' + d.toLocaleString('id-ID') + ' hari (' + (d / 7).toFixed(1) + ' minggu • ' + (d / 30.44).toFixed(1) + ' bulan)';
+  out.classList.add('show');
+};
+
+/* ============ 10. PENGHITUNG KATA ============ */
+document.getElementById('wcIn').addEventListener('input', e => {
+  const t = e.target.value;
+  const words = t.trim() ? t.trim().split(/\s+/).length : 0;
+  const chars = t.length;
+  const noSpace = t.replace(/\s/g, '').length;
+  const sents = t.trim() ? (t.match(/[.!?…]+/g) || []).length : 0;
+  const readSec = Math.round(words / 150 * 60);
+  document.getElementById('wcOut').textContent = 'kata: ' + words + ' • karakter: ' + chars + ' • tanpa spasi: ' + noSpace + ' • kalimat: ' + sents + ' • waktu baca: ' + readSec + ' detik';
+});
+
+/* ============ 11. KONVERTER SATUAN ============ */
+const CV = {
+  panjang: { base: 'meter', units: { milimeter: 0.001, centimeter: 0.01, meter: 1, kilometer: 1000, inci: 0.0254, kaki: 0.3048, mil: 1609.34 } },
+  berat: { base: 'gram', units: { miligram: 0.001, gram: 1, kilogram: 1000, ons: 100, kuintal: 100000, ton: 1000000 } },
+  suhu: { units: { Celsius: 'C', Fahrenheit: 'F', Kelvin: 'K' } }
+};
+function cvFill() {
+  const type = document.getElementById('cvType').value;
+  const names = Object.keys(CV[type].units);
+  const opts = names.map(n => '<option>' + n + '</option>').join('');
+  document.getElementById('cvFrom').innerHTML = opts;
+  document.getElementById('cvTo').innerHTML = opts;
+  document.getElementById('cvTo').selectedIndex = Math.min(2, names.length - 1);
+}
+document.getElementById('cvType').addEventListener('change', cvFill);
+cvFill();
+document.getElementById('cvBtn').onclick = () => {
+  const type = document.getElementById('cvType').value;
+  const v = +document.getElementById('cvVal').value;
+  const from = document.getElementById('cvFrom').value, to = document.getElementById('cvTo').value;
+  const out = document.getElementById('cvOut');
+  if (isNaN(v)) { out.textContent = '⚠️ isi dulu nilainya'; out.classList.add('show'); return; }
+  let r;
+  if (type === 'suhu') {
+    let c = v;
+    if (from === 'Fahrenheit') c = (v - 32) * 5 / 9;
+    if (from === 'Kelvin') c = v - 273.15;
+    r = c;
+    if (to === 'Fahrenheit') r = c * 9 / 5 + 32;
+    if (to === 'Kelvin') r = c + 273.15;
+  } else {
+    r = v * CV[type].units[from] / CV[type].units[to];
+  }
+  out.textContent = v + ' ' + from + ' = ' + (+r.toFixed(6)).toLocaleString('id-ID', { maximumFractionDigits: 6 }) + ' ' + to;
+  out.classList.add('show');
+};
+
+/* ============ 12. KURS MATA UANG ============ */
+document.getElementById('fxBtn').onclick = async () => {
+  const amt = +document.getElementById('fxAmt').value || 0;
+  const from = document.getElementById('fxFrom').value, to = document.getElementById('fxTo').value;
+  const out = document.getElementById('fxOut');
+  out.textContent = '⏳ ngambil kurs terbaru…'; out.classList.add('show');
+  try {
+    const j = await (await fetch('https://open.er-api.com/v6/latest/' + from)).json();
+    const rate = j.rates[to];
+    out.textContent = amt.toLocaleString('id-ID') + ' ' + from + ' = ' + (amt * rate).toLocaleString('id-ID', { maximumFractionDigits: 2 }) + ' ' + to + '\n(kurs: 1 ' + from + ' = ' + rate.toLocaleString('id-ID', { maximumFractionDigits: 4 }) + ' ' + to + ')';
+  } catch (e) {
+    out.textContent = '❌ gagal ngambil kurs. Cek koneksinya ya.';
+  }
+};
+
+/* ============ 13. ACAK & UNDI ============ */
+document.getElementById('undiBtn').onclick = () => {
+  const names = document.getElementById('undiIn').value.split('\n').map(x => x.trim()).filter(Boolean);
+  const out = document.getElementById('undiOut');
+  if (names.length < 2) { out.textContent = '⚠️ isi minimal 2 nama dulu ya'; out.classList.add('show'); return; }
+  out.classList.add('show');
+  let n = 0;
+  const iv = setInterval(() => {
+    out.textContent = '🎲 ' + names[(Math.random() * names.length) | 0];
+    if (++n > 14) {
+      clearInterval(iv);
+      out.textContent = '🏆 PEMENANGNYA: ' + names[(Math.random() * names.length) | 0] + ' 🎉';
+    }
+  }, 80);
+};
+document.getElementById('rndBtn').onclick = () => {
+  const mn = +document.getElementById('rndMin').value || 0, mx = +document.getElementById('rndMax').value || 0;
+  const out = document.getElementById('rndOut');
+  if (mx <= mn) { out.textContent = '⚠️ angka "sampai" harus lebih besar'; out.classList.add('show'); return; }
+  const arr = new Uint32Array(1); crypto.getRandomValues(arr);
+  out.textContent = '🎲 ' + (mn + arr[0] % (mx - mn + 1));
+  out.classList.add('show');
+};
+
+</script>
+</body>
+</html>

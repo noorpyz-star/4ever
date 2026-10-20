@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Download Video — 4ever.ai.id</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  body {
+    font-family: 'Segoe UI', Arial, sans-serif;
+    background: radial-gradient(circle at 50% 8%, #181818 0%, #000000 60%, #000000 100%);
+    color: #eee; min-height: 100vh; text-align: center;
+  }
+  .wrap { max-width: 480px; margin: 0 auto; padding: 44px 20px 40px; }
+  h1 { color: #fff; font-size: 1.5rem; }
+  .sub { color: #d4af37; letter-spacing: 2px; font-size: .8rem; margin-top: 6px; }
+  .desc { color: #aaa; font-size: .92rem; line-height: 1.6; margin: 14px 4px 4px; }
+  .group-title { color: #888; font-size: .75rem; letter-spacing: 4px; margin: 32px 0 12px; }
+  .field {
+    width: 100%; padding: 14px 16px; border-radius: 12px; border: 1px solid #555;
+    background: #101010; color: #fff; font-size: 1rem; font-family: inherit;
+  }
+  .go-btn {
+    width: 100%; margin-top: 10px; padding: 14px; border: none; border-radius: 12px; cursor: pointer;
+    background: linear-gradient(90deg, #d4af37, #f5e08c); color: #111;
+    font-size: 1.05rem; font-weight: bold; font-family: inherit;
+  }
+  .go-btn:active { transform: scale(.98); }
+  .status { min-height: 24px; color: #f0c75e; font-size: .92rem; margin-top: 12px; line-height: 1.5; }
+  .result { display: none; margin-top: 8px; padding: 16px; border: 1px solid #555; border-radius: 14px; background: rgba(255,255,255,.04); }
+  .result img.cover { width: 150px; border-radius: 10px; border: 1px solid #444; }
+  .result .vtitle { color: #fff; font-size: .95rem; line-height: 1.5; margin-top: 10px; }
+  .result .vauthor { color: #999; font-size: .85rem; margin-top: 4px; }
+  a.dl-btn {
+    display: block; text-decoration: none; margin-top: 10px; padding: 13px;
+    border-radius: 10px; border: 1px solid #d4af37; color: #fff; background: rgba(212,175,55,.1);
+    font-weight: bold;
+  }
+  a.link-btn {
+    display: flex; align-items: center; gap: 14px; text-decoration: none;
+    background: rgba(255,255,255,.05); border: 1px solid #3a3a3a; color: #fff;
+    padding: 15px 18px; border-radius: 14px; margin: 10px 0; text-align: left;
+  }
+  a.link-btn .ic { font-size: 1.5rem; }
+  a.link-btn .tt { font-weight: bold; display: block; }
+  a.link-btn .ds { color: #999; font-size: .8rem; display: block; margin-top: 2px; }
+  a.link-btn .arr { margin-left: auto; color: #d4af37; font-size: 1.2rem; }
+  .back { display: inline-block; margin-top: 30px; color: #d4af37; text-decoration: none; font-size: .95rem; }
+  footer { color: #555; font-size: .78rem; padding: 24px 0 6px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>⬇️ Download Video</h1>
+  <div class="sub">TOOLS — 4EVER.AI.ID</div>
+  <p class="desc">Tempel link video TikTok di bawah ini, terus pencet tombolnya. Video bisa di-download <b style="color:#fff">tanpa watermark</b> atau jadi MP3.</p>
+
+  <div class="group-title">🎵 TIKTOK — LANGSUNG DI SINI</div>
+  <input class="field" id="ttUrl" type="url" placeholder="tempel link TikTok di sini…">
+  <button class="go-btn" id="ttBtn">⬇️ Ambil Videonya</button>
+  <div class="status" id="ttStatus"></div>
+
+  <div class="result" id="ttResult">
+    <img class="cover" id="ttCover" alt="cover video">
+    <div class="vtitle" id="ttTitle"></div>
+    <div class="vauthor" id="ttAuthor"></div>
+    <a class="dl-btn" id="dlNoWm" target="_blank">⬇️ Download Tanpa Watermark</a>
+    <a class="dl-btn" id="dlHd" target="_blank">⬇️ Download HD (kalau ada)</a>
+    <a class="dl-btn" id="dlWm" target="_blank">⬇️ Download Dengan Watermark</a>
+    <a class="dl-btn" id="dlMp3" target="_blank">🎵 Download MP3 (lagunya aja)</a>
+  </div>
+
+  <div class="group-title">📘 FACEBOOK</div>
+  <a class="link-btn" href="https://snapsave.app" target="_blank">
+    <span class="ic">📘</span>
+    <span><span class="tt">Download Video Facebook — SnapSave</span><span class="ds">tempel link video FB di situs itu</span></span>
+    <span class="arr">›</span>
+  </a>
+  <a class="link-btn" href="https://fdown.net" target="_blank">
+    <span class="ic">📘</span>
+    <span><span class="tt">Download Video Facebook — FDown</span><span class="ds">alternatif kalau yang atas nggak bisa</span></span>
+    <span class="arr">›</span>
+  </a>
+
+  <div class="group-title">📸 INSTAGRAM</div>
+  <a class="link-btn" href="https://snapinsta.app" target="_blank">
+    <span class="ic">📸</span>
+    <span><span class="tt">Download Video/Reels Instagram — SnapInsta</span><span class="ds">tempel link postingan/reels IG di situs itu</span></span>
+    <span class="arr">›</span>
+  </a>
+  <a class="link-btn" href="https://fastdl.app" target="_blank">
+    <span class="ic">📸</span>
+    <span><span class="tt">Download Instagram — FastDl</span><span class="ds">alternatif kalau yang atas nggak bisa</span></span>
+    <span class="arr">›</span>
+  </a>
+
+  <a class="back" href="https://4ever.ai.id/">← kembali ke halaman utama</a>
+  <footer>© 2026 4ever.ai.id</footer>
+</div>
+
+<script>
+const statusEl = document.getElementById('ttStatus');
+const resultEl = document.getElementById('ttResult');
+
+function fixUrl(u) {
+  if (!u) return '';
+  return u.startsWith('http') ? u : 'https://www.tikwm.com' + u;
+}
+
+document.getElementById('ttBtn').onclick = async () => {
+  const url = document.getElementById('ttUrl').value.trim();
+  resultEl.style.display = 'none';
+  if (!url || !/tiktok\.com/.test(url)) {
+    statusEl.textContent = '⚠️ tempel dulu link TikTok yang bener ya (ada tulisan tiktok.com-nya)';
+    return;
+  }
+  statusEl.textContent = '⏳ lagi ngambil videonya, tunggu sebentar…';
+  try {
+    const res = await fetch('https://www.tikwm.com/api/?url=' + encodeURIComponent(url));
+    const json = await res.json();
+    if (json.code !== 0 || !json.data) {
+      statusEl.textContent = '❌ gagal ngambil video. Cek lagi linknya, atau videonya mungkin diprivate.';
+      return;
+    }
+    const d = json.data;
+    document.getElementById('ttCover').src = fixUrl(d.cover);
+    document.getElementById('ttTitle').textContent = d.title || '(tanpa judul)';
+    document.getElementById('ttAuthor').textContent = d.author && d.author.nickname ? 'oleh ' + d.author.nickname : '';
+    const set = (id, u) => {
+      const a = document.getElementById(id);
+      if (u) { a.href = fixUrl(u); a.style.display = 'block'; } else { a.style.display = 'none'; }
+    };
+    set('dlNoWm', d.play);
+    set('dlHd', d.hdplay);
+    set('dlWm', d.wmplay);
+    set('dlMp3', d.music);
+    resultEl.style.display = 'block';
+    statusEl.textContent = '✅ ketemu! tinggal pencet tombol download-nya di bawah 👇';
+  } catch (e) {
+    statusEl.textContent = '❌ lagi ada gangguan jaringan/layanan. Coba lagi sebentar ya.';
+  }
+};
+</script>
+</body>
+</html>
