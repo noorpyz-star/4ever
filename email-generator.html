@@ -50,6 +50,8 @@
   .inbox-item .sj { color: #fff; font-weight: bold; }
   .inbox-item .fm { color: #999; font-size: .82rem; margin-top: 3px; word-break: break-all; }
   .inbox-item .tm { color: #666; font-size: .77rem; margin-top: 2px; }
+  #inList { max-height: 48vh; overflow-y: auto; -webkit-overflow-scrolling: touch; }
+  pre.mail-body { max-height: 42vh; overflow-y: auto; }
   .kode-chip {
     display: inline-block; margin-top: 8px; padding: 5px 14px; border-radius: 8px;
     background: #14260f; border: 1px solid #4caf50; color: #8be89b;
@@ -70,9 +72,10 @@
 
   <div style="margin-top:26px;border-bottom:1px solid #333;padding-bottom:26px;">
     <h2 style="color:#fff;font-size:1.22rem;">📥 Inbox — Email &amp; Kode Masuk</h2>
-    <p class="desc">email yang masuk ke alamat @netplix.my.id tampil di sini, lengkap sama kode verifikasinya. tersimpan 3 hari.</p>
+    <p class="desc">inbox ini cuma nampilin email buat <b>alamat yang kamu pantau</b> — jadi selalu fresh, nggak ada kode numpuk punya siapa-siapa. email tersimpan 3 hari.</p>
     <div id="inBox">
       <button class="btn ghost" id="inRefresh">🔄 Muat Ulang</button>
+      <input class="field" id="inFilter" type="text" placeholder="✉️ alamat yang dipantau (keisi otomatis pas generate)">
       <div id="inList"></div>
       <div id="inDetail"></div>
     </div>
@@ -175,9 +178,12 @@ document.getElementById('genBtn').onclick = () => {
     row.appendChild(span); row.appendChild(b); box.appendChild(row);
   }
   document.getElementById('copyAllBtn').style.display = 'block';
+  if (!window.__autoGen) setWatchAddr(current[0]);
 };
 document.getElementById('copyAllBtn').onclick = e => copyText(current.join('\n'), e.target);
+window.__autoGen = true;
 document.getElementById('genBtn').click();
+window.__autoGen = false;
 
 // ---------- inbox (via Worker API, tanpa sandi) ----------
 const WAPI = 'https://netplix-inbox.instayul01.workers.dev';
@@ -191,28 +197,45 @@ function fmtT(t) {
 function escH(s) {
   return String(s || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 }
+let LAST_ITEMS = [];
 function loadInbox() {
   wapi('/api/list').then(d => {
-    const box = document.getElementById('inList');
-    document.getElementById('inDetail').innerHTML = '';
-    if (!d.items || !d.items.length) {
-      box.innerHTML = '<p style="color:#888;margin-top:26px;line-height:1.7;">belum ada email masuk...<br>daftar sesuatu pakai alamat dari generator di bawah, kodenya muncul di sini.</p>';
-      return;
-    }
-    box.innerHTML = '';
-    d.items.forEach(m => {
-      const div = document.createElement('div');
-      div.className = 'inbox-item';
-      div.innerHTML = '<div class="sj">' + escH(m.subject) + '</div>' +
-        '<div class="fm">dari: ' + escH(m.from) + '<br>ke: ' + escH(m.to) + '</div>' +
-        '<div class="tm">' + fmtT(m.time) + '</div>' +
-        (m.code ? '<span class="kode-chip">' + escH(m.code) + '</span>' : '');
-      div.onclick = () => openInboxMail(m.id);
-      box.appendChild(div);
-    });
+    LAST_ITEMS = d.items || [];
+    renderInbox();
   }).catch(e => {
     document.getElementById('inList').innerHTML = '<p style="color:#ff8f8f;margin-top:14px;">inbox belum tersambung — pastiin Worker udah di-deploy versi terbaru.</p>';
   });
+}
+function renderInbox() {
+  const box = document.getElementById('inList');
+  document.getElementById('inDetail').innerHTML = '';
+  const q = (document.getElementById('inFilter').value || '').toLowerCase().trim();
+  if (!q) {
+    box.innerHTML = '<p style="color:#888;margin-top:26px;line-height:1.7;">👋 inbox kamu masih fresh.<br>generate alamat di bawah — kode buat alamat itu tampil di sini, cuma punya kamu.</p>';
+    return;
+  }
+  const cocok = LAST_ITEMS.filter(m => (m.to || '').toLowerCase() === q);
+  if (!cocok.length) {
+    box.innerHTML = '<p style="color:#888;margin-top:22px;line-height:1.7;">belum ada email masuk buat alamat itu...<br>kalau abis daftar, tunggu bentar terus tap Muat Ulang.</p>';
+    return;
+  }
+  box.innerHTML = '';
+  cocok.slice(0, 10).forEach(m => {
+    const div = document.createElement('div');
+    div.className = 'inbox-item';
+    div.innerHTML = '<div class="sj">' + escH(m.subject) + '</div>' +
+      '<div class="fm">dari: ' + escH(m.from) + '<br>ke: ' + escH(m.to) + '</div>' +
+      '<div class="tm">' + fmtT(m.time) + '</div>' +
+      (m.code ? '<span class="kode-chip">' + escH(m.code) + '</span>' : '');
+    div.onclick = () => openInboxMail(m.id);
+    box.appendChild(div);
+  });
+  if (cocok.length > 10) {
+    const note = document.createElement('p');
+    note.style.cssText = 'color:#777;font-size:.82rem;text-align:center;margin-top:10px;';
+    note.textContent = 'menampilkan 10 terbaru dari ' + cocok.length + ' email buat alamat ini — geser di dalam kotak buat lihat lainnya';
+    box.appendChild(note);
+  }
 }
 function openInboxMail(id) {
   wapi('/api/read?id=' + encodeURIComponent(id)).then(m => {
@@ -229,6 +252,18 @@ function openInboxMail(id) {
   });
 }
 document.getElementById('inRefresh').onclick = loadInbox;
+document.getElementById('inFilter').addEventListener('input', e => {
+  localStorage.setItem('netplix_watch', e.target.value.trim());
+  renderInbox();
+});
+function setWatchAddr(addr) {
+  if (!addr) return;
+  document.getElementById('inFilter').value = addr;
+  localStorage.setItem('netplix_watch', addr);
+  loadInbox();
+}
+const savedWatch = localStorage.getItem('netplix_watch') || '';
+if (savedWatch) document.getElementById('inFilter').value = savedWatch;
 loadInbox();
 setInterval(loadInbox, 30000);
 </script>
