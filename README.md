@@ -5,12 +5,10 @@
 
 website resmi **4ever.ai.id** — semua halaman spesial dari Afis, dalam satu tempat 💙
 
-<div style="background:#000000;padding:40px 22px;border-radius:16px;font-family:Georgia,serif;">
-
 <div align="center">
 
 <p style="margin:10px 0 6px;">
-<a href="https://4ever.ai.id" style="display:inline-block;background:linear-gradient(90deg,#1e5eff,#00bfff);color:#ffffff;padding:15px 40px;font-size:19px;border-radius:999px;text-decoration:none;font-weight:bold;">🏠 GO TO HOME</a>
+<a href="https://4ever.ai.id/index.html" style="display:inline-block;background:linear-gradient(90deg,#1e5eff,#00bfff);color:#ffffff;padding:15px 40px;font-size:19px;border-radius:999px;text-decoration:none;font-weight:bold;">🏠 GO TO HOME</a>
 </p>
 
 </div>
