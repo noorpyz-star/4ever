@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Email Generator — 4ever.ai.id</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  body {
+    font-family: 'Segoe UI', Arial, sans-serif;
+    background: radial-gradient(circle at 50% 8%, #181818 0%, #000000 60%, #000000 100%);
+    color: #eee; min-height: 100vh; text-align: center;
+  }
+  .wrap { max-width: 480px; margin: 0 auto; padding: 44px 20px 40px; }
+  h1 { color: #fff; font-size: 1.5rem; }
+  .sub { color: #d4af37; letter-spacing: 2px; font-size: .8rem; margin-top: 6px; }
+  .desc { color: #aaa; font-size: .92rem; line-height: 1.6; margin: 14px 4px 4px; }
+  .field {
+    width: 100%; padding: 13px 15px; border-radius: 11px; border: 1px solid #555;
+    background: #101010; color: #fff; font-size: 1rem; font-family: inherit; margin-top: 10px;
+  }
+  .btn {
+    width: 100%; margin-top: 12px; padding: 14px; border: none; border-radius: 11px; cursor: pointer;
+    background: linear-gradient(90deg, #d4af37, #f5e08c); color: #111;
+    font-size: 1.03rem; font-weight: bold; font-family: inherit;
+  }
+  .btn:active { transform: scale(.98); }
+  .btn.ghost { background: transparent; border: 1px solid #d4af37; color: #fff; }
+  label.lbl { color: #bbb; font-size: .85rem; display: block; margin-top: 14px; text-align: left; }
+  .row2 { display: flex; gap: 10px; }
+  .row2 > * { flex: 1; }
+  .mail-row {
+    display: flex; align-items: center; gap: 10px; margin-top: 10px; padding: 12px 14px;
+    background: #0b0b0b; border: 1px solid #333; border-radius: 10px; text-align: left;
+  }
+  .mail-row .addr { flex: 1; color: #fff; font-size: .97rem; word-break: break-all; }
+  .mini-btn {
+    border: 1px solid #d4af37; background: transparent; color: #f5e08c; border-radius: 8px;
+    padding: 7px 12px; cursor: pointer; font-family: inherit; font-size: .85rem; white-space: nowrap;
+  }
+  .note {
+    margin-top: 22px; padding: 14px 16px; border: 1px solid #3a3a3a; border-radius: 12px;
+    background: rgba(255,255,255,.04); color: #999; font-size: .85rem; line-height: 1.65; text-align: left;
+  }
+  .back { display: inline-block; margin-top: 26px; color: #d4af37; text-decoration: none; }
+  footer { color: #555; font-size: .78rem; padding: 22px 0 6px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>📩 Email Generator</h1>
+  <div class="sub">DOMAIN SENDIRI — 4EVER.AI.ID</div>
+  <p class="desc">Bikin alamat email pakai domain kamu sendiri. Pilih gaya alamatnya, pencet tombolnya — jadi! Tinggal copy.</p>
+
+  <label class="lbl">Domain email:</label>
+  <input class="field" id="domIn" type="text" value="netflix.my.id">
+
+  <label class="lbl">Gaya alamat:</label>
+  <select class="field" id="modeIn">
+    <option value="nama">👤 Nama orang (mis. budi.santoso82)</option>
+    <option value="kata">🎲 Kata acak (mis. kopi.senja417)</option>
+    <option value="custom">✍️ Kata saya sendiri + angka acak</option>
+  </select>
+
+  <div id="customBox" style="display:none">
+    <label class="lbl">Kata kamu (tanpa spasi):</label>
+    <input class="field" id="customIn" type="text" placeholder="contoh: afisganteng">
+  </div>
+
+  <label class="lbl">Jumlah alamat:</label>
+  <select class="field" id="qtyIn">
+    <option value="1">1 alamat</option>
+    <option value="5" selected>5 alamat</option>
+    <option value="10">10 alamat</option>
+    <option value="20">20 alamat</option>
+  </select>
+
+  <button class="btn" id="genBtn">📩 Buat Email</button>
+  <div id="results"></div>
+  <button class="btn ghost" id="copyAllBtn" style="display:none">📋 Salin Semua</button>
+
+  <div class="note">
+    ℹ️ <b style="color:#ddd">Catatan:</b> generator ini bikin <i>alamatnya</i>. Biar email yang masuk ke alamat-alamat itu beneran bisa kamu terima, domainnya perlu dipasang <b style="color:#ddd">email routing (catch-all)</b> — misalnya pakai Cloudflare Email Routing (gratis), nanti semua email ke *@netflix.my.id diteruskan ke email pribadi kamu.
+  </div>
+
+  <a class="back" href="https://4ever.ai.id/">← kembali ke halaman utama</a>
+  <footer>© 2026 4ever.ai.id</footer>
+</div>
+
+<script>
+const FIRST = ['budi','agus','joko','slamet','bambang','dedi','eko','rudi','andi','fajar','rizky','dimas','putri','sari','dewi','rina','ayu','fitri','nur','indah','wulan','ratna','bima','galih','ilham','yusuf','ahmad','sinta','maya','laras'];
+const LAST = ['santoso','saputra','wijaya','pratama','nugroho','hidayat','firmansyah','setiawan','rahmawati','lestari','anggraini','puspita','handoko','kusuma','permana','hakim','maulana','ramadhan','siregar','nasution'];
+const WORDS_A = ['kopi','senja','bulan','bintang','langit','hujan','pelangi','samudra','angin','cahaya','fajar','malam','biru','emas','santai','happy','super','mega','pro','oke'];
+const WORDS_B = ['time','zone','life','story','house','land','city','dream','world','play','aja','banget','nih','dong','yuk','gas','mantap','keren','asyik','selalu'];
+
+function rnd(n) { const a = new Uint32Array(1); crypto.getRandomValues(a); return a[0] % n; }
+function pick(arr) { return arr[rnd(arr.length)]; }
+function num(max) { return rnd(max); }
+function clean(x) { return (x || '').toLowerCase().replace(/[^a-z0-9._-]/g, ''); }
+
+function makeOne(mode) {
+  if (mode === 'nama') {
+    const f = pick(FIRST), l = pick(LAST);
+    const style = rnd(4);
+    let local;
+    if (style === 0) local = f + '.' + l + (rnd(3) ? num(99) : '');
+    else if (style === 1) local = f + l + num(999);
+    else if (style === 2) local = f + '_' + l;
+    else local = f + '.' + l.charAt(0) + num(9);
+    return local;
+  }
+  if (mode === 'kata') {
+    return pick(WORDS_A) + '.' + pick(WORDS_B) + (rnd(2) ? num(999) : '');
+  }
+  const base = clean(document.getElementById('customIn').value) || 'email';
+  return base + num(9999);
+}
+
+let current = [];
+document.getElementById('modeIn').addEventListener('change', e => {
+  document.getElementById('customBox').style.display = e.target.value === 'custom' ? 'block' : 'none';
+});
+
+function copyText(t, btn) {
+  const done = () => { if (btn) { const o = btn.textContent; btn.textContent = '✅'; setTimeout(() => btn.textContent = o, 1400); } };
+  if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(t).then(done).catch(done);
+  else {
+    const ta = document.createElement('textarea'); ta.value = t; document.body.appendChild(ta);
+    ta.select(); try { document.execCommand('copy'); } catch (e) {} ta.remove(); done();
+  }
+}
+
+document.getElementById('genBtn').onclick = () => {
+  const dom = clean(document.getElementById('domIn').value).replace(/^@/, '') || 'netflix.my.id';
+  const mode = document.getElementById('modeIn').value;
+  const qty = +document.getElementById('qtyIn').value;
+  const box = document.getElementById('results');
+  box.innerHTML = '';
+  current = [];
+  const seen = new Set();
+  for (let i = 0; i < qty; i++) {
+    let addr, guard = 0;
+    do { addr = makeOne(mode) + '@' + dom; guard++; } while (seen.has(addr) && guard < 30);
+    seen.add(addr); current.push(addr);
+    const row = document.createElement('div'); row.className = 'mail-row';
+    const span = document.createElement('span'); span.className = 'addr'; span.textContent = addr;
+    const b = document.createElement('button'); b.className = 'mini-btn'; b.textContent = '📋 Salin';
+    b.onclick = () => copyText(addr, b);
+    row.appendChild(span); row.appendChild(b); box.appendChild(row);
+  }
+  document.getElementById('copyAllBtn').style.display = 'block';
+};
+document.getElementById('copyAllBtn').onclick = e => copyText(current.join('\n'), e.target);
+document.getElementById('genBtn').click();
+</script>
+</body>
+</html>
