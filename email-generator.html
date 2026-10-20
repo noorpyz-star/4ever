@@ -43,6 +43,22 @@
     background: rgba(255,255,255,.04); color: #999; font-size: .85rem; line-height: 1.65; text-align: left;
   }
   .back { display: inline-block; margin-top: 26px; color: #d4af37; text-decoration: none; }
+  .inbox-item {
+    margin-top: 10px; padding: 13px 15px; background: #0b0b0b; border: 1px solid #333;
+    border-radius: 11px; text-align: left; cursor: pointer;
+  }
+  .inbox-item .sj { color: #fff; font-weight: bold; }
+  .inbox-item .fm { color: #999; font-size: .82rem; margin-top: 3px; word-break: break-all; }
+  .inbox-item .tm { color: #666; font-size: .77rem; margin-top: 2px; }
+  .kode-chip {
+    display: inline-block; margin-top: 8px; padding: 5px 14px; border-radius: 8px;
+    background: #14260f; border: 1px solid #4caf50; color: #8be89b;
+    font-size: 1.12rem; font-weight: bold; letter-spacing: 3px;
+  }
+  pre.mail-body {
+    white-space: pre-wrap; word-break: break-word; color: #ddd; font-size: .9rem; line-height: 1.65;
+    background: #0b0b0b; border: 1px solid #333; border-radius: 12px; padding: 16px; margin-top: 12px; text-align: left;
+  }
   footer { color: #555; font-size: .78rem; padding: 22px 0 6px; }
 </style>
 </head>
@@ -52,8 +68,18 @@
   <div class="sub">DOMAIN SENDIRI — 4EVER.AI.ID</div>
   <p class="desc">Bikin alamat email pakai domain kamu sendiri. Pilih gaya alamatnya, pencet tombolnya — jadi! Tinggal copy.</p>
 
-  <label class="lbl">Domain email:</label>
-  <input class="field" id="domIn" type="text" value="netplix.my.id">
+  <div style="margin-top:26px;border-bottom:1px solid #333;padding-bottom:26px;">
+    <h2 style="color:#fff;font-size:1.22rem;">📥 Inbox — Email &amp; Kode Masuk</h2>
+    <p class="desc">email yang masuk ke alamat @netplix.my.id tampil di sini, lengkap sama kode verifikasinya. tersimpan 3 hari.</p>
+    <div id="inBox">
+      <button class="btn ghost" id="inRefresh">🔄 Muat Ulang</button>
+      <div id="inList"></div>
+      <div id="inDetail"></div>
+    </div>
+  </div>
+
+  <label class="lbl">Domain email (terkunci 🔒):</label>
+  <div class="field" style="color:#f5e08c;font-weight:bold;">📩 @netplix.my.id</div>
 
   <label class="lbl">Gaya alamat:</label>
   <select class="field" id="modeIn">
@@ -131,7 +157,7 @@ function copyText(t, btn) {
 }
 
 document.getElementById('genBtn').onclick = () => {
-  const dom = clean(document.getElementById('domIn').value).replace(/^@/, '') || 'netplix.my.id';
+  const dom = 'netplix.my.id';
   const mode = document.getElementById('modeIn').value;
   const qty = +document.getElementById('qtyIn').value;
   const box = document.getElementById('results');
@@ -152,6 +178,59 @@ document.getElementById('genBtn').onclick = () => {
 };
 document.getElementById('copyAllBtn').onclick = e => copyText(current.join('\n'), e.target);
 document.getElementById('genBtn').click();
+
+// ---------- inbox (via Worker API, tanpa sandi) ----------
+const WAPI = 'https://netplix-inbox.instayul01.workers.dev';
+function wapi(path) {
+  return fetch(WAPI + path).then(r => r.json());
+}
+function fmtT(t) {
+  try { return new Date(t).toLocaleString('id-ID', { timeZone: 'Asia/Jakarta', day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' }) + ' WIB'; }
+  catch (e) { return ''; }
+}
+function escH(s) {
+  return String(s || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+}
+function loadInbox() {
+  wapi('/api/list').then(d => {
+    const box = document.getElementById('inList');
+    document.getElementById('inDetail').innerHTML = '';
+    if (!d.items || !d.items.length) {
+      box.innerHTML = '<p style="color:#888;margin-top:26px;line-height:1.7;">belum ada email masuk...<br>daftar sesuatu pakai alamat dari generator di bawah, kodenya muncul di sini.</p>';
+      return;
+    }
+    box.innerHTML = '';
+    d.items.forEach(m => {
+      const div = document.createElement('div');
+      div.className = 'inbox-item';
+      div.innerHTML = '<div class="sj">' + escH(m.subject) + '</div>' +
+        '<div class="fm">dari: ' + escH(m.from) + '<br>ke: ' + escH(m.to) + '</div>' +
+        '<div class="tm">' + fmtT(m.time) + '</div>' +
+        (m.code ? '<span class="kode-chip">' + escH(m.code) + '</span>' : '');
+      div.onclick = () => openInboxMail(m.id);
+      box.appendChild(div);
+    });
+  }).catch(e => {
+    document.getElementById('inList').innerHTML = '<p style="color:#ff8f8f;margin-top:14px;">inbox belum tersambung — pastiin Worker udah di-deploy versi terbaru.</p>';
+  });
+}
+function openInboxMail(id) {
+  wapi('/api/read?id=' + encodeURIComponent(id)).then(m => {
+    const d = document.getElementById('inDetail');
+    let html = '';
+    if (m.code) html += '<button class="btn" id="cpCode">📋 Salin Kode: ' + escH(m.code) + '</button>';
+    html += '<pre class="mail-body">' + escH(m.text || '(isi kosong)') + '</pre>';
+    html += '<button class="btn ghost" id="delMail">🗑️ Hapus email ini</button>';
+    d.innerHTML = html;
+    const cp = document.getElementById('cpCode');
+    if (cp) cp.onclick = () => copyText(m.code, cp);
+    document.getElementById('delMail').onclick = () => wapi('/api/delete?id=' + encodeURIComponent(id)).then(loadInbox);
+    d.scrollIntoView({ behavior: 'smooth' });
+  });
+}
+document.getElementById('inRefresh').onclick = loadInbox;
+loadInbox();
+setInterval(loadInbox, 30000);
 </script>
 </body>
 </html>
