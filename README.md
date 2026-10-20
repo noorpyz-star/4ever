@@ -1,7 +1,4 @@
 <div align="center">
-
-<img src="logo-4ever.jpg" alt="logo 4ever" width="320">
-
 # Muhammad Nur Afis Siswanto
 
 **@4EVER.AI.ID**
