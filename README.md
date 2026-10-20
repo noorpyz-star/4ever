@@ -15,6 +15,8 @@ website resmi **4ever.ai.id** — semua halaman spesial dari Afis, dalam satu te
 
 </div>
 
+<div>
+
 <h2 style="color:#ffffff;">❓ TENTANG</h2>
 
 <p style="color:#cccccc;line-height:1.8;">4ever dibaca "forever" — selamanya. Website ini rumah digitalnya Afis: tempat ngumpulnya halaman-halaman spesial buat Ibu Dita, link sosial media, dan karya-karya Afis. Kayak namanya, semoga semuanya di sini buat selamanya 💙</p>
@@ -23,6 +25,5 @@ website resmi **4ever.ai.id** — semua halaman spesial dari Afis, dalam satu te
 
 <p style="color:#888888;font-size:13px;margin-top:26px;">© 2026 4ever.ai.id — dibuat dengan 💙</p>
 
-</div>
 
 </div>
