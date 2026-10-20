@@ -1,14 +1,50 @@
-# 4ever
-<div align="center" style="background:#000000;padding:56px 20px;border-radius:16px;font-family:Georgia,serif;">
+<div align="center">
 
-<h1 style="color:#ffffff;margin:0;">🖤 4ever.ai.id 🖤</h1>
+<img src="logo-4ever.jpg" alt="logo 4ever" width="320">
 
-<p style="color:#9db8e8;font-size:18px;margin-top:14px;">💙 Kata Kata Hari Ini — buat Ibu Dita Permatasari 💙</p>
+# Muhammad Nur Afis Siswanto
 
-<p style="margin:36px 0;">
-<a href="https://4ever.ai.id/kata-kata-hari-ini-dita%202.html" style="display:inline-block;background:linear-gradient(90deg,#1e5eff,#00bfff);color:#ffffff;padding:16px 44px;font-size:20px;border-radius:999px;text-decoration:none;font-weight:bold;">💙 BUKA KATA-KATANYA 💙</a>
-</p>
+**@4EVER.AI.ID**
 
-<p style="color:#888888;font-size:13px;">— dari Muhammad Nur Afis Siswanto, untuk Dita tersayang —</p>
+website resmi **4ever.ai.id** — semua halaman spesial dari Afis, dalam satu tempat 💙
+
+💞 **Afis & Dita** — bersama sejak 28 April 2026, menuju selamanya ♾️
+
+</div>
+
+---
+
+## 💙 BUAT IBU DITA
+
+- 💙 **[Kata Kata Hari Ini](https://4ever.ai.id/kata-kata-hari-ini-dita%202.html)** — kata romantis buat Ibu Dita, ganti otomatis tiap hari + jam realtime
+- 🎂 **[Kejutan Ulang Tahun Dita](https://4ever.ai.id/ultah-dita-permatasari.html)** — page ultah hitam-pink, ada game + kupon cinta
+- 💍 **[Undangan Pernikahan Online](https://4ever.ai.id/undangan-pernikahan-muhammad-dita.html)** — undangan digital Afis & Dita, hitam abu + pohon gold
+
+## 🛠️ TOOLS
+
+- ⬇️ **[Download Video TikTok / FB / IG](https://4ever.ai.id/download-video.html)** — tempel link, langsung download (TikTok tanpa watermark + MP3)
+- ✨ **[Tools Lainnya — 13 Tools Gratis!](https://4ever.ai.id/tools.html)** — fancy text • caption & hashtag • jadwal sholat • cuaca • kompres foto • QR code • kalkulator diskon & komisi • password generator • hitung umur • konverter • kurs • undi giveaway — semuanya dalam SATU page 👉
+
+## 📱 SOSIAL MEDIA
+
+- 🎵 **TikTok** — _(link menyusul)_
+- ▶️ **YouTube** — _(link menyusul)_
+- 📸 **Instagram** — _(link menyusul)_
+- 👍 **Facebook** — _(link menyusul)_
+
+## 💬 KONTAK
+
+- 💬 **[WhatsApp Aku](https://wa.me/6283895952782)** — chat langsung ke Afis
+- 💌 **[Kirim Ucapan buat Afis & Dita](https://wa.me/6283895952782?text=Halo%20Afis%20%26%20Dita!%20%F0%9F%92%8D%0ASaya%20mau%20kirim%20ucapan%3A%20)** — ucapan & doa kamu terkirim ke WhatsApp Afis
+
+## ❓ TENTANG
+
+**4ever** dibaca *"forever"* — selamanya. Website ini rumah digitalnya **Afis**: tempat ngumpulnya halaman-halaman spesial buat **Ibu Dita**, link sosial media, dan karya-karya Afis. Kayak namanya, semoga semuanya di sini buat selamanya 💙
+
+---
+
+<div align="center">
+
+© 2026 4ever.ai.id — dibuat dengan 💙
 
 </div>
