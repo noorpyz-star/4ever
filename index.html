@@ -70,6 +70,16 @@
   </div>
 
   <div class="group-title">💙 BUAT IBU DITA</div>
+  <div class="love" id="ditaLock" style="text-align:center;">
+    <div style="font-size:1.9rem;">🔒💙</div>
+    <div style="color:#fff;font-weight:bold;margin-top:6px;font-size:1.05rem;">Area Khusus Ibu Dita</div>
+    <p style="color:#bbb;font-size:.87rem;line-height:1.6;margin-top:6px;">bagian ini dikunci.<br>masukkan <b style="color:#fff">tanggal jadian</b> buat membuka isinya</p>
+    <input id="ditaPass" type="password" inputmode="numeric" maxlength="12" placeholder="••••••••" autocomplete="off"
+      style="width:100%;margin-top:12px;padding:13px;border-radius:11px;border:1px solid #555;background:#101010;color:#fff;font-size:1.1rem;text-align:center;letter-spacing:5px;font-family:inherit;">
+    <button id="ditaOpen" style="width:100%;margin-top:10px;padding:13px;border:none;border-radius:11px;background:linear-gradient(90deg,#d4af37,#f5e08c);color:#111;font-size:1rem;font-weight:bold;font-family:inherit;cursor:pointer;">💙 Buka</button>
+    <div id="ditaErr" style="color:#ff8f8f;font-size:.86rem;margin-top:9px;min-height:1.1em;"></div>
+  </div>
+  <div id="ditaLinks" style="display:none">
   <a class="link-btn" href="https://4ever.ai.id/kata-kata-hari-ini-dita.html">
     <span class="ic">💙</span>
     <span><span class="tt">Kata Kata Hari Ini</span><span class="ds">kata romantis buat Ibu Dita, bisa diganti-ganti</span></span>
@@ -85,7 +95,9 @@
     <span><span class="tt">Undangan Pernikahan Online</span><span class="ds">undangan digital Afis &amp; Dita — hitam abu + pohon gold</span></span>
     <span class="arr">›</span>
   </a>
+  </div>
 
+  <div id="umumSections">
   <div class="group-title">🛠️ TOOLS</div>
   <a class="link-btn" href="https://4ever.ai.id/download-video.html">
     <span class="ic">⬇️</span>
@@ -142,8 +154,9 @@
   <div class="info-card">
     <b style="color:#fff">4ever</b> dibaca <i>"forever"</i> — selamanya. Website ini rumah digitalnya <b style="color:#fff">Afis</b>: tempat ngumpulnya halaman-halaman spesial buat <b style="color:#fff">Ibu Dita</b>, link sosial media, dan karya-karya Afis. Kayak namanya, semoga semuanya di sini buat selamanya 💙
   </div>
+  </div>
 
-  <footer>© 2026 4ever.ai.id — dibuat dengan 💙</footer>
+    <footer>© 2026 4ever.ai.id — dibuat dengan 💙</footer>
 </div>
 
 <script>
@@ -185,6 +198,27 @@ for (let i = 0; i < 20; i++) {
   }
   tick(); setInterval(tick, 1000);
 })();
+
+// kunci area Ibu Dita (tanggal jadian) — pas kebuka, section umum ngumpet
+function ditaUnlock() {
+  document.getElementById('ditaLock').style.display = 'none';
+  document.getElementById('ditaLinks').style.display = 'block';
+  document.getElementById('umumSections').style.display = 'none';
+}
+function ditaTry() {
+  const v = document.getElementById('ditaPass').value.replace(/\D/g, '');
+  if (v === '28032026') {
+    try { sessionStorage.setItem('hub_dita', '1'); } catch (e) {}
+    ditaUnlock();
+  } else {
+    document.getElementById('ditaErr').textContent = 'salah 🥺 itu bukan tanggal jadian kita...';
+    document.getElementById('ditaPass').value = '';
+    document.getElementById('ditaPass').focus();
+  }
+}
+document.getElementById('ditaOpen').onclick = ditaTry;
+document.getElementById('ditaPass').addEventListener('keydown', e => { if (e.key === 'Enter') ditaTry(); });
+try { if (sessionStorage.getItem('hub_dita') === '1') ditaUnlock(); } catch (e) {}
 </script>
 </body>
 </html>
