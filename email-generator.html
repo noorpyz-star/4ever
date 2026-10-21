@@ -150,9 +150,9 @@ document.getElementById('modeIn').addEventListener('change', e => {
   document.getElementById('customBox').style.display = e.target.value === 'custom' ? 'block' : 'none';
 });
 
+const CLIP_SVG = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="color:#d4af37;vertical-align:-3px"><path d="M9 4.8H7.2A1.7 1.7 0 0 0 5.5 6.5v12A1.7 1.7 0 0 0 7.2 20.2h9.6a1.7 1.7 0 0 0 1.7-1.7v-12A1.7 1.7 0 0 0 16.8 4.8H15"/><rect x="8.8" y="2.8" width="6.4" height="4.6" rx="1.3"/></svg>';
+const TRASH_SVG = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="color:#d4af37;vertical-align:-3px"><path d="M4.5 6.5h15"/><path d="M9 6V4.8A1.3 1.3 0 0 1 10.3 3.5h3.4A1.3 1.3 0 0 1 15 4.8V6"/><path d="M6.5 6.5l1 12.7A1.8 1.8 0 0 0 9.3 20.7h5.4a1.8 1.8 0 0 0 1.8-1.5l1-12.7"/><path d="M10 10.5v6M14 10.5v6"/></svg>';
 function copyText(t, btn) {
-  const CLIP_SVG = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="color:#d4af37;vertical-align:-3px"><path d="M9 4.8H7.2A1.7 1.7 0 0 0 5.5 6.5v12A1.7 1.7 0 0 0 7.2 20.2h9.6a1.7 1.7 0 0 0 1.7-1.7v-12A1.7 1.7 0 0 0 16.8 4.8H15"/><rect x="8.8" y="2.8" width="6.4" height="4.6" rx="1.3"/></svg>';
-  const TRASH_SVG = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="color:#d4af37;vertical-align:-3px"><path d="M4.5 6.5h15"/><path d="M9 6V4.8A1.3 1.3 0 0 1 10.3 3.5h3.4A1.3 1.3 0 0 1 15 4.8V6"/><path d="M6.5 6.5l1 12.7A1.8 1.8 0 0 0 9.3 20.7h5.4a1.8 1.8 0 0 0 1.8-1.5l1-12.7"/><path d="M10 10.5v6M14 10.5v6"/></svg>';
   const done = () => { if (btn) { const o = btn.innerHTML; btn.innerHTML = '✅'; setTimeout(() => btn.innerHTML = o, 1400); } };
   if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(t).then(done).catch(done);
   else {
