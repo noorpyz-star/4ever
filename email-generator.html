@@ -66,29 +66,29 @@
 </head>
 <body>
 <div class="wrap">
-  <h1>📩 Email Generator</h1>
+  <h1><svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="color:#d4af37;vertical-align:-4px;flex:none"><rect x="3.6" y="5.8" width="16.8" height="12.4" rx="2"/><path d="M4.5 7.6L12 13l7.5-5.4"/></svg> Email Generator</h1>
   <div class="sub">DOMAIN SENDIRI — 4EVER.AI.ID</div>
   <p class="desc">Bikin alamat email pakai domain kamu sendiri. Pilih gaya alamatnya, pencet tombolnya — jadi! Tinggal copy.</p>
 
   <div style="margin-top:26px;border-bottom:1px solid #333;padding-bottom:26px;">
-    <h2 style="color:#fff;font-size:1.22rem;">📥 Inbox — Email &amp; Kode Masuk</h2>
+    <h2 style="color:#fff;font-size:1.22rem;"><svg viewBox="0 0 24 24" width="21" height="21" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="color:#d4af37;vertical-align:-4px;flex:none"><path d="M4 13.8l2.1-6.9A1.9 1.9 0 0 1 7.9 5.5h8.2a1.9 1.9 0 0 1 1.8 1.4L20 13.8v4.4a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2z"/><path d="M4 13.8h4.6l1.2 2.2h4.4l1.2-2.2H20"/></svg> Inbox — Email &amp; Kode Masuk</h2>
     <p class="desc">inbox ini cuma nampilin email buat <b>alamat yang kamu pantau</b> — jadi selalu fresh, nggak ada kode numpuk punya siapa-siapa. email tersimpan 3 hari.</p>
     <div id="inBox">
-      <button class="btn ghost" id="inRefresh">🔄 Muat Ulang</button>
-      <input class="field" id="inFilter" type="text" placeholder="✉️ alamat yang dipantau (keisi otomatis pas generate)">
+      <button class="btn ghost" id="inRefresh"><svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="color:#d4af37;vertical-align:-4px;flex:none"><path d="M20 12a8 8 0 1 1-2.5-5.9"/><path d="M20 3.5V8h-4.5"/></svg> Muat Ulang</button>
+      <input class="field" id="inFilter" type="text" placeholder="alamat yang dipantau (keisi otomatis pas generate)">
       <div id="inList"></div>
       <div id="inDetail"></div>
     </div>
   </div>
 
-  <label class="lbl">Domain email (terkunci 🔒):</label>
-  <div class="field" style="color:#f5e08c;font-weight:bold;">📩 @netplix.my.id</div>
+  <label class="lbl">Domain email (terkunci <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="color:#d4af37;vertical-align:-4px;flex:none"><rect x="5.4" y="10.4" width="13.2" height="9.6" rx="2.2"/><path d="M8.4 10.4V7.8a3.6 3.6 0 0 1 7.2 0v2.6"/><circle cx="12" cy="14.8" r="1.25" fill="currentColor" stroke="none"/></svg>):</label>
+  <div class="field" style="color:#f5e08c;font-weight:bold;"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="color:#d4af37;vertical-align:-4px;flex:none"><rect x="3.6" y="5.8" width="16.8" height="12.4" rx="2"/><path d="M4.5 7.6L12 13l7.5-5.4"/></svg> @netplix.my.id</div>
 
   <label class="lbl">Gaya alamat:</label>
   <select class="field" id="modeIn">
-    <option value="nama">👤 Nama orang (mis. budi.santoso82)</option>
-    <option value="kata">🎲 Kata acak (mis. kopi.senja417)</option>
-    <option value="custom">✍️ Kata saya sendiri + angka acak</option>
+    <option value="nama">Nama orang (mis. budi.santoso82)</option>
+    <option value="kata">Kata acak (mis. kopi.senja417)</option>
+    <option value="custom">Kata saya sendiri + angka acak</option>
   </select>
 
   <div id="customBox" style="display:none">
@@ -104,9 +104,9 @@
     <option value="20">20 alamat</option>
   </select>
 
-  <button class="btn" id="genBtn">📩 Buat Email</button>
+  <button class="btn" id="genBtn"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="color:#d4af37;vertical-align:-4px;flex:none"><rect x="3.6" y="5.8" width="16.8" height="12.4" rx="2"/><path d="M4.5 7.6L12 13l7.5-5.4"/></svg> Buat Email</button>
   <div id="results"></div>
-  <button class="btn ghost" id="copyAllBtn" style="display:none">📋 Salin Semua</button>
+  <button class="btn ghost" id="copyAllBtn" style="display:none"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="color:#d4af37;vertical-align:-4px;flex:none"><path d="M9 4.8H7.2A1.7 1.7 0 0 0 5.5 6.5v12A1.7 1.7 0 0 0 7.2 20.2h9.6a1.7 1.7 0 0 0 1.7-1.7v-12A1.7 1.7 0 0 0 16.8 4.8H15"/><rect x="8.8" y="2.8" width="6.4" height="4.6" rx="1.3"/></svg> Salin Semua</button>
 
   <div class="note">
     ℹ️ <b style="color:#ddd">Catatan:</b> generator ini bikin <i>alamatnya</i>. Biar email yang masuk ke alamat-alamat itu beneran bisa kamu terima, domainnya perlu dipasang <b style="color:#ddd">email routing (catch-all)</b> — misalnya pakai Cloudflare Email Routing (gratis), nanti semua email ke *@netplix.my.id diteruskan ke email pribadi kamu.
@@ -151,7 +151,9 @@ document.getElementById('modeIn').addEventListener('change', e => {
 });
 
 function copyText(t, btn) {
-  const done = () => { if (btn) { const o = btn.textContent; btn.textContent = '✅'; setTimeout(() => btn.textContent = o, 1400); } };
+  const CLIP_SVG = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="color:#d4af37;vertical-align:-3px"><path d="M9 4.8H7.2A1.7 1.7 0 0 0 5.5 6.5v12A1.7 1.7 0 0 0 7.2 20.2h9.6a1.7 1.7 0 0 0 1.7-1.7v-12A1.7 1.7 0 0 0 16.8 4.8H15"/><rect x="8.8" y="2.8" width="6.4" height="4.6" rx="1.3"/></svg>';
+  const TRASH_SVG = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="color:#d4af37;vertical-align:-3px"><path d="M4.5 6.5h15"/><path d="M9 6V4.8A1.3 1.3 0 0 1 10.3 3.5h3.4A1.3 1.3 0 0 1 15 4.8V6"/><path d="M6.5 6.5l1 12.7A1.8 1.8 0 0 0 9.3 20.7h5.4a1.8 1.8 0 0 0 1.8-1.5l1-12.7"/><path d="M10 10.5v6M14 10.5v6"/></svg>';
+  const done = () => { if (btn) { const o = btn.innerHTML; btn.innerHTML = '✅'; setTimeout(() => btn.innerHTML = o, 1400); } };
   if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(t).then(done).catch(done);
   else {
     const ta = document.createElement('textarea'); ta.value = t; document.body.appendChild(ta);
@@ -173,7 +175,7 @@ document.getElementById('genBtn').onclick = () => {
     seen.add(addr); current.push(addr);
     const row = document.createElement('div'); row.className = 'mail-row';
     const span = document.createElement('span'); span.className = 'addr'; span.textContent = addr;
-    const b = document.createElement('button'); b.className = 'mini-btn'; b.textContent = '📋 Salin';
+    const b = document.createElement('button'); b.className = 'mini-btn'; b.innerHTML = CLIP_SVG + ' Salin';
     b.onclick = () => copyText(addr, b);
     row.appendChild(span); row.appendChild(b); box.appendChild(row);
   }
@@ -211,7 +213,7 @@ function renderInbox() {
   document.getElementById('inDetail').innerHTML = '';
   const q = (document.getElementById('inFilter').value || '').toLowerCase().trim();
   if (!q) {
-    box.innerHTML = '<p style="color:#888;margin-top:26px;line-height:1.7;">👋 inbox kamu masih fresh.<br>generate alamat di bawah — kode buat alamat itu tampil di sini, cuma punya kamu.</p>';
+    box.innerHTML = '<p style="color:#888;margin-top:26px;line-height:1.7;"><svg viewBox="0 0 24 24" width="30" height="30" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="color:#d4af37;vertical-align:-4px;flex:none"><path d="M4 13.8l2.1-6.9A1.9 1.9 0 0 1 7.9 5.5h8.2a1.9 1.9 0 0 1 1.8 1.4L20 13.8v4.4a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2z"/><path d="M4 13.8h4.6l1.2 2.2h4.4l1.2-2.2H20"/></svg><br>inbox kamu masih fresh.<br>generate alamat di bawah — kode buat alamat itu tampil di sini, cuma punya kamu.</p>';
     return;
   }
   const cocok = LAST_ITEMS.filter(m => (m.to || '').toLowerCase() === q);
@@ -241,9 +243,9 @@ function openInboxMail(id) {
   wapi('/api/read?id=' + encodeURIComponent(id)).then(m => {
     const d = document.getElementById('inDetail');
     let html = '';
-    if (m.code) html += '<button class="btn" id="cpCode">📋 Salin Kode: ' + escH(m.code) + '</button>';
+    if (m.code) html += '<button class="btn" id="cpCode">' + CLIP_SVG + ' Salin Kode: ' + escH(m.code) + '</button>';
     html += '<pre class="mail-body">' + escH(m.text || '(isi kosong)') + '</pre>';
-    html += '<button class="btn ghost" id="delMail">🗑️ Hapus email ini</button>';
+    html += '<button class="btn ghost" id="delMail">' + TRASH_SVG + ' Hapus email ini</button>';
     d.innerHTML = html;
     const cp = document.getElementById('cpCode');
     if (cp) cp.onclick = () => copyText(m.code, cp);

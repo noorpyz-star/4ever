@@ -30,6 +30,8 @@
   }
   a.link-btn:active { transform: scale(.98); border-color: #d4af37; }
   a.link-btn .ic { font-size: 1.5rem; }
+  .link-btn .ic { color: #d4af37; }
+  .link-btn .ic svg { width: 27px; height: 27px; flex: none; display: block; }
   a.link-btn .tt { font-weight: bold; font-size: 1rem; display: block; }
   a.link-btn .ds { color: #999; font-size: .8rem; display: block; margin-top: 2px; }
   a.link-btn .arr { margin-left: auto; color: #d4af37; font-size: 1.2rem; }
@@ -63,15 +65,17 @@
 
   <div><span class="clock-pill" id="clockPill">…</span></div>
 
+  <div id="loveWrap" style="display:none">
   <div class="love-card">
     <div class="big">💞 hari ke-<span id="loveDays">–</span></div>
     <div class="lbl">AFIS &amp; DITA BERSAMA</div>
     <div class="sub">sejak 28 Maret 2026 — dan <b style="color:#fff"><span id="loveLeft">–</span> hari lagi</b> menuju anniversary ke-1 (28 Maret 2027) 💍</div>
   </div>
+  </div>
 
-  <div class="group-title">💙 BUAT IBU DITA</div>
+  <div class="group-title"><svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="color:#d4af37;vertical-align:-4px;flex:none"><path d="M12 20.3C6.9 16.4 3.6 13.2 3.6 9.5c0-2.8 2.1-4.9 4.7-4.9 1.6 0 3.1.8 3.7 2 .6-1.2 2.1-2 3.7-2 2.6 0 4.7 2.1 4.7 4.9 0 3.7-3.3 6.9-8.4 10.8z"/></svg> BUAT IBU DITA</div>
   <div class="love" id="ditaLock" style="text-align:center;">
-    <div style="font-size:1.9rem;">🔒💙</div>
+    <div><svg viewBox="0 0 24 24" width="46" height="46" fill="none" stroke="#d4af37" stroke-width="1.7" stroke-linecap="round"><rect x="5.4" y="10.4" width="13.2" height="9.6" rx="2.2"/><path d="M8.4 10.4V7.8a3.6 3.6 0 0 1 7.2 0v2.6"/><circle cx="12" cy="14.6" r="1.3" fill="#d4af37" stroke="none"/><path d="M12 15.6v1.8"/></svg></div>
     <div style="color:#fff;font-weight:bold;margin-top:6px;font-size:1.05rem;">Area Khusus Ibu Dita</div>
     <p style="color:#bbb;font-size:.87rem;line-height:1.6;margin-top:6px;">bagian ini dikunci.<br>masukkan <b style="color:#fff">tanggal jadian</b> buat membuka isinya</p>
     <input id="ditaPass" type="password" inputmode="numeric" maxlength="12" placeholder="••••••••" autocomplete="off"
@@ -81,76 +85,77 @@
   </div>
   <div id="ditaLinks" style="display:none">
   <a class="link-btn" href="https://4ever.ai.id/kata-kata-hari-ini-dita.html">
-    <span class="ic">💙</span>
+    <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20.3C6.9 16.4 3.6 13.2 3.6 9.5c0-2.8 2.1-4.9 4.7-4.9 1.6 0 3.1.8 3.7 2 .6-1.2 2.1-2 3.7-2 2.6 0 4.7 2.1 4.7 4.9 0 3.7-3.3 6.9-8.4 10.8z"/></svg></span>
     <span><span class="tt">Kata Kata Hari Ini</span><span class="ds">kata romantis buat Ibu Dita, bisa diganti-ganti</span></span>
     <span class="arr">›</span>
   </a>
   <a class="link-btn" href="https://4ever.ai.id/ultah-dita-permatasari.html">
-    <span class="ic">🎂</span>
+    <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 20.5h15"/><path d="M5.5 20.5v-5h13v5"/><path d="M5.5 17.8h13"/><path d="M8.2 15.5v-2.6h7.6v2.6"/><path d="M12 12.9v-2.2"/><circle cx="12" cy="9.2" r="1.05" fill="currentColor" stroke="none"/></svg></span>
     <span><span class="tt">Kejutan Ulang Tahun Dita</span><span class="ds">page ultah hitam-pink, ada game + kupon cinta</span></span>
     <span class="arr">›</span>
   </a>
   <a class="link-btn" href="https://4ever.ai.id/undangan-pernikahan-muhammad-dita.html">
-    <span class="ic">💍</span>
+    <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="14.8" r="5.3"/><path d="M12 3.4l2.9 3.4-2.9 3.4-2.9-3.4z"/><path d="M9.1 6.8h5.8"/></svg></span>
     <span><span class="tt">Undangan Pernikahan Online</span><span class="ds">undangan digital Afis &amp; Dita — hitam abu + pohon gold</span></span>
     <span class="arr">›</span>
   </a>
+    <button id="ditaBack" style="width:100%;margin-top:16px;padding:13px;border-radius:11px;border:1px solid #d4af37;background:transparent;color:#fff;font-size:.98rem;font-weight:bold;font-family:inherit;cursor:pointer;">← Kembali ke Halaman Awal</button>
   </div>
 
   <div id="umumSections">
-  <div class="group-title">🛠️ TOOLS</div>
+  <div class="group-title"><svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="color:#d4af37;vertical-align:-4px;flex:none"><path d="M14.8 6.2a4.2 4.2 0 0 1 5.6-4L17.8 4.8l1.1 2 2 .9 2.7-2.4a4.2 4.2 0 0 1-5.7 5.5L7.5 19a1.9 1.9 0 0 1-2.7-2.7l10-10.1z"/></svg> TOOLS</div>
   <a class="link-btn" href="https://4ever.ai.id/download-video.html">
-    <span class="ic">⬇️</span>
+    <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 4v10.2"/><path d="M6.6 10.2L12 15.6l5.4-5.4"/><path d="M4.5 19.5h15"/><path d="M4.5 15.5v4M19.5 15.5v4"/></svg></span>
     <span><span class="tt">Download Video TikTok / FB / IG</span><span class="ds">tools gratis: tempel link, langsung download (TikTok tanpa watermark)</span></span>
     <span class="arr">›</span>
   </a>
   <a class="link-btn" href="https://4ever.ai.id/tools.html">
-    <span class="ic">✨</span>
+    <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4.3" y="4.3" width="6.4" height="6.4" rx="1.8"/><rect x="13.3" y="4.3" width="6.4" height="6.4" rx="1.8"/><rect x="4.3" y="13.3" width="6.4" height="6.4" rx="1.8"/><rect x="13.3" y="13.3" width="6.4" height="6.4" rx="1.8"/></svg></span>
     <span><span class="tt">Tools Lainnya — 13 Tools Gratis!</span><span class="ds">fancy text • caption &amp; hashtag • jadwal sholat • cuaca • kompres foto • QR code • kalkulator diskon &amp; komisi • password generator • hitung umur • konverter • kurs • undi giveaway — semuanya dalam SATU page, klik di sini 👉</span></span>
     <span class="arr">›</span>
   </a>
 
   <a class="link-btn" href="https://4ever.ai.id/email-generator.html">
-    <span class="ic">📩</span>
+    <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3.6" y="5.8" width="16.8" height="12.4" rx="2"/><path d="M4.5 7.6L12 13l7.5-5.4"/></svg></span>
     <span><span class="tt">Email Generator</span><span class="ds">bikin alamat email @netflix.my.id — nama acak / kata acak / custom, sekali klik copy</span></span>
     <span class="arr">›</span>
   </a>
 
-  <div class="group-title">📱 SOSIAL MEDIA</div>
+  <div class="group-title"><svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="color:#d4af37;vertical-align:-4px;flex:none"><rect x="7" y="2.8" width="10" height="18.4" rx="2.4"/><path d="M10.6 18.4h2.8"/></svg> SOSIAL MEDIA</div>
   <a class="link-btn sosmed" href="#" data-net="TikTok">
-    <span class="ic">🎵</span>
+    <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9.6 18.1V6.2l9.9-2v11.6"/><circle cx="6.9" cy="18.1" r="2.7"/><circle cx="16.8" cy="15.8" r="2.7"/></svg></span>
     <span><span class="tt">TikTok</span><span class="ds">video terbaru tiap hari jam 19.00</span></span>
     <span class="arr">›</span>
   </a>
   <a class="link-btn sosmed" href="#" data-net="YouTube">
-    <span class="ic">▶️</span>
+    <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3.2" y="6" width="17.6" height="12.2" rx="3.4"/><path d="M10.4 9.7v4.8l4.6-2.4z" fill="currentColor" stroke="none"/></svg></span>
     <span><span class="tt">YouTube</span><span class="ds">video + kompilasi mingguan</span></span>
     <span class="arr">›</span>
   </a>
   <a class="link-btn sosmed" href="#" data-net="Instagram">
-    <span class="ic">📸</span>
+    <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3.8" y="3.8" width="16.4" height="16.4" rx="4.6"/><circle cx="12" cy="12" r="3.7"/><circle cx="17.1" cy="6.9" r="1.05" fill="currentColor" stroke="none"/></svg></span>
     <span><span class="tt">Instagram</span><span class="ds">update terbaru</span></span>
     <span class="arr">›</span>
   </a>
   <a class="link-btn sosmed" href="#" data-net="Facebook">
-    <span class="ic">👍</span>
+    <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M8.2 11.4V20H4.6v-8.6h3.6z"/><path d="M8.2 11.4c2.7-.5 4.2-2.3 4.9-5.2.2-1 .9-1.9 1.9-1.9.9 0 1.5.8 1.4 1.8l-.6 3h4.6c1 0 1.7.9 1.5 1.9l-.9 4.3c-.2 1-1 1.7-2 1.7H8.2"/></svg></span>
     <span><span class="tt">Facebook</span><span class="ds">update terbaru</span></span>
     <span class="arr">›</span>
   </a>
 
-  <div class="group-title">💬 KONTAK</div>
+  <div class="group-title"><svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="color:#d4af37;vertical-align:-4px;flex:none"><path d="M20 5.8A2.8 2.8 0 0 0 17.2 3H6.8A2.8 2.8 0 0 0 4 5.8v7.4A2.8 2.8 0 0 0 6.8 16h.7v4.2L11.3 16h5.9A2.8 2.8 0 0 0 20 13.2z"/></svg> KONTAK</div>
   <a class="link-btn" href="https://wa.me/6283895952782">
-    <span class="ic">💬</span>
+    <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 5.8A2.8 2.8 0 0 0 17.2 3H6.8A2.8 2.8 0 0 0 4 5.8v7.4A2.8 2.8 0 0 0 6.8 16h.7v4.2L11.3 16h5.9A2.8 2.8 0 0 0 20 13.2z"/><circle cx="8.4" cy="9.5" r="1.1" fill="currentColor" stroke="none"/><circle cx="12" cy="9.5" r="1.1" fill="currentColor" stroke="none"/><circle cx="15.6" cy="9.5" r="1.1" fill="currentColor" stroke="none"/></svg></span>
     <span><span class="tt">WhatsApp Aku</span><span class="ds">chat langsung ke Afis</span></span>
     <span class="arr">›</span>
   </a>
   <a class="link-btn" href="https://wa.me/6283895952782?text=Halo%20Afis%20%26%20Dita!%20%F0%9F%92%8D%0ASaya%20mau%20kirim%20ucapan%3A%20">
-    <span class="ic">💌</span>
+    <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20.6 3.6L4.8 10.4l6 3 3 6z"/><path d="M10.8 13.4l9.8-9.8"/></svg></span>
     <span><span class="tt">Kirim Ucapan buat Afis &amp; Dita</span><span class="ds">ucapan &amp; doa kamu terkirim ke WhatsApp Afis</span></span>
     <span class="arr">›</span>
   </a>
 
-  <div class="group-title">❓ TENTANG</div>
+  <div class="group-title"><svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="color:#d4af37;vertical-align:-4px;flex:none"><circle cx="12" cy="12" r="8.8"/><path d="M12 11.2V16"/><path d="M12 7.8h.01"/></svg> TENTANG</div>
   <div class="info-card">
     <b style="color:#fff">4ever</b> dibaca <i>"forever"</i> — selamanya. Website ini rumah digitalnya <b style="color:#fff">Afis</b>: tempat ngumpulnya halaman-halaman spesial buat <b style="color:#fff">Ibu Dita</b>, link sosial media, dan karya-karya Afis. Kayak namanya, semoga semuanya di sini buat selamanya 💙
   </div>
@@ -203,8 +208,19 @@ for (let i = 0; i < 20; i++) {
 function ditaUnlock() {
   document.getElementById('ditaLock').style.display = 'none';
   document.getElementById('ditaLinks').style.display = 'block';
+  document.getElementById('loveWrap').style.display = 'block';
   document.getElementById('umumSections').style.display = 'none';
 }
+function ditaBackHome() {
+  try { sessionStorage.removeItem('hub_dita'); } catch (e) {}
+  document.getElementById('ditaLock').style.display = '';
+  document.getElementById('ditaLinks').style.display = 'none';
+  document.getElementById('loveWrap').style.display = 'none';
+  document.getElementById('umumSections').style.display = '';
+  document.getElementById('ditaPass').value = '';
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+document.getElementById('ditaBack').onclick = ditaBackHome;
 function ditaTry() {
   const v = document.getElementById('ditaPass').value.replace(/\D/g, '');
   if (v === '28032026') {
