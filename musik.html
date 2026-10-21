@@ -86,6 +86,7 @@
   </div>
 
   <div class="chips" id="chips">
+    <button class="chip on" id="oaChip">🎧 Audio Resmi: ON</button>
     <button class="chip" data-q="lagu indonesia terbaru 2026">🇮🇩 Indo Terbaru</button>
     <button class="chip" data-q="For Revenge">🎸 For Revenge</button>
     <button class="chip" data-q="Hindia">🌙 Hindia</button>
@@ -210,15 +211,18 @@ let apiReady = false;
 let pendingIdx = -1;
 window.onYouTubeIframeAPIReady = function () {
   player = new YT.Player('ytPlayer', {
-    playerVars: { autoplay: 0, rel: 0, playsinline: 1 },
+    host: 'https://www.youtube-nocookie.com',
+    playerVars: { autoplay: 0, rel: 0, playsinline: 1, modestbranding: 1, origin: location.origin },
     events: {
       onReady: () => { apiReady = true; applyQuality(); if (pendingIdx >= 0) { const i = pendingIdx; pendingIdx = -1; playAt(i); } },
       onStateChange: e => {
         if (!window.YT) return;
         if (e.data === YT.PlayerState.PLAYING) { document.getElementById('playBtn').textContent = '⏸'; startSync(); applyQuality(); }
         if (e.data === YT.PlayerState.PAUSED) { document.getElementById('playBtn').textContent = '▶'; stopSync(); }
+        if (e.data === YT.PlayerState.ENDED) { if (curIdx >= 0 && curIdx < items.length - 1) playAt(curIdx + 1); }
         syncCurrentFromPlayer();
-      }
+      },
+      onError: () => { if (curIdx >= 0 && items[curIdx]) fallbackIframe(items[curIdx]); }
     }
   });
 };
@@ -236,6 +240,14 @@ function updateNow(it) {
   document.getElementById('nowChannel').textContent = '📺 ' + it.channel;
   setDynColor(it.thumb);
 }
+let iframeMode = false;
+let playWatchdog = null;
+function fallbackIframe(it) {
+  iframeMode = true;
+  stopSync();
+  const holder = document.getElementById('ytPlayer');
+  holder.innerHTML = '<iframe src="https://www.youtube-nocookie.com/embed/' + it.id + '?autoplay=1&rel=0&playsinline=1" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen title="YouTube" style="position:absolute;inset:0;width:100%;height:100%;border:0"></iframe>';
+}
 function playAt(i) {
   if (i < 0 || i >= items.length) return;
   curIdx = i;
@@ -243,28 +255,37 @@ function playAt(i) {
   document.getElementById('playerBox').style.display = 'block';
   updateNow(it);
   markPlaying();
-  fetchLyrics(it);
+  fetchLyrics(it, it.metaTitle ? { artist: it.metaArtist, title: it.metaTitle } : null);
   document.getElementById('playerBox').scrollIntoView({ behavior: 'smooth', block: 'center' });
-  const ids = items.map(x => x.id);
-  if (apiReady && player && player.loadPlaylist) {
-    player.loadPlaylist({ playlist: ids, index: i, startSeconds: 0, suggestedQuality: 'default' });
-    setTimeout(() => { try { player.playVideo(); } catch (e) {} }, 350);
+  if (iframeMode) { fallbackIframe(it); return; }
+  if (apiReady && player && player.loadVideoById) {
+    player.loadVideoById({ videoId: it.id, startSeconds: 0, suggestedQuality: qPref() });
+    if (playWatchdog) clearTimeout(playWatchdog);
+    playWatchdog = setTimeout(() => {
+      try {
+        const st = player.getPlayerState();
+        if (st !== 1 && st !== 3) fallbackIframe(it);
+      } catch (e) { fallbackIframe(it); }
+    }, 6000);
   } else if (window.YT) {
     pendingIdx = i;
   } else {
-    const holder = document.getElementById('ytPlayer');
-    holder.innerHTML = '<iframe src="https://www.youtube-nocookie.com/embed/' + it.id + '?autoplay=1&rel=0&playsinline=1" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen title="YouTube" style="position:absolute;inset:0;width:100%;height:100%;border:0"></iframe>';
+    fallbackIframe(it);
   }
 }
+let resultsMode = 'yt';
+let spItems = [];
+let spCurIdx = -1;
 function markPlaying() {
-  document.querySelectorAll('.row').forEach(c => c.classList.toggle('playing', +c.getAttribute('data-i') === curIdx));
+  const active = resultsMode === 'spotify' ? spCurIdx : curIdx;
+  document.querySelectorAll('.row').forEach(c => c.classList.toggle('playing', +c.getAttribute('data-i') === active));
 }
 document.getElementById('playBtn').onclick = () => {
   if (!player || !player.getPlayerState) return;
   if (player.getPlayerState() === 1) player.pauseVideo(); else player.playVideo();
 };
-document.getElementById('nextBtn').onclick = () => { if (player && player.nextVideo) player.nextVideo(); else playAt(curIdx + 1); };
-document.getElementById('prevBtn').onclick = () => { if (player && player.previousVideo) player.previousVideo(); else playAt(curIdx - 1); };
+document.getElementById('nextBtn').onclick = () => playAt(curIdx + 1);
+document.getElementById('prevBtn').onclick = () => playAt(curIdx - 1);
 
 /* ---------- kualitas / hemat kuota ---------- */
 const Q_LS = 'musik_yt_kualitas';
@@ -285,7 +306,7 @@ function renderQ() {
 }
 document.querySelectorAll('[data-qq]').forEach(c => c.addEventListener('click', () => {
   try { localStorage.setItem(Q_LS, c.getAttribute('data-qq')); } catch (e) {}
-  applyQuality(); renderQ();
+  applyQuality(); renderQ(); renderOA();
 }));
 
 /* ---------- lirik (LRCLIB) ---------- */
@@ -309,13 +330,13 @@ function parseLRC(txt) {
   });
   return out.sort((a, b) => a.t - b.t);
 }
-async function fetchLyrics(it) {
+async function fetchLyrics(it, exact) {
   const card = document.getElementById('lyrCard');
   const body = document.getElementById('lyrBody');
   card.style.display = 'block';
   body.innerHTML = '<p class="lyr-msg">⏳ lagi nyari liriknya…</p>';
   lrcLines = []; lastLrcIdx = -2; stopSync();
-  const { artist, title } = parseTitle(it.title);
+  const { artist, title } = exact && exact.title ? exact : parseTitle(it.title);
   const queries = [];
   if (artist && title) queries.push('track_name=' + encodeURIComponent(title) + '&artist_name=' + encodeURIComponent(artist));
   if (title) queries.push('track_name=' + encodeURIComponent(title));
@@ -344,7 +365,7 @@ async function fetchLyrics(it) {
 }
 function startSync() {
   stopSync();
-  if (!lrcLines.length) return;
+  if (iframeMode || !lrcLines.length) return;
   syncTimer = setInterval(() => {
     if (!player || !player.getCurrentTime) return;
     let cur = 0;
@@ -364,14 +385,37 @@ function stopSync() { if (syncTimer) { clearInterval(syncTimer); syncTimer = nul
 
 /* ---------- pencarian (lewat Worker) ---------- */
 const resultsBox = document.getElementById('results');
+const OA_LS = 'musik_oa_mode';
+function oaOn() { try { return localStorage.getItem(OA_LS) !== '0'; } catch (e) { return true; } }
+function renderOA() { document.getElementById('oaChip').textContent = oaOn() ? '🎧 Audio Resmi: ON' : '🎧 Audio Resmi: OFF'; document.getElementById('oaChip').classList.toggle('on', oaOn()); }
+document.getElementById('oaChip').addEventListener('click', () => { try { localStorage.setItem(OA_LS, oaOn() ? '0' : '1'); } catch (e) {} renderOA(); });
 async function doSearch(q) {
   q = (q || '').trim();
   if (!q) return;
   document.querySelectorAll('[data-q]').forEach(c => c.classList.toggle('on', c.getAttribute('data-q') === q));
   document.getElementById('resTitle').textContent = 'Hasil buat "' + q + '"';
   resultsBox.innerHTML = '<p class="empty">⏳ lagi nyari…</p>';
+  /* 1) katalog Spotify dulu (judul rapi + cover asli) */
   try {
-    const j = await getJSON(WORKER + '/?q=' + encodeURIComponent(q));
+    const sj = await getJSON(WORKER + '/?sp=' + encodeURIComponent(q));
+    if (sj.items && sj.items.length) {
+      resultsMode = 'spotify';
+      spItems = sj.items;
+      spCurIdx = -1;
+      resultsBox.innerHTML = spItems.map((it, i) =>
+        '<button class="row" data-i="' + i + '"><img src="' + esc(it.cover) + '" alt="" loading="lazy">' +
+        '<span class="meta"><span class="tt">' + esc(it.title) + '</span><span class="ar" style="display:block">🎤 ' + esc(it.artists) + (it.album ? ' • 💿 ' + esc(it.album) : '') + '</span></span>' +
+        '<span class="eq"><i></i><i></i><i></i></span></button>').join('');
+      resultsBox.querySelectorAll('.row').forEach(c => c.addEventListener('click', () => playSpotifyTrack(+c.getAttribute('data-i'))));
+      return;
+    }
+  } catch (e) {}
+  /* 2) cadangan: pencarian YouTube langsung */
+  try {
+    resultsMode = 'yt';
+    spCurIdx = -1;
+    let j = await getJSON(WORKER + '/?q=' + encodeURIComponent(oaOn() ? q + ' official audio' : q));
+    if (oaOn() && (!j.items || j.items.length < 4)) j = await getJSON(WORKER + '/?q=' + encodeURIComponent(q));
     items = (j.items || []).map(x => ({ id: x.id, title: x.title || '', channel: x.channel || '', thumb: x.thumb || '' }));
     if (!items.length) { resultsBox.innerHTML = '<p class="empty">nggak ketemu. coba kata kunci lain ya.</p>'; return; }
     resultsBox.innerHTML = items.map((it, i) =>
@@ -381,6 +425,35 @@ async function doSearch(q) {
     resultsBox.querySelectorAll('.row').forEach(c => c.addEventListener('click', () => playAt(+c.getAttribute('data-i'))));
   } catch (e) {
     resultsBox.innerHTML = '<p class="empty">❌ server musiknya lagi nggak bisa dihubungi / kuota harian habis.<br>coba lagi nanti ya.</p>';
+  }
+}
+/* lagu Spotify dipilih -> cocokkan ke video resmi YouTube -> putar */
+async function playSpotifyTrack(idx) {
+  const sp = spItems[idx];
+  if (!sp) return;
+  spCurIdx = idx;
+  markPlaying();
+  document.getElementById('playerBox').style.display = 'block';
+  document.getElementById('nowTitle').textContent = sp.title;
+  document.getElementById('nowChannel').textContent = '🎤 ' + sp.artists + ' • ⏳ lagi nyocokin ke YouTube…';
+  document.getElementById('playerBox').scrollIntoView({ behavior: 'smooth', block: 'center' });
+  const base = sp.artists + ' - ' + sp.title;
+  try {
+    let j = await getJSON(WORKER + '/?q=' + encodeURIComponent(base + (oaOn() ? ' official audio' : '')));
+    if (!j.items || !j.items.length) j = await getJSON(WORKER + '/?q=' + encodeURIComponent(base));
+    items = (j.items || []).map(x => ({ id: x.id, title: x.title || '', channel: x.channel || '', thumb: x.thumb || '' }));
+    if (!items.length) {
+      document.getElementById('nowChannel').textContent = '🎤 ' + sp.artists + ' • ❌ videonya nggak ketemu di YouTube';
+      return;
+    }
+    items[0].title = base;
+    items[0].channel = sp.artists;
+    if (sp.cover) items[0].thumb = sp.cover;
+    items[0].metaArtist = sp.artists.split(',')[0].trim();
+    items[0].metaTitle = sp.title;
+    playAt(0);
+  } catch (e) {
+    document.getElementById('nowChannel').textContent = '🎤 ' + sp.artists + ' • ❌ servernya lagi bermasalah, coba lagi';
   }
 }
 document.getElementById('searchBtn').onclick = () => doSearch(document.getElementById('q').value);
