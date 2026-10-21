@@ -111,6 +111,7 @@
     <button class="tab on" id="tabTrend">🔥 Trending</button>
     <button class="tab" id="tabIndo">🇮🇩 Lagu Indo</button>
     <button class="tab" id="tabPl">🎵 Playlist</button>
+    <button class="tab" id="tabYt">▶️ YouTube</button>
   </div>
 
   <div id="trendChips" class="chips">
@@ -150,6 +151,26 @@
   </div>
 
   <div id="plArea" style="display:none"></div>
+  <div id="ytArea" style="display:none">
+    <div class="sec-title">YouTube Resmi ▶️</div>
+    <p class="sub" style="text-align:left">lagu official dari channel artisnya, diputar pakai pemutar resmi YouTube (ada iklan dari YouTube-nya).</p>
+    <div id="ytKeyBox"></div>
+    <div id="ytMain" style="display:none">
+      <div class="search" style="margin-top:14px">
+        <span>🔍</span>
+        <input id="ytq" type="search" placeholder="cari lagu / artis di YouTube…" enterkeyhint="search">
+        <button id="ytSearchBtn">Cari</button>
+      </div>
+      <div id="ytPlayer" style="display:none;margin-top:16px">
+        <div style="position:relative;padding-top:56.25%;border-radius:12px;overflow:hidden;background:#000">
+          <iframe id="ytFrame" style="position:absolute;inset:0;width:100%;height:100%;border:0" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen title="YouTube"></iframe>
+        </div>
+        <div id="ytNow" style="margin-top:9px;font-weight:700;font-size:.95rem;text-align:left"></div>
+      </div>
+      <div id="ytResults"></div>
+      <button class="btn" id="ytChangeKey" style="background:#333;color:#fff">🔑 Ganti API Key</button>
+    </div>
+  </div>
 
   <a class="back" href="https://4ever.ai.id/index.html">← kembali ke 4ever.ai.id</a>
   <footer>© 2026 4ever.ai.id — musik dari Audius, platform artis independen • tanpa iklan</footer>
@@ -358,7 +379,71 @@ document.getElementById('chipTiktok').addEventListener('click', () => { switchTa
 
 async function doSearch() {
   const q = document.getElementById('q').value.trim();
-  if (!q) { switchTab('trend'); loadTrending(''); return; }
+  if (!q) { switchTab('trend'); /* ---------- mode YouTube resmi (API key sendiri) ---------- */
+const YT_LS = 'musik_yt_key';
+function ytKey() { try { return localStorage.getItem(YT_LS) || ''; } catch (e) { return ''; } }
+function renderYtKey() {
+  // mode utama: lewat Worker (semua pengunjung bisa pakai).
+  // kotak key pribadi hanya cadangan kalau Worker bermasalah.
+  document.getElementById('ytMain').style.display = 'block';
+  document.getElementById('ytKeyBox').innerHTML = ytKey() ? '' :
+    '<p class="sub" style="text-align:left;margin-top:10px">mode ini jalan lewat server 4ever — tinggal cari lagunya. 🎧</p>';
+}
+document.getElementById('ytChangeKey').onclick = () => {
+  const k = prompt('tempel API key YouTube yang baru:');
+  if (k && k.trim()) { try { localStorage.setItem(YT_LS, k.trim()); } catch (e) {} alert('API key diganti ✅'); }
+};
+function renderYtItems(box, items) {
+  if (!items.length) { box.innerHTML = '<p class="empty">nggak ketemu. coba kata kunci lain ya.</p>'; return; }
+  box.innerHTML = '<div class="grid">' + items.map((it, i) =>
+    '<button class="card" data-yt="' + i + '"><img src="' + esc(it.thumb) + '" alt="" loading="lazy">' +
+    '<div class="tt">' + esc(it.title) + '</div><div class="ar">📺 ' + esc(it.channel) + '</div></button>').join('') + '</div>';
+  box.querySelectorAll('[data-yt]').forEach(card => card.addEventListener('click', () => {
+    const it = items[+card.getAttribute('data-yt')];
+    ytPlay(it.videoId, it.title);
+  }));
+}
+const YT_WORKER = 'https://musik-yt.instayul01.workers.dev';
+async function ytSearch() {
+  const q = document.getElementById('ytq').value.trim();
+  const box = document.getElementById('ytResults');
+  if (!q) return;
+  box.innerHTML = '<p class="empty">⏳ lagi nyari di YouTube…</p>';
+  // 1) lewat Worker
+  try {
+    const j = await getJSON(YT_WORKER + '/?q=' + encodeURIComponent(q));
+    if (j && Array.isArray(j.items)) {
+      renderYtItems(box, j.items.map(x => ({ videoId: x.id, title: x.title || '', channel: x.channel || '', thumb: x.thumb || '' })));
+      return;
+    }
+    throw new Error('worker no items');
+  } catch (e1) {
+    // 2) cadangan: API key pribadi di browser ini
+    if (ytKey()) {
+      try {
+        const url = 'https://www.googleapis.com/youtube/v3/search?part=snippet&type=video&videoEmbeddable=true&maxResults=24&q=' + encodeURIComponent(q) + '&key=' + encodeURIComponent(ytKey());
+        const j = await getJSON(url);
+        renderYtItems(box, (j.items || []).map(it => {
+          const sn = it.snippet || {}; const th = sn.thumbnails || {};
+          return { videoId: it.id.videoId, title: sn.title || '', channel: sn.channelTitle || '', thumb: (th.high && th.high.url) || (th.medium && th.medium.url) || '' };
+        }));
+        return;
+      } catch (e2) {}
+    }
+    box.innerHTML = '<p class="empty">❌ server musiknya lagi nggak bisa dihubungi / kuota harian habis.<br>coba lagi nanti ya.</p>';
+  }
+}
+function ytPlay(id, title) {
+  au.pause();
+  document.getElementById('ytPlayer').style.display = 'block';
+  document.getElementById('ytFrame').src = 'https://www.youtube-nocookie.com/embed/' + id + '?autoplay=1&rel=0';
+  document.getElementById('ytNow').textContent = '▶️ ' + title;
+  document.getElementById('ytPlayer').scrollIntoView({ behavior: 'smooth', block: 'center' });
+}
+document.getElementById('ytSearchBtn').onclick = ytSearch;
+document.getElementById('ytq').addEventListener('keydown', e => { if (e.key === 'Enter') ytSearch(); });
+
+loadTrending(''); return; }
   switchTab('trend');
   document.querySelectorAll('[data-genre]').forEach(c => c.classList.remove('on'));
   listArea.innerHTML = '<p class="empty">⏳ lagi nyari…</p>';
@@ -378,16 +463,21 @@ function switchTab(which) {
   document.getElementById('tabTrend').classList.toggle('on', which === 'trend');
   document.getElementById('tabIndo').classList.toggle('on', which === 'indo');
   document.getElementById('tabPl').classList.toggle('on', which === 'pl');
+  document.getElementById('tabYt').classList.toggle('on', which === 'yt');
   listArea.style.display = which === 'trend' ? 'block' : 'none';
   document.getElementById('trendChips').style.display = which === 'trend' ? 'flex' : 'none';
   document.getElementById('indoArea').style.display = which === 'indo' ? 'block' : 'none';
   plArea.style.display = which === 'pl' ? 'block' : 'none';
+  document.getElementById('ytArea').style.display = which === 'yt' ? 'block' : 'none';
+  if (which !== 'trend' && which !== 'indo') { /* audio audius berhenti kalau pindah ke youtube */ }
   if (which === 'pl') renderPls();
   if (which === 'indo' && !indoLoaded) loadIndo('all');
+  if (which === 'yt') renderYtKey();
 }
 document.getElementById('tabTrend').onclick = () => switchTab('trend');
 document.getElementById('tabIndo').onclick = () => switchTab('indo');
 document.getElementById('tabPl').onclick = () => switchTab('pl');
+document.getElementById('tabYt').onclick = () => switchTab('yt');
 
 /* menu cepat (tiles) */
 document.getElementById('tileTrend').onclick = () => { switchTab('trend'); loadTrending(''); };
