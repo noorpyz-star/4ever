@@ -4,44 +4,68 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <meta name="theme-color" content="#121212">
-<title>4ever Musik — Musik YouTube Resmi</title>
+<title>4ever Musik — Putar Lagu + Lirik</title>
 <style>
   * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
-  :root { --bg:#121212; --panel:#181818; --panel2:#282828; --txt:#fff; --sub:#b3b3b3; --green:#1ed760; --dyn:#2a2a2a; --dynDark:#121212; }
-  body { font-family:-apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif; background:linear-gradient(180deg,var(--dynDark) 0%,var(--bg) 280px); color:var(--txt); min-height:100vh; padding:20px 16px 60px; transition:background 1s ease; }
+  :root { --bg:#121212; --panel:#181818; --panel2:#282828; --txt:#fff; --sub:#b3b3b3; --green:#1ed760; --dynDark:#121212; }
+  body { font-family:-apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif; background:linear-gradient(180deg,var(--dynDark) 0%,var(--bg) 300px); color:var(--txt); min-height:100vh; padding:20px 16px 60px; transition:background 1s ease; }
   .wrap { max-width:620px; margin:0 auto; }
   .brand { display:flex; align-items:center; gap:9px; font-weight:800; font-size:1.05rem; }
-  .brand .dot { width:30px; height:30px; border-radius:50%; background:#ff0033; color:#fff; display:flex; align-items:center; justify-content:center; font-size:.85rem; }
-  .brand small { color:#ff4d6d; }
+  .brand .dot { width:30px; height:30px; border-radius:50%; background:var(--green); color:#000; display:flex; align-items:center; justify-content:center; font-size:1rem; }
+  .brand small { color:var(--green); }
   h1.greet { font-size:1.55rem; font-weight:800; margin-top:20px; letter-spacing:-.3px; }
   .sub { color:var(--sub); font-size:.86rem; margin-top:5px; line-height:1.55; }
   .dtpill { display:inline-block; margin-top:14px; background:var(--panel2); border-radius:16px; padding:7px 14px; font-size:.83rem; font-weight:600; }
   .dtpill b { color:var(--green); font-variant-numeric:tabular-nums; }
-  .quote { margin-top:14px; background:linear-gradient(135deg,#3a1d24,#181818); border:1px solid #4a2e35; border-radius:12px; padding:15px 16px; }
-  .quote .qlabel { color:#ff4d6d; font-size:.72rem; font-weight:800; letter-spacing:1.6px; }
+  .quote { margin-top:14px; background:linear-gradient(135deg,#1d3a26,#181818); border:1px solid #2e4a37; border-radius:12px; padding:15px 16px; }
+  .quote .qlabel { color:var(--green); font-size:.72rem; font-weight:800; letter-spacing:1.6px; }
   .quote .qtext { margin-top:7px; font-size:1.02rem; font-weight:700; line-height:1.5; }
   .search { display:flex; align-items:center; gap:9px; background:#fff; border-radius:26px; padding:0 8px 0 16px; margin-top:20px; }
   .search span { color:#555; }
   .search input { flex:1; border:none; outline:none; padding:13px 0; font-size:.98rem; color:#111; font-family:inherit; background:transparent; min-width:0; }
-  .search button { border:none; background:#ff0033; color:#fff; font-weight:700; border-radius:20px; padding:9px 16px; font-size:.9rem; cursor:pointer; font-family:inherit; }
+  .search button { border:none; background:var(--green); color:#000; font-weight:700; border-radius:20px; padding:9px 16px; font-size:.9rem; cursor:pointer; font-family:inherit; }
   .chips { display:flex; gap:8px; margin-top:14px; overflow-x:auto; padding-bottom:4px; }
   .chip { flex:none; padding:8px 14px; border-radius:20px; border:none; background:var(--panel2); color:var(--txt); font-family:inherit; font-size:.85rem; font-weight:600; cursor:pointer; }
   .chip.on { background:#fff; color:#000; }
-  .playerbox { margin-top:18px; display:none; }
-  .framewrap { position:relative; padding-top:56.25%; border-radius:12px; overflow:hidden; background:#000; box-shadow:0 18px 44px rgba(0,0,0,.55); }
+  /* now playing */
+  .np-card { margin-top:20px; display:none; background:linear-gradient(180deg,rgba(255,255,255,.07),rgba(255,255,255,.02)); border:1px solid #2c2c2c; border-radius:16px; padding:14px; }
+  .framewrap { position:relative; padding-top:56.25%; border-radius:10px; overflow:hidden; background:#000; }
   .framewrap iframe, .framewrap #ytPlayer { position:absolute; inset:0; width:100%; height:100%; border:0; }
-  .nowt { margin-top:12px; font-weight:800; font-size:1rem; line-height:1.35; }
-  .nowc { color:var(--sub); font-size:.85rem; margin-top:3px; }
-  .ctrls { display:flex; align-items:center; justify-content:center; gap:24px; margin-top:14px; }
+  .nowt { margin-top:14px; font-weight:800; font-size:1.08rem; line-height:1.35; }
+  .nowc { color:var(--sub); font-size:.86rem; margin-top:3px; }
+  .ctrls { display:flex; align-items:center; justify-content:center; gap:26px; margin-top:14px; }
   .cb { background:none; border:none; color:#fff; font-size:1.55rem; cursor:pointer; }
   .cb.main { width:62px; height:62px; border-radius:50%; background:#fff; color:#000; font-size:1.45rem; box-shadow:0 10px 26px rgba(0,0,0,.45); }
-  .sec-title { font-size:1.15rem; font-weight:800; margin:24px 0 4px; }
-  .grid { display:grid; grid-template-columns:1fr 1fr; gap:13px; margin-top:14px; }
-  .card { background:var(--panel); border-radius:10px; padding:10px; cursor:pointer; text-align:left; border:none; font-family:inherit; color:var(--txt); width:100%; }
-  .card img { width:100%; aspect-ratio:16/9; object-fit:cover; border-radius:7px; background:#333; display:block; }
-  .card .tt { font-weight:700; font-size:.88rem; margin-top:9px; line-height:1.3; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; }
-  .card .ar { color:var(--sub); font-size:.79rem; margin-top:4px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
-  .card.playing { outline:2px solid var(--green); }
+  .qrow { display:flex; align-items:center; justify-content:center; gap:8px; margin-top:16px; flex-wrap:wrap; }
+  .qrow .qlabel { color:var(--sub); font-size:.82rem; font-weight:600; }
+  .qchip { padding:7px 13px; border-radius:18px; border:1px solid #3a3a3a; background:transparent; color:var(--txt); font-family:inherit; font-size:.8rem; font-weight:600; cursor:pointer; }
+  .qchip.on { background:var(--green); border-color:var(--green); color:#000; }
+  .qnote { color:#777; font-size:.74rem; text-align:center; margin-top:8px; line-height:1.5; }
+  /* lirik */
+  .lyr-card { margin-top:16px; background:#1a1a1a; border:1px solid #2c2c2c; border-radius:16px; padding:16px; display:none; }
+  .lyr-head { display:flex; align-items:center; justify-content:space-between; }
+  .lyr-head .t { font-weight:800; font-size:.95rem; }
+  .lyr-head .src { color:#666; font-size:.7rem; }
+  .lyr-body { margin-top:12px; max-height:320px; overflow-y:auto; scroll-behavior:smooth; padding-right:4px; }
+  .lyr-line { color:#8a8a8a; font-size:1rem; font-weight:600; line-height:1.45; padding:5px 6px; border-radius:7px; cursor:pointer; transition:color .25s, background .25s; }
+  .lyr-line.on { color:#fff; background:rgba(30,215,96,.13); }
+  .lyr-plain { color:#cfcfcf; font-size:.95rem; line-height:1.75; white-space:pre-wrap; }
+  .lyr-msg { color:var(--sub); font-size:.9rem; line-height:1.6; }
+  /* hasil: baris lagu */
+  .sec-title { font-size:1.15rem; font-weight:800; margin:24px 0 6px; }
+  .row { display:flex; align-items:center; gap:12px; width:100%; text-align:left; background:transparent; border:none; border-radius:9px; padding:8px; cursor:pointer; font-family:inherit; color:var(--txt); }
+  .row:hover { background:var(--panel); }
+  .row.playing { background:var(--panel2); }
+  .row img { width:54px; height:54px; border-radius:6px; object-fit:cover; flex:none; background:#333; }
+  .row .meta { flex:1; min-width:0; }
+  .row .tt { font-weight:600; font-size:.94rem; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .row.playing .tt { color:var(--green); }
+  .row .ar { color:var(--sub); font-size:.82rem; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; margin-top:2px; }
+  .row .eq { flex:none; display:none; gap:2.5px; align-items:flex-end; height:16px; }
+  .row.playing .eq { display:flex; }
+  .row .eq i { width:3.5px; background:var(--green); border-radius:2px; animation:eq 0.9s ease-in-out infinite; }
+  .row .eq i:nth-child(2) { animation-delay:.25s; } .row .eq i:nth-child(3) { animation-delay:.5s; }
+  @keyframes eq { 0%,100% { height:6px; } 50% { height:16px; } }
   .empty { color:var(--sub); margin-top:22px; line-height:1.6; font-size:.92rem; text-align:center; }
   .back { display:inline-block; margin-top:28px; color:var(--sub); text-decoration:none; font-size:.88rem; }
   footer { color:#6a6a6a; font-size:.75rem; padding:18px 0 4px; }
@@ -49,9 +73,9 @@
 </head>
 <body>
 <div class="wrap">
-  <div class="brand"><span class="dot">▶</span><span>4ever <small>Musik</small></span></div>
+  <div class="brand"><span class="dot">🎵</span><span>4ever <small>Musik</small></span></div>
   <h1 class="greet" id="greet">Selamat malam</h1>
-  <p class="sub">semua lagu dari YouTube resmi — cari, pencet, langsung muter. 🎧</p>
+  <p class="sub">cari lagu apa pun, putar langsung, liriknya jalan sendiri. 🎧</p>
   <div><span class="dtpill">📅 <span id="tgl">…</span> &nbsp;•&nbsp; 🕐 <b id="jam">--:--:--</b> WIB</span></div>
   <div class="quote"><div class="qlabel">💬 KATA HARI INI</div><div class="qtext" id="qtext">…</div></div>
 
@@ -74,7 +98,7 @@
     <button class="chip" data-q="musik viral tiktok">📱 Viral TikTok</button>
   </div>
 
-  <div class="playerbox" id="playerBox">
+  <div class="np-card" id="playerBox">
     <div class="framewrap"><div id="ytPlayer"></div></div>
     <div class="nowt" id="nowTitle">—</div>
     <div class="nowc" id="nowChannel">—</div>
@@ -83,13 +107,24 @@
       <button class="cb main" id="playBtn">▶</button>
       <button class="cb" id="nextBtn">⏭</button>
     </div>
+    <div class="qrow">
+      <span class="qlabel">Kualitas:</span>
+      <button class="qchip" data-qq="tiny">📉 Hemat</button>
+      <button class="qchip" data-qq="medium">⚖️ Sedang</button>
+      <button class="qchip" data-qq="default">✨ Otomatis</button>
+    </div>
+    <p class="qnote" id="qNote"></p>
+    <div class="lyr-card" id="lyrCard">
+      <div class="lyr-head"><span class="t">🎤 Lirik</span><span class="src">sumber: LRCLIB</span></div>
+      <div class="lyr-body" id="lyrBody"><p class="lyr-msg">⏳ lagi nyari liriknya…</p></div>
+    </div>
   </div>
 
   <div class="sec-title" id="resTitle">Mau dengerin apa? 👇</div>
-  <div id="results"><p class="empty">ketik lagu/artis di atas, atau pencet salah satu tombol cepatnya.<br>hasilnya dari channel-channel resmi di YouTube.</p></div>
+  <div id="results"><p class="empty">ketik lagu/artis di atas, atau pencet salah satu tombol cepatnya.</p></div>
 
   <a class="back" href="https://4ever.ai.id/index.html">← kembali ke 4ever.ai.id</a>
-  <footer>© 2026 4ever.ai.id — musik diputar pakai pemutar resmi YouTube</footer>
+  <footer>© 2026 4ever.ai.id — diputar pakai pemutar resmi YouTube • lirik dari LRCLIB</footer>
 </div>
 
 <script src="https://www.youtube.com/iframe_api"></script>
@@ -146,8 +181,7 @@ function tickJam() {
 
 /* warna dinamis dari thumbnail */
 function applyDyn(rgb) {
-  if (!rgb) { document.documentElement.style.setProperty('--dyn', '#2a2a2a'); document.documentElement.style.setProperty('--dynDark', '#121212'); return; }
-  document.documentElement.style.setProperty('--dyn', 'rgb(' + rgb[0] + ',' + rgb[1] + ',' + rgb[2] + ')');
+  if (!rgb) { document.documentElement.style.setProperty('--dynDark', '#121212'); return; }
   document.documentElement.style.setProperty('--dynDark', 'rgb(' + Math.round(rgb[0] * .42) + ',' + Math.round(rgb[1] * .42) + ',' + Math.round(rgb[2] * .42) + ')');
 }
 function setDynColor(url) {
@@ -178,11 +212,11 @@ window.onYouTubeIframeAPIReady = function () {
   player = new YT.Player('ytPlayer', {
     playerVars: { autoplay: 0, rel: 0, playsinline: 1 },
     events: {
-      onReady: () => { apiReady = true; if (pendingIdx >= 0) { const i = pendingIdx; pendingIdx = -1; playAt(i); } },
+      onReady: () => { apiReady = true; applyQuality(); if (pendingIdx >= 0) { const i = pendingIdx; pendingIdx = -1; playAt(i); } },
       onStateChange: e => {
-        if (window.YT && e.data === YT.PlayerState.PLAYING) document.getElementById('playBtn').textContent = '⏸';
-        if (window.YT && e.data === YT.PlayerState.PAUSED) document.getElementById('playBtn').textContent = '▶';
-        if (window.YT && e.data === YT.PlayerState.ENDED) { /* playlist lanjut sendiri */ }
+        if (!window.YT) return;
+        if (e.data === YT.PlayerState.PLAYING) { document.getElementById('playBtn').textContent = '⏸'; startSync(); applyQuality(); }
+        if (e.data === YT.PlayerState.PAUSED) { document.getElementById('playBtn').textContent = '▶'; stopSync(); }
         syncCurrentFromPlayer();
       }
     }
@@ -194,46 +228,139 @@ function syncCurrentFromPlayer() {
     const vd = player.getVideoData();
     if (!vd || !vd.video_id) return;
     const i = items.findIndex(x => x.id === vd.video_id);
-    if (i >= 0 && i !== curIdx) { curIdx = i; markPlaying(); }
+    if (i >= 0 && i !== curIdx) { curIdx = i; markPlaying(); if (items[i]) { updateNow(items[i]); fetchLyrics(items[i]); } }
   } catch (e) {}
+}
+function updateNow(it) {
+  document.getElementById('nowTitle').textContent = it.title;
+  document.getElementById('nowChannel').textContent = '📺 ' + it.channel;
+  setDynColor(it.thumb);
 }
 function playAt(i) {
   if (i < 0 || i >= items.length) return;
   curIdx = i;
   const it = items[i];
   document.getElementById('playerBox').style.display = 'block';
-  document.getElementById('nowTitle').textContent = it.title;
-  document.getElementById('nowChannel').textContent = '📺 ' + it.channel;
-  setDynColor(it.thumb);
+  updateNow(it);
   markPlaying();
+  fetchLyrics(it);
   document.getElementById('playerBox').scrollIntoView({ behavior: 'smooth', block: 'center' });
   const ids = items.map(x => x.id);
   if (apiReady && player && player.loadPlaylist) {
     player.loadPlaylist({ playlist: ids, index: i, startSeconds: 0, suggestedQuality: 'default' });
-    /* loadPlaylist tidak selalu autoplay di semua browser: */
     setTimeout(() => { try { player.playVideo(); } catch (e) {} }, 350);
   } else if (window.YT) {
     pendingIdx = i;
   } else {
-    /* cadangan: iframe biasa */
     const holder = document.getElementById('ytPlayer');
     holder.innerHTML = '<iframe src="https://www.youtube-nocookie.com/embed/' + it.id + '?autoplay=1&rel=0&playsinline=1" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen title="YouTube" style="position:absolute;inset:0;width:100%;height:100%;border:0"></iframe>';
   }
 }
 function markPlaying() {
-  document.querySelectorAll('.card').forEach(c => c.classList.toggle('playing', +c.getAttribute('data-i') === curIdx));
-  if (items[curIdx]) {
-    document.getElementById('nowTitle').textContent = items[curIdx].title;
-    document.getElementById('nowChannel').textContent = '📺 ' + items[curIdx].channel;
-  }
+  document.querySelectorAll('.row').forEach(c => c.classList.toggle('playing', +c.getAttribute('data-i') === curIdx));
 }
 document.getElementById('playBtn').onclick = () => {
   if (!player || !player.getPlayerState) return;
-  const st = player.getPlayerState();
-  if (st === 1) player.pauseVideo(); else player.playVideo();
+  if (player.getPlayerState() === 1) player.pauseVideo(); else player.playVideo();
 };
 document.getElementById('nextBtn').onclick = () => { if (player && player.nextVideo) player.nextVideo(); else playAt(curIdx + 1); };
 document.getElementById('prevBtn').onclick = () => { if (player && player.previousVideo) player.previousVideo(); else playAt(curIdx - 1); };
+
+/* ---------- kualitas / hemat kuota ---------- */
+const Q_LS = 'musik_yt_kualitas';
+function qPref() { try { return localStorage.getItem(Q_LS) || 'default'; } catch (e) { return 'default'; } }
+function applyQuality() {
+  const q = qPref();
+  if (player && player.setPlaybackQuality) { try { player.setPlaybackQuality(q); } catch (e) {} }
+}
+function renderQ() {
+  const q = qPref();
+  document.querySelectorAll('[data-qq]').forEach(c => c.classList.toggle('on', c.getAttribute('data-qq') === q));
+  const notes = {
+    tiny: 'mode hemat: video dipaksa 144p — perkiraan ±100–180 MB/jam (paling irit buat YouTube; suaranya tetep jernih)',
+    medium: 'mode sedang: 360p — perkiraan ±300–600 MB/jam',
+    default: 'mode otomatis: YouTube milih sendiri sesuai sinyal — bisa sampai ±1 GB/jam lebih di HD'
+  };
+  document.getElementById('qNote').textContent = notes[q] || '';
+}
+document.querySelectorAll('[data-qq]').forEach(c => c.addEventListener('click', () => {
+  try { localStorage.setItem(Q_LS, c.getAttribute('data-qq')); } catch (e) {}
+  applyQuality(); renderQ();
+}));
+
+/* ---------- lirik (LRCLIB) ---------- */
+let lrcLines = [];
+let lastLrcIdx = -2;
+let syncTimer = null;
+function parseTitle(raw) {
+  let t = String(raw || '').replace(/\[[^\]]*\]/g, ' ').replace(/\([^)]*\)/g, ' ').replace(/\|.*$/, ' ');
+  t = t.replace(/\s+/g, ' ').trim();
+  const parts = t.split(' - ');
+  let artist = '', title = t;
+  if (parts.length >= 2) { artist = parts[0].trim(); title = parts.slice(1).join(' - ').trim(); }
+  title = title.replace(/\b(official|lyrics?|video|audio|mv|music video|hd|4k|klip)\b/gi, ' ').replace(/\s+/g, ' ').trim();
+  return { artist, title };
+}
+function parseLRC(txt) {
+  const out = [];
+  String(txt || '').split('\n').forEach(line => {
+    const m = line.match(/\[(\d+):(\d+(?:\.\d+)?)\]\s?(.*)/);
+    if (m) out.push({ t: (+m[1]) * 60 + (+m[2]), text: m[3] || '♪' });
+  });
+  return out.sort((a, b) => a.t - b.t);
+}
+async function fetchLyrics(it) {
+  const card = document.getElementById('lyrCard');
+  const body = document.getElementById('lyrBody');
+  card.style.display = 'block';
+  body.innerHTML = '<p class="lyr-msg">⏳ lagi nyari liriknya…</p>';
+  lrcLines = []; lastLrcIdx = -2; stopSync();
+  const { artist, title } = parseTitle(it.title);
+  const queries = [];
+  if (artist && title) queries.push('track_name=' + encodeURIComponent(title) + '&artist_name=' + encodeURIComponent(artist));
+  if (title) queries.push('track_name=' + encodeURIComponent(title));
+  queries.push('q=' + encodeURIComponent(it.title));
+  let found = null;
+  for (const qs of queries) {
+    try {
+      const arr = await getJSON('https://lrclib.net/api/search?' + qs);
+      if (arr && arr.length) {
+        found = arr.find(x => x.syncedLyrics) || arr.find(x => x.plainLyrics) || null;
+        if (found) break;
+      }
+    } catch (e) {}
+  }
+  if (!found) { body.innerHTML = '<p class="lyr-msg">lirik buat lagu ini belum ketemu 😅<br>coba lagu lain ya.</p>'; return; }
+  if (found.syncedLyrics) {
+    lrcLines = parseLRC(found.syncedLyrics);
+    body.innerHTML = lrcLines.map((l, i) => '<div class="lyr-line" data-li="' + i + '" data-t="' + l.t + '">' + esc(l.text) + '</div>').join('');
+    body.querySelectorAll('.lyr-line').forEach(el => el.addEventListener('click', () => {
+      if (player && player.seekTo) { player.seekTo(+el.getAttribute('data-t'), true); player.playVideo(); }
+    }));
+    startSync();
+  } else {
+    body.innerHTML = '<div class="lyr-plain">' + esc(found.plainLyrics) + '</div>';
+  }
+}
+function startSync() {
+  stopSync();
+  if (!lrcLines.length) return;
+  syncTimer = setInterval(() => {
+    if (!player || !player.getCurrentTime) return;
+    let cur = 0;
+    try { cur = player.getCurrentTime(); } catch (e) { return; }
+    let idx = -1;
+    for (let i = 0; i < lrcLines.length; i++) { if (lrcLines[i].t <= cur) idx = i; else break; }
+    if (idx !== lastLrcIdx) {
+      lastLrcIdx = idx;
+      const body = document.getElementById('lyrBody');
+      body.querySelectorAll('.lyr-line').forEach(el => el.classList.toggle('on', +el.getAttribute('data-li') === idx));
+      const on = body.querySelector('.lyr-line.on');
+      if (on) on.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+  }, 300);
+}
+function stopSync() { if (syncTimer) { clearInterval(syncTimer); syncTimer = null; } }
 
 /* ---------- pencarian (lewat Worker) ---------- */
 const resultsBox = document.getElementById('results');
@@ -242,15 +369,16 @@ async function doSearch(q) {
   if (!q) return;
   document.querySelectorAll('[data-q]').forEach(c => c.classList.toggle('on', c.getAttribute('data-q') === q));
   document.getElementById('resTitle').textContent = 'Hasil buat "' + q + '"';
-  resultsBox.innerHTML = '<p class="empty">⏳ lagi nyari di YouTube…</p>';
+  resultsBox.innerHTML = '<p class="empty">⏳ lagi nyari…</p>';
   try {
     const j = await getJSON(WORKER + '/?q=' + encodeURIComponent(q));
     items = (j.items || []).map(x => ({ id: x.id, title: x.title || '', channel: x.channel || '', thumb: x.thumb || '' }));
     if (!items.length) { resultsBox.innerHTML = '<p class="empty">nggak ketemu. coba kata kunci lain ya.</p>'; return; }
-    resultsBox.innerHTML = '<div class="grid">' + items.map((it, i) =>
-      '<button class="card" data-i="' + i + '"><img src="' + esc(it.thumb) + '" alt="" loading="lazy">' +
-      '<div class="tt">' + esc(it.title) + '</div><div class="ar">📺 ' + esc(it.channel) + '</div></button>').join('') + '</div>';
-    resultsBox.querySelectorAll('.card').forEach(c => c.addEventListener('click', () => playAt(+c.getAttribute('data-i'))));
+    resultsBox.innerHTML = items.map((it, i) =>
+      '<button class="row" data-i="' + i + '"><img src="' + esc(it.thumb) + '" alt="" loading="lazy">' +
+      '<span class="meta"><span class="tt">' + esc(it.title) + '</span><span class="ar" style="display:block">📺 ' + esc(it.channel) + '</span></span>' +
+      '<span class="eq"><i></i><i></i><i></i></span></button>').join('');
+    resultsBox.querySelectorAll('.row').forEach(c => c.addEventListener('click', () => playAt(+c.getAttribute('data-i'))));
   } catch (e) {
     resultsBox.innerHTML = '<p class="empty">❌ server musiknya lagi nggak bisa dihubungi / kuota harian habis.<br>coba lagi nanti ya.</p>';
   }
@@ -258,6 +386,7 @@ async function doSearch(q) {
 document.getElementById('searchBtn').onclick = () => doSearch(document.getElementById('q').value);
 document.getElementById('q').addEventListener('keydown', e => { if (e.key === 'Enter') doSearch(e.target.value); });
 document.querySelectorAll('[data-q]').forEach(c => c.addEventListener('click', () => { document.getElementById('q').value = c.getAttribute('data-q'); doSearch(c.getAttribute('data-q')); }));
+renderQ();
 </script>
 </body>
 </html>
