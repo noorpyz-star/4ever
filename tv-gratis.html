@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TV Gratis — 4ever</title>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body { background:#0b0b12; color:#f2f2f5; font-family:-apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif; min-height:100vh; padding:18px 14px 40px; }
+  .wrap { max-width:560px; margin:0 auto; }
+  header { text-align:center; margin-bottom:6px; }
+  header h1 { font-size:24px; letter-spacing:1px; }
+  header h1 .gold { color:#d4af37; }
+  #jam { text-align:center; color:#9a9aad; font-size:13px; margin-bottom:16px; }
+  .player-box { background:#000; border:1px solid #26262e; border-radius:14px; overflow:hidden; }
+  .player-ratio { position:relative; width:100%; padding-top:56.25%; }
+  .player-ratio iframe { position:absolute; inset:0; width:100%; height:100%; border:0; }
+  #sedang { text-align:center; font-size:14px; color:#d4af37; margin:10px 0 14px; min-height:18px; }
+  .grup { margin-bottom:20px; }
+  .grup h2 { font-size:13px; letter-spacing:2px; color:#9a9aad; margin-bottom:10px; text-transform:uppercase; }
+  .grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+  .ch { display:flex; align-items:center; gap:10px; background:#15151d; border:1px solid #26262e; border-radius:12px; padding:12px; cursor:pointer; color:#f2f2f5; font-size:15px; font-weight:600; text-align:left; width:100%; }
+  .ch svg { flex:0 0 auto; }
+  .ch.aktif { border-color:#d4af37; background:#1d1a12; }
+  a.ch { text-decoration:none; }
+  .ch .panah { margin-left:auto; color:#9a9aad; font-weight:400; }
+  .catatan { background:#15151d; border:1px solid #26262e; border-radius:12px; padding:12px 14px; font-size:13px; color:#c9c9d4; line-height:1.55; margin-bottom:12px; }
+  .kembali { display:block; text-align:center; margin-top:22px; color:#d4af37; text-decoration:none; font-size:14px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header><h1>TV <span class="gold">GRATIS</span></h1></header>
+  <div id="jam">memuat jam…</div>
+
+  <div class="player-box">
+    <div class="player-ratio">
+      <iframe id="player" src="https://www.youtube.com/embed/live_stream?channel=UCneA4BuveCEgJql1m7lwFag" title="TV Gratis" allow="accelerometer; autoplay; encrypted-media; picture-in-picture" allowfullscreen referrerpolicy="strict-origin-when-cross-origin"></iframe>
+    </div>
+  </div>
+  <div id="sedang">Sedang memutar: Kompas TV</div>
+
+  <div class="grup">
+    <h2>Live di Halaman Ini — Resmi</h2>
+    <div class="grid" id="gridChannel"></div>
+  </div>
+
+  <div class="grup">
+    <h2>Emtek — di Vidio</h2>
+    <div class="grid">
+      <a class="ch" href="https://www.vidio.com/live/205-indosiar" target="_blank" rel="noopener"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#d4af37" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="6 3 20 12 6 21 6 3" fill="#d4af37" stroke="none"/></svg>Indosiar<span class="panah">↗</span></a>
+      <a class="ch" href="https://www.vidio.com/live/204-sctv" target="_blank" rel="noopener"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#d4af37" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="6 3 20 12 6 21 6 3" fill="#d4af37" stroke="none"/></svg>SCTV<span class="panah">↗</span></a>
+      <a class="ch" href="https://www.vidio.com/live" target="_blank" rel="noopener"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#d4af37" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="6 3 20 12 6 21 6 3" fill="#d4af37" stroke="none"/></svg>Semua Live Vidio<span class="panah">↗</span></a>
+    </div>
+  </div>
+
+  <div class="grup">
+    <h2>MNC — RCTI+</h2>
+    <div class="grid">
+      <a class="ch" href="https://www.rctiplus.com" target="_blank" rel="noopener"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#d4af37" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="6 3 20 12 6 21 6 3" fill="#d4af37" stroke="none"/></svg>RCTI+ (RCTI/MNCTV/GTV)<span class="panah">↗</span></a>
+      <a class="ch" href="https://www.visionplus.id" target="_blank" rel="noopener"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#d4af37" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="6 3 20 12 6 21 6 3" fill="#d4af37" stroke="none"/></svg>Vision+<span class="panah">↗</span></a>
+    </div>
+  </div>
+
+  <div class="grup">
+    <h2>Trans Media</h2>
+    <div class="grid">
+      <a class="ch" href="https://www.trans7.co.id/live" target="_blank" rel="noopener"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#d4af37" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="6 3 20 12 6 21 6 3" fill="#d4af37" stroke="none"/></svg>Trans7 Live<span class="panah">↗</span></a>
+      <a class="ch" href="https://www.transtv.co.id" target="_blank" rel="noopener"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#d4af37" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="6 3 20 12 6 21 6 3" fill="#d4af37" stroke="none"/></svg>Trans TV<span class="panah">↗</span></a>
+      <a class="ch" href="https://www.cnnindonesia.com/tv" target="_blank" rel="noopener"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#d4af37" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="6 3 20 12 6 21 6 3" fill="#d4af37" stroke="none"/></svg>CNN Indonesia TV<span class="panah">↗</span></a>
+      <a class="ch" href="https://www.cnbcindonesia.com/tv" target="_blank" rel="noopener"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#d4af37" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="6 3 20 12 6 21 6 3" fill="#d4af37" stroke="none"/></svg>CNBC Indonesia TV<span class="panah">↗</span></a>
+    </div>
+  </div>
+
+  <div class="grup">
+    <h2>Situs Live Resmi Lainnya</h2>
+    <div class="grid">
+      <a class="ch" href="https://www.kompas.tv/live" target="_blank" rel="noopener"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#d4af37" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="6 3 20 12 6 21 6 3" fill="#d4af37" stroke="none"/></svg>Kompas TV Live<span class="panah">↗</span></a>
+      <a class="ch" href="https://www.tvonenews.com/live" target="_blank" rel="noopener"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#d4af37" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="6 3 20 12 6 21 6 3" fill="#d4af37" stroke="none"/></svg>tvOne Live<span class="panah">↗</span></a>
+      <a class="ch" href="https://www.metrotvnews.com/live" target="_blank" rel="noopener"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#d4af37" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="6 3 20 12 6 21 6 3" fill="#d4af37" stroke="none"/></svg>Metro TV Live<span class="panah">↗</span></a>
+      <a class="ch" href="https://www.youtube.com/@CNNIndonesia/live" target="_blank" rel="noopener"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#d4af37" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="6 3 20 12 6 21 6 3" fill="#d4af37" stroke="none"/></svg>CNN Indonesia YT<span class="panah">↗</span></a>
+    </div>
+  </div>
+
+  <div class="catatan">
+    ⚽ <b>Bola:</b> Liga 1 (BRI Super League) &amp; Timnas Indonesia live di <b>Indosiar</b> — buka tombol Indosiar di atas (Vidio). Sebagian pertandingan di Vidio memerlukan paket berlangganan, mengikuti hak siar.
+  </div>
+  <div class="catatan">
+    Semua siaran di halaman ini berasal dari <b>sumber resmi</b> stasiun TV-nya (live streaming YouTube resmi &amp; situs resmi). Gratis dan legal. Kalau sebuah channel sedang tidak live, player-nya menampilkan info dari channel tersebut — tinggal pilih channel lain.
+  </div>
+
+  <a class="kembali" href="index.html">← Kembali ke Halaman Awal</a>
+</div>
+
+<script>
+  function updateJam() {
+    var el = document.getElementById('jam');
+    var now = new Date();
+    var fmt = new Intl.DateTimeFormat('id-ID', { timeZone: 'Asia/Jakarta', weekday: 'long', day: 'numeric', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false });
+    el.textContent = fmt.format(now).replace(/\./g, ':') + ' WIB';
+  }
+  updateJam();
+  setInterval(updateJam, 1000);
+
+  var ICON_TV = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#d4af37" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2"/><polyline points="17 2 12 7 7 2"/></svg>';
+
+  var CHANNELS = [
+    { nama: 'Kompas TV', id: 'UCneA4BuveCEgJql1m7lwFag' },
+    { nama: 'Metro TV',  id: 'UCzl0OrB3-ehunyotIQvK77A' },
+    { nama: 'tvOne',     id: 'UCER4rvDnRBPr_ncYW4UCZjg' },
+    { nama: 'iNews',     id: 'UCDJEaVHQSXJZ7JChaWCzNjQ' },
+    { nama: 'TVRI',      id: 'UCL_VtrkSQF-ErdG_8yanPxQ' },
+    { nama: 'Garuda TV', id: 'UCFsXccQmek5E6JfDFoqtuyg' }
+  ];
+
+  var grid = document.getElementById('gridChannel');
+  var player = document.getElementById('player');
+  var sedang = document.getElementById('sedang');
+  var tombol = [];
+
+  function putar(idx) {
+    var c = CHANNELS[idx];
+    player.src = 'https://www.youtube.com/embed/live_stream?channel=' + c.id + '&autoplay=1';
+    sedang.textContent = 'Sedang memutar: ' + c.nama;
+    tombol.forEach(function (b, i) { b.classList.toggle('aktif', i === idx); });
+  }
+
+  CHANNELS.forEach(function (c, i) {
+    var b = document.createElement('button');
+    b.className = 'ch' + (i === 0 ? ' aktif' : '');
+    b.innerHTML = ICON_TV + c.nama;
+    b.addEventListener('click', function () { putar(i); });
+    grid.appendChild(b);
+    tombol.push(b);
+  });
+</script>
+</body>
+</html>
