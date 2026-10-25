@@ -105,7 +105,7 @@ const SOAL = [
 ];
 const HURUF = "ABCDEFGHJKLMNPQRSTUVWXYZ";
 // Server sinyal gratis PeerJS + STUN cadangan (biar tembus NAT yang rewel)
-const PEER_CFG = { host: "0.peerjs.com", secure: true, port: 443, path: "/", config: { iceServers: [{ urls: "stun:stun.l.google.com:19302" }, { urls: "stun:global.stun.twilio.com:3478" }] } };
+const PEER_CFG = { host: "0.peerjs.com", secure: true, port: 443, path: "/", config: { iceServers: [{ urls: "stun:stun.l.google.com:19302" }, { urls: "stun:stun1.l.google.com:19302" }, { urls: "stun:stun2.l.google.com:19302" }, { urls: "stun:global.stun.twilio.com:3478" }, { urls: "stun:stun.cloudflare.com:3478" }] } };
 let mode = "online", saya = null, peer = null, conn = null;
 let idx = 0, jawab = {}, giliran1hp = "Afis";
 
@@ -149,6 +149,7 @@ function pasangConn(c) {
     }
   });
   conn.on("open", () => {
+    if (watchdogGabung) { clearTimeout(watchdogGabung); watchdogGabung = null; }
     if (mode === "online") mulaiJawabSiapa(saya);
   });
   conn.on("close", () => { alert("Koneksi putus — gabung ulang ya."); });
@@ -226,19 +227,32 @@ document.querySelectorAll("[data-saya]").forEach(b => b.onclick = () => {
   buatRoomKuis();
 });
 let retryGabung = 0;
+let watchdogGabung = null;
 function gabungRoomKuis(k) {
-  $("gabungErr").textContent = "Menghubungkan…";
+  $("gabungErr").textContent = "Menghubungkan… (percobaan " + (retryGabung + 1) + "/3)";
+  if (watchdogGabung) { clearTimeout(watchdogGabung); watchdogGabung = null; }
   if (peer) { try { peer.destroy(); } catch (e) {} }
   peer = new Peer(PEER_CFG);
   peer.on("open", () => {
     const c = peer.connect("afisdita-" + k, { reliable: true });
     pasangConn(c);
+    watchdogGabung = setTimeout(() => {
+      if (c.open) return;
+      try { c.close(); } catch (e) {}
+      if (retryGabung < 2) {
+        retryGabung++;
+        $("gabungErr").textContent = "Koneksi lambat, mencoba jalur lain (" + (retryGabung + 1) + "/3)…";
+        setTimeout(() => gabungRoomKuis(k), 1200);
+      } else {
+        $("gabungErr").textContent = "Gagal terhubung. Kemungkinan: pembuat room sudah keluar, sinyal lemah, atau kode salah — minta kode baru lalu tekan Gabung lagi.";
+      }
+    }, 7000);
   });
   peer.on("error", e => {
-    if (e.type === "peer-unavailable" && retryGabung < 3) {
+    if ((e.type === "peer-unavailable" || e.type === "network") && retryGabung < 2) {
       retryGabung++;
       $("gabungErr").textContent = "Room belum ketemu, mencoba lagi (" + retryGabung + "/3)… (pastikan pembuat room masih di layar tunggu)";
-      setTimeout(() => gabungRoomKuis(k), 2000);
+      setTimeout(() => gabungRoomKuis(k), 1500);
     } else {
       $("gabungErr").textContent = "Gagal gabung (" + e.type + ") — pastikan pembuat room masih di layar tunggu & kodenya benar.";
     }

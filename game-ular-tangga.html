@@ -95,7 +95,7 @@ const SNAKES = { 16: 6, 47: 26, 49: 11, 56: 53, 62: 19, 64: 60, 87: 24, 93: 73, 
 const WAJAH = ['', '⚀', '⚁', '⚂', '⚃', '⚄', '⚅'];
 const HURUF = "ABCDEFGHJKLMNPQRSTUVWXYZ";
 // Server sinyal gratis PeerJS + STUN cadangan (biar tembus NAT yang rewel)
-const PEER_CFG = { host: "0.peerjs.com", secure: true, port: 443, path: "/", config: { iceServers: [{ urls: "stun:stun.l.google.com:19302" }, { urls: "stun:global.stun.twilio.com:3478" }] } };
+const PEER_CFG = { host: "0.peerjs.com", secure: true, port: 443, path: "/", config: { iceServers: [{ urls: "stun:stun.l.google.com:19302" }, { urls: "stun:stun1.l.google.com:19302" }, { urls: "stun:stun2.l.google.com:19302" }, { urls: "stun:global.stun.twilio.com:3478" }, { urls: "stun:stun.cloudflare.com:3478" }] } };
 
 let peer = null, conn = null;
 let saya = 0;              // 0 = pembuat room, 1 = yang gabung
@@ -184,6 +184,7 @@ function pasangConn(c) {
     }
   });
   conn.on("open", () => {
+    if (watchdogGabung) { clearTimeout(watchdogGabung); watchdogGabung = null; }
     // begitu konek, kirim state terbaru ke lawan
     kirimState();
     mulaiGame();
@@ -245,25 +246,38 @@ $('btnBuat').onclick = () => {
 };
 
 let retryGabungU = 0;
+let watchdogGabung = null;
 function gabungRoomUlar(kode, nama) {
   saya = 1;
   $('lobby').classList.add('hide');
   $('tunggu').classList.remove('hide');
   $('kodeBesar').textContent = kode;
-  document.querySelector('#tunggu .kode-sub').textContent = 'menghubungkan ke room ' + kode + '…';
+  document.querySelector('#tunggu .kode-sub').textContent = 'menghubungkan ke room ' + kode + '… (percobaan ' + (retryGabungU + 1) + '/3)';
+  if (watchdogGabung) { clearTimeout(watchdogGabung); watchdogGabung = null; }
   if (peer) { try { peer.destroy(); } catch (e) {} }
   peer = new Peer(PEER_CFG);
   peer.on("open", () => {
     const c = peer.connect("afisdita-" + kode, { reliable: true });
     pasangConn(c);
+    watchdogGabung = setTimeout(() => {
+      if (c.open) return;
+      try { c.close(); } catch (e) {}
+      if (retryGabungU < 2) {
+        retryGabungU++;
+        document.querySelector('#tunggu .kode-sub').textContent = 'koneksi lambat, mencoba jalur lain (' + (retryGabungU + 1) + '/3)…';
+        setTimeout(() => gabungRoomUlar(kode, nama), 1200);
+      } else {
+        document.querySelector('#tunggu .kode-sub').textContent = 'gagal terhubung. kemungkinan: pembuat room sudah keluar, sinyal lemah, atau kode salah — minta kode baru lalu tekan gabung lagi.';
+      }
+    }, 7000);
     c.on("open", () => { c.send({ type: "hello", name: nama }); });
   });
   peer.on("error", e => {
     const sub = document.querySelector('#tunggu .kode-sub');
-    if (e.type === "peer-unavailable" && retryGabungU < 3) {
+    if ((e.type === "peer-unavailable" || e.type === "network") && retryGabungU < 2) {
       retryGabungU++;
-      sub.textContent = 'room belum ketemu, mencoba lagi (' + retryGabungU + '/3)… (pastikan pembuat room masih di layar tunggu)';
-      setTimeout(() => gabungRoomUlar(kode, nama), 2000);
+      sub.textContent = 'room belum ketemu, mencoba lagi (' + (retryGabungU + 1) + '/3)… (pastikan pembuat room masih di layar tunggu)';
+      setTimeout(() => gabungRoomUlar(kode, nama), 1500);
     } else {
       sub.textContent = 'gagal gabung (' + e.type + ') — pastikan pembuat room masih di layar tunggu & kodenya benar.';
     }
