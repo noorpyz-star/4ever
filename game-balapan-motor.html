@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Balapan Motor — Afis &amp; Dita</title>
+<script src="https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"></script>
+<style>
+  * { box-sizing: border-box; }
+  body { font-family: -apple-system, "Segoe UI", Roboto, Arial, sans-serif; margin: 0; background: #0f1220; color: #fff; padding: 16px; }
+  a { color: #ffd970; text-decoration: none; }
+  h1 { font-size: 22px; margin: 4px 0 2px; text-align: center; }
+  .sub { text-align: center; color: #aab0c6; font-size: 13px; margin-bottom: 16px; }
+  .players { display: flex; justify-content: center; gap: 24px; margin-bottom: 14px; }
+  .pl { text-align: center; font-size: 13px; }
+  .pl img { width: 56px; height: 56px; border-radius: 50%; object-fit: cover; border: 3px solid #444; display: block; margin: 0 auto 4px; }
+  .pl b { display: block; }
+  .box { max-width: 360px; margin: 0 auto 12px; background: #1a1e33; border: 1px solid #2a2f4a; border-radius: 14px; padding: 14px; text-align: center; }
+  .box p { font-size: 13.5px; color: #c9cede; line-height: 1.6; margin: 0 0 10px; }
+  .box input { width: 100%; font-size: 16px; padding: 10px; border-radius: 10px; border: 1px solid #444; background: #0f1220; color: #fff; text-align: center; text-transform: uppercase; margin-bottom: 10px; }
+  button { font-size: 15px; padding: 11px 16px; border: none; border-radius: 10px; cursor: pointer; font-weight: 700; }
+  .btn-gold { background: #d4af37; color: #1a1a1a; width: 100%; margin-bottom: 8px; }
+  .btn-gelap { background: #2a2f4a; color: #fff; width: 100%; margin-bottom: 8px; }
+  .btn-gold:disabled { opacity: .45; }
+  .pilih { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 10px; }
+  .pilih button { background: #2a2f4a; color: #fff; font-size: 13px; padding: 10px 6px; }
+  .pilih button.on { background: #d4af37; color: #1a1a1a; }
+  .pilih button small { display: block; font-weight: 400; font-size: 11px; opacity: .8; margin-top: 3px; }
+  .kode { font-size: 30px; letter-spacing: 6px; font-weight: 800; color: #ffd970; margin: 6px 0; }
+  .hidden { display: none !important; }
+  #hud { max-width: 360px; margin: 0 auto 8px; }
+  #hud .row { display: flex; justify-content: space-between; font-size: 14px; font-weight: 700; margin-bottom: 6px; }
+  #hud .bar { position: relative; height: 16px; background: #2a2f4a; border-radius: 999px; overflow: hidden; }
+  #hud .bar i { display: block; height: 100%; background: #d4af37; width: 0%; }
+  #hud .opp { position: absolute; top: -2px; font-size: 18px; transition: left .2s linear; }
+  #hud .crash { color: #ff6b6b; text-align: center; font-weight: 800; min-height: 20px; margin-top: 4px; }
+  #cvWrap { position: relative; max-width: 360px; margin: 0 auto; }
+  #cv { width: 100%; display: block; border-radius: 14px; background: #222; }
+  #count { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-size: 90px; font-weight: 900; color: #ffd970; text-shadow: 0 0 24px #000; }
+  #ctrl { max-width: 360px; margin: 10px auto 0; display: flex; gap: 8px; }
+  #ctrl button { flex: 1; font-size: 26px; padding: 14px 0; background: #2a2f4a; color: #fff; }
+  #ctrl button.nitro { background: #d4af37; color: #1a1a1a; font-size: 16px; }
+  #hasil h2 { font-size: 24px; margin: 6px 0; }
+</style>
+</head>
+<body>
+<p><a href="game-hub-afis-dita.html">← Kembali ke Menu Game</a></p>
+<h1>🏍️ Balapan Motor</h1>
+<p class="sub">Afis vs Dita — balapan 1500 m! Pilih motor &amp; tempat, awas nabrak = CRASH!</p>
+
+<div class="players">
+  <div class="pl"><img src="foto-afis.jpg" alt="Afis"><b>Afis 🏍️</b></div>
+  <div class="pl"><img src="foto-dita.jpg" alt="Dita"><b>Dita 🏍️</b></div>
+</div>
+
+<!-- MODE -->
+<div class="box" id="modeBox">
+  <p>Pilih cara main:</p>
+  <button class="btn-gold" id="btnBuat">🌐 Online — Buat Room</button>
+  <button class="btn-gelap" id="btnGabungShow">🌐 Online — Gabung Room</button>
+  <button class="btn-gelap" id="btnSolo">🤖 Latihan Sendiri (lawan bot)</button>
+</div>
+
+<!-- BUAT ROOM -->
+<div class="box hidden" id="buatBox">
+  <p><b>Pilih motormu:</b></p>
+  <div class="pilih" id="pilihMotorBuat"></div>
+  <p><b>Pilih tempat balapan:</b></p>
+  <div class="pilih" id="pilihTrackBuat"></div>
+  <p><b>Kamu main sebagai siapa?</b></p>
+  <div class="pilih" id="pilihHost">
+    <button data-host="Afis">Saya Afis 🏍️</button>
+    <button data-host="Dita">Saya Dita 🏍️</button>
+  </div>
+  <p id="hostErr" style="color:#ff8080"></p>
+  <button class="btn-gold" id="btnBuatRoom">Buat Room &amp; Kirim Kode</button>
+  <div id="buatHasil" class="hidden">
+    <p>Kirim kode ini ke pasanganmu:</p>
+    <div class="kode" id="kodeBuat"></div>
+    <p id="tunggu">Menghubungkan… (tetap di halaman ini)</p>
+    <p id="lawanInfo" style="color:#4caf50"></p>
+    <button class="btn-gold" id="btnMulai" disabled>Mulai Balapan ▶</button>
+  </div>
+</div>
+
+<!-- GABUNG ROOM -->
+<div class="box hidden" id="gabungBox">
+  <p>Masukkan kode room, lalu pilih motor &amp; identitasmu:</p>
+  <input id="inputKode" maxlength="4" placeholder="XXXX">
+  <div class="pilih" id="pilihMotorGabung"></div>
+  <button class="btn-gold" data-gabung="Afis">Gabung sebagai Afis 🏍️</button>
+  <button class="btn-gelap" data-gabung="Dita">Gabung sebagai Dita 🏍️</button>
+  <p id="gabungErr" style="color:#ff8080"></p>
+</div>
+
+<!-- SOLO -->
+<div class="box hidden" id="soloBox">
+  <p><b>Pilih motormu:</b></p>
+  <div class="pilih" id="pilihMotorSolo"></div>
+  <p><b>Pilih tempat balapan:</b></p>
+  <div class="pilih" id="pilihTrackSolo"></div>
+  <button class="btn-gold" id="btnMulaiLatihan">Mulai Latihan ▶</button>
+</div>
+
+<!-- GAME -->
+<div id="gameArea" class="hidden">
+  <div id="hud">
+    <div class="row"><span id="hudSpeed">0 km/jam</span><span id="hudDist">0 / 1500 m</span></div>
+    <div class="bar"><i id="barSaya"></i><span class="opp" id="markOpp" style="left:0%">🏍️</span></div>
+    <div class="row" style="margin-top:4px"><span id="hudSaya">Kamu</span><span id="hudOpp">Lawan</span></div>
+    <div class="crash" id="hudCrash"></div>
+  </div>
+  <div id="cvWrap">
+    <canvas id="cv" width="360" height="540"></canvas>
+    <div id="count" class="hidden"></div>
+  </div>
+  <div id="ctrl">
+    <button id="btnKiri">◀</button>
+    <button class="nitro" id="btnNitro">⚡ NITRO (<span id="nitroN">3</span>)</button>
+    <button id="btnKanan">▶</button>
+  </div>
+</div>
+
+<!-- HASIL -->
+<div class="box hidden" id="hasilBox">
+  <h2 id="hasilText"></h2>
+  <p id="hasilSub"></p>
+  <button class="btn-gold" id="btnLagi">🔄 Balapan Lagi</button>
+  <button class="btn-gelap" id="btnKeluar">Keluar ke Menu Mode</button>
+</div>
+
+<script>
+const $ = id => document.getElementById(id);
+const HURUF = "ABCDEFGHJKLMNPQRSTUVWXYZ";
+const PEER_CFG = { host: "0.peerjs.com", secure: true, port: 443, path: "/", config: { iceServers: [{ urls: "stun:stun.l.google.com:19302" }, { urls: "stun:stun1.l.google.com:19302" }, { urls: "stun:stun2.l.google.com:19302" }, { urls: "stun:global.stun.twilio.com:3478" }, { urls: "stun:stun.cloudflare.com:3478" }] } };
+const RACE_LEN = 1500;
+
+// ---- Data motor & tempat (bisa dipilih) ----
+const MOTORS = {
+  matic:   { name: "Matic Lincah", color: "#5ec8f8", top: 125, accel: 90, handling: 10, desc: "Lincah, gampang nyalip" },
+  sport150:{ name: "Sport 150",    color: "#ffd970", top: 150, accel: 65, handling: 7,  desc: "Seimbang di semua sisi" },
+  sport250:{ name: "Sport 250",    color: "#c792ea", top: 175, accel: 50, handling: 5,  desc: "Paling kencang, agak liar" },
+  bebek:   { name: "Bebek Balap",  color: "#7ddb52", top: 140, accel: 100, handling: 8, desc: "Tarikan awal paling galak" },
+};
+const TRACKS = {
+  kota:   { name: "Kota Siang",   road: "#2b2f45", side: "#1c2b1a", spawn: 0.85, decor: "building", label: "☀️ Kota Siang" },
+  pantai: { name: "Pantai Senja", road: "#3a2f45", side: "#7a4a21", spawn: 0.60, decor: "palm",     label: "🌅 Pantai Senja" },
+  gunung: { name: "Gunung Malam", road: "#232338", side: "#0f1d12", spawn: 1.20, decor: "pine",     label: "🌙 Gunung Malam" },
+};
+const LANES = [72, 180, 288];
+const BIKE_Y = 440;
+
+// ---- State balapan (logika murni, bisa dites) ----
+function baruRace(motorKey, trackKey) {
+  return {
+    motor: MOTORS[motorKey], track: TRACKS[trackKey],
+    dist: 0, speed: 0, lane: 1, x: LANES[1], crashT: 0,
+    nitro: 3, nitroT: 0, obstacles: [], spawnT: 1, roadOff: 0,
+    finished: false, over: false, winner: null, oppP: 0, oppCrash: false,
+    botP: 0, botCrashT: 0, time: 0,
+  };
+}
+function targetSpeed(st) {
+  if (st.crashT > 0) return 0;
+  let t = st.motor.top;
+  if (st.nitroT > 0) t += 45;
+  return t;
+}
+function pakaiNitro(st) {
+  if (st.nitro <= 0 || st.crashT > 0 || st.finished || st.over) return false;
+  st.nitro--; st.nitroT = 2; return true;
+}
+function pindahLane(st, dir) {
+  if (st.crashT > 0 || st.finished || st.over) return;
+  st.lane = Math.max(0, Math.min(2, st.lane + dir));
+}
+function tabrakan(st, ob) {
+  // tabrakan kalau sejalur & posisi vertikal berdekatan
+  return ob.lane === st.lane && Math.abs(ob.y - BIKE_Y) < 48;
+}
+function stepRace(st, dt, isBot) {
+  if (st.over || st.finished) return;
+  st.time += dt;
+  if (st.crashT > 0) {
+    st.crashT -= dt;
+    st.speed = Math.max(0, st.speed - 200 * dt);
+  } else {
+    const t = targetSpeed(st);
+    st.speed += (t - st.speed) * Math.min(1, (st.motor.accel / 100) * dt * 2.2);
+    if (st.nitroT > 0) st.nitroT -= dt;
+  }
+  st.dist += (st.speed / 3.6) * dt;
+  st.roadOff = (st.roadOff + st.speed * dt * 1.2) % 60;
+  // geser motor ke jalur target (handling = kecepatan geser)
+  const tx = LANES[st.lane];
+  st.x += (tx - st.x) * Math.min(1, st.motor.handling * dt);
+  // rintangan: muncul & jalan ke bawah
+  st.spawnT -= dt * (0.35 + st.speed / 120) * st.track.spawn;
+  if (st.spawnT <= 0) {
+    st.spawnT = 0.9 + Math.random() * 0.9;
+    const jenis = Math.random() < 0.6 ? "mobil" : (Math.random() < 0.5 ? "oli" : "cone");
+    st.obstacles.push({ lane: Math.floor(Math.random() * 3), y: -60, jenis, wob: Math.random() * 6 });
+  }
+  for (const ob of st.obstacles) ob.y += (st.speed * 1.1 + 60) * dt;
+  st.obstacles = st.obstacles.filter(ob => ob.y < 600);
+  for (const ob of st.obstacles) {
+    if (!ob.hit && tabrakan(st, ob)) {
+      ob.hit = true; st.crashT = 2; st.speed = 0;
+    }
+  }
+  if (st.dist >= RACE_LEN) { st.dist = RACE_LEN; st.finished = true; }
+  // bot (latihan sendiri): maju sendiri, kadang crash
+  if (isBot) {
+    if (st.botCrashT > 0) st.botCrashT -= dt;
+    else {
+      st.botP += (115 / 3.6) * dt / RACE_LEN * 100;
+      if (Math.random() < dt * 0.12) st.botCrashT = 2;
+    }
+    if (st.botP >= 100) { st.botP = 100; st.over = true; st.winner = "bot"; }
+  }
+  if (st.finished && !st.over) { st.over = true; st.winner = "saya"; }
+}
+
+// ---- Gambar (canvas) ----
+const cv = $("cv"), ctx = cv.getContext("2d");
+function gambarMotor(x, y, color, jatuh) {
+  ctx.save();
+  ctx.translate(x, y);
+  if (jatuh) ctx.rotate(Math.PI / 2.2);
+  ctx.fillStyle = "#111"; ctx.fillRect(-8, -30, 16, 60);
+  ctx.fillStyle = color; ctx.beginPath(); ctx.roundRect(-12, -22, 24, 44, 8); ctx.fill();
+  ctx.fillStyle = "#222"; ctx.beginPath(); ctx.arc(0, -8, 9, 0, 7); ctx.fill();
+  ctx.fillStyle = "#ffd970"; ctx.beginPath(); ctx.arc(0, -8, 5, 0, 7); ctx.fill();
+  ctx.restore();
+}
+function gambarRintangan(ob) {
+  const x = LANES[ob.lane];
+  if (ob.jenis === "mobil") {
+    ctx.fillStyle = ob.hit ? "#555" : "#e74c3c";
+    ctx.beginPath(); ctx.roundRect(x - 24, ob.y - 34, 48, 68, 10); ctx.fill();
+    ctx.fillStyle = "#bfe3ff"; ctx.fillRect(x - 17, ob.y - 14, 34, 18);
+    ctx.fillStyle = "#111"; ctx.fillRect(x - 27, ob.y - 22, 6, 16); ctx.fillRect(x + 21, ob.y - 22, 6, 16);
+    ctx.fillRect(x - 27, ob.y + 10, 6, 16); ctx.fillRect(x + 21, ob.y + 10, 6, 16);
+  } else if (ob.jenis === "oli") {
+    ctx.fillStyle = "rgba(10,10,10,.85)";
+    ctx.beginPath(); ctx.ellipse(x, ob.y, 22, 12, 0, 0, 7); ctx.fill();
+  } else {
+    ctx.fillStyle = "#ff8c1a";
+    ctx.beginPath(); ctx.moveTo(x, ob.y - 20); ctx.lineTo(x - 14, ob.y + 14); ctx.lineTo(x + 14, ob.y + 14); ctx.closePath(); ctx.fill();
+    ctx.fillStyle = "#fff"; ctx.fillRect(x - 3, ob.y - 4, 6, 8);
+  }
+}
+function renderRace(st) {
+  const tr = st.track;
+  ctx.fillStyle = tr.side; ctx.fillRect(0, 0, 360, 540);
+  // dekor pinggir jalan
+  for (let i = 0; i < 9; i++) {
+    const y = ((i * 60 + st.roadOff * 2) % 540) - 30;
+    if (tr.decor === "building") {
+      ctx.fillStyle = "#3a3f5c"; ctx.fillRect(4, y, 26, 44); ctx.fillRect(330, y, 26, 44);
+      ctx.fillStyle = "#ffd970"; ctx.fillRect(10, y + 8, 6, 6); ctx.fillRect(336, y + 8, 6, 6);
+    } else if (tr.decor === "palm") {
+      ctx.fillStyle = "#2e7d32"; ctx.beginPath(); ctx.arc(18, y + 20, 14, 0, 7); ctx.fill();
+      ctx.beginPath(); ctx.arc(342, y + 20, 14, 0, 7); ctx.fill();
+    } else {
+      ctx.fillStyle = "#14532d"; ctx.beginPath(); ctx.moveTo(18, y); ctx.lineTo(4, y + 34); ctx.lineTo(32, y + 34); ctx.closePath(); ctx.fill();
+      ctx.beginPath(); ctx.moveTo(342, y); ctx.lineTo(328, y + 34); ctx.lineTo(356, y + 34); ctx.closePath(); ctx.fill();
+      if (tr.decor === "pine") { ctx.fillStyle = "#fff"; ctx.beginPath(); ctx.arc(60, (y + 40) % 540, 2, 0, 7); ctx.fill(); }
+    }
+  }
+  ctx.fillStyle = tr.road; ctx.fillRect(40, 0, 280, 540);
+  ctx.strokeStyle = "#f5f5f5"; ctx.lineWidth = 3; ctx.setLineDash([28, 32]); ctx.lineDashOffset = -st.roadOff;
+  ctx.beginPath(); ctx.moveTo(133, 0); ctx.lineTo(133, 540); ctx.moveTo(227, 0); ctx.lineTo(227, 540); ctx.stroke();
+  ctx.setLineDash([]);
+  for (const ob of st.obstacles) gambarRintangan(ob);
+  gambarMotor(st.x, BIKE_Y, st.motor.color, st.crashT > 0);
+  if (st.crashT > 0) {
+    ctx.font = "900 34px sans-serif"; ctx.textAlign = "center";
+    ctx.fillStyle = "#ff5252"; ctx.fillText("💥 CRASH!", 180, 200);
+  }
+}
+function updateHUD(st, namaSaya, namaLawan) {
+  $("hudSpeed").textContent = Math.round(st.speed) + " km/jam";
+  $("hudDist").textContent = Math.round(st.dist) + " / " + RACE_LEN + " m";
+  const p = Math.min(100, st.dist / RACE_LEN * 100);
+  $("barSaya").style.width = p + "%";
+  const opp = soloMode ? st.botP : st.oppP;
+  $("markOpp").style.left = "calc(" + Math.min(100, opp) + "% - 9px)";
+  $("hudSaya").textContent = namaSaya + " • " + Math.round(p) + "%";
+  $("hudOpp").textContent = namaLawan + " • " + Math.round(Math.min(100, opp)) + "%";
+  $("nitroN").textContent = st.nitro;
+  $("hudCrash").textContent = st.crashT > 0 ? "CRASH! Tunggu 2 detik…" : (st.oppCrash ? namaLawan + " CRASH! 💥" : "");
+}
+
+// ---- Jaringan (PeerJS + watchdog anti-gantung) ----
+let peer = null, conn = null, saya = null, lawan = null, sayaMotor = "sport150", sayaTrack = "kota";
+let hostMode = false, soloMode = false, race = null, rafId = null, lastT = 0, lastProg = 0;
+let retryGabung = 0, watchdogGabung = null, lawanMotor = "sport150";
+
+function pasangConn(c) {
+  conn = c;
+  conn.on("data", d => {
+    if (!d) return;
+    if (d.type === "hello") {
+      lawan = d.name; lawanMotor = d.bike || "sport150";
+      $("lawanInfo").textContent = "✅ " + lawan + " sudah gabung (" + MOTORS[lawanMotor].name + ")!";
+      $("btnMulai").disabled = false;
+    } else if (d.type === "start") {
+      mulaiRace(d.track, false);
+    } else if (d.type === "prog") {
+      if (race) { race.oppP = d.p; race.oppCrash = !!d.crash; }
+    } else if (d.type === "finish") {
+      if (race && !race.over) {
+        race.over = true; race.winner = "lawan";
+        tampilHasil(false, d.name);
+      }
+    } else if (d.type === "rematch") {
+      mulaiRace(sayaTrack, false);
+    }
+  });
+  conn.on("close", () => { if (race && !race.over) { race.over = true; tampilHasil(null, null); } });
+}
+function kirim(o) { if (conn && conn.open) conn.send(o); }
+function kodeAcak() { let k = ""; for (let i = 0; i < 4; i++) k += HURUF[Math.floor(Math.random() * HURUF.length)]; return k; }
+
+function buatRoom() {
+  const kode = kodeAcak();
+  $("kodeBuat").textContent = kode;
+  $("buatHasil").classList.remove("hidden");
+  $("tunggu").textContent = "Menghubungkan… (tetap di halaman ini)";
+  if (peer) { try { peer.destroy(); } catch (e) {} }
+  peer = new Peer("afisdita-" + kode, PEER_CFG);
+  peer.on("open", () => { $("tunggu").textContent = "Kode aktif! Pasanganmu tinggal gabung."; });
+  peer.on("connection", c => { pasangConn(c); });
+  peer.on("error", e => {
+    if (e.type === "unavailable-id") buatRoom();
+    else $("tunggu").textContent = "Gagal konek (" + e.type + ") — tekan Keluar & buat room lagi.";
+  });
+}
+function gabungRoom(k) {
+  $("gabungErr").textContent = "Menghubungkan… (percobaan " + (retryGabung + 1) + "/3)";
+  if (watchdogGabung) { clearTimeout(watchdogGabung); watchdogGabung = null; }
+  if (peer) { try { peer.destroy(); } catch (e) {} }
+  peer = new Peer(PEER_CFG);
+  peer.on("open", () => {
+    const c = peer.connect("afisdita-" + k, { reliable: true });
+    pasangConn(c);
+    watchdogGabung = setTimeout(() => {
+      if (c.open) return;
+      try { c.close(); } catch (e) {}
+      if (retryGabung < 2) {
+        retryGabung++;
+        $("gabungErr").textContent = "Koneksi lambat, mencoba jalur lain (" + (retryGabung + 1) + "/3)…";
+        setTimeout(() => gabungRoom(k), 1200);
+      } else {
+        $("gabungErr").textContent = "Gagal terhubung. Kemungkinan: pembuat room sudah keluar, sinyal lemah, atau kode salah — minta kode baru lalu tekan Gabung lagi.";
+      }
+    }, 7000);
+    c.on("open", () => {
+      if (watchdogGabung) { clearTimeout(watchdogGabung); watchdogGabung = null; }
+      kirim({ type: "hello", name: saya, bike: sayaMotor });
+      $("gabungErr").textContent = "Terhubung! Menunggu host memulai balapan…";
+    });
+  });
+  peer.on("error", e => {
+    if ((e.type === "peer-unavailable" || e.type === "network") && retryGabung < 2) {
+      retryGabung++;
+      $("gabungErr").textContent = "Room belum ketemu, mencoba lagi (" + (retryGabung + 1) + "/3)… (pastikan pembuat room masih di layar tunggu)";
+      setTimeout(() => gabungRoom(k), 1500);
+    } else {
+      $("gabungErr").textContent = "Gagal gabung (" + e.type + ") — pastikan pembuat room masih di layar tunggu & kodenya benar.";
+    }
+  });
+}
+
+// ---- Alur balapan ----
+function keMode() {
+  if (peer) { try { peer.destroy(); } catch (e) {} }
+  peer = null; conn = null; race = null; soloMode = false;
+  cancelAnimationFrame(rafId);
+  ["modeBox"].forEach(id => $(id).classList.remove("hidden"));
+  ["buatBox", "gabungBox", "soloBox", "gameArea", "hasilBox"].forEach(id => $(id).classList.add("hidden"));
+}
+function mulaiRace(trackKey, isHostStart) {
+  sayaTrack = trackKey;
+  race = baruRace(sayaMotor, trackKey);
+  $("modeBox").classList.add("hidden");
+  $("buatBox").classList.add("hidden");
+  $("gabungBox").classList.add("hidden");
+  $("soloBox").classList.add("hidden");
+  $("hasilBox").classList.add("hidden");
+  $("gameArea").classList.remove("hidden");
+  // hitung mundur 3-2-1-GO
+  const cw = $("count"); cw.classList.remove("hidden");
+  let n = 3;
+  const tick = () => {
+    if (n > 0) { cw.textContent = n; n--; setTimeout(tick, 700); }
+    else {
+      cw.textContent = "GO!"; setTimeout(() => cw.classList.add("hidden"), 500);
+      lastT = performance.now(); lastProg = 0;
+      cancelAnimationFrame(rafId);
+      const loop = t => {
+        const dt = Math.min(0.05, (t - lastT) / 1000); lastT = t;
+        stepRace(race, dt, soloMode);
+        renderRace(race);
+        updateHUD(race, saya || "Kamu", soloMode ? "Bot 🤖" : (lawan || "Lawan"));
+        if (!soloMode && t - lastProg > 200) {
+          lastProg = t;
+          kirim({ type: "prog", p: Math.min(100, race.dist / RACE_LEN * 100), crash: race.crashT > 0 });
+        }
+        if (race.finished && !race._finishSent) {
+          race._finishSent = true;
+          if (!soloMode) kirim({ type: "finish", name: saya });
+          tampilHasil(true, null);
+        } else if (race.over) {
+          tampilHasil(race.winner === "saya", soloMode ? "Bot 🤖" : lawan);
+        } else {
+          rafId = requestAnimationFrame(loop);
+        }
+      };
+      rafId = requestAnimationFrame(loop);
+    }
+  };
+  tick();
+}
+function tampilHasil(menang, namaLawan) {
+  if (!race || race._hasilShown) return;
+  race._hasilShown = true;
+  cancelAnimationFrame(rafId);
+  $("gameArea").classList.add("hidden");
+  $("hasilBox").classList.remove("hidden");
+  if (menang === null) {
+    $("hasilText").textContent = "Koneksi putus 😢";
+    $("hasilSub").textContent = "Lawan keluar dari balapan. Balapan lagi yuk!";
+  } else if (menang) {
+    $("hasilText").textContent = "🏆 KAMU MENANG!";
+    $("hasilSub").textContent = "Gasss! " + MOTORS[sayaMotor].name + " di " + TRACKS[sayaTrack].name + " memang juaranya.";
+  } else {
+    $("hasilText").textContent = "😅 " + (namaLawan || "Lawan") + " MENANG!";
+    $("hasilSub").textContent = "Balapan lagi, balas kekalahanmu!";
+  }
+}
+
+// ---- UI: pilih motor & tempat ----
+function isiPilih(elId, data, pilih, onPick) {
+  const el = $(elId); el.innerHTML = "";
+  for (const key of Object.keys(data)) {
+    const b = document.createElement("button");
+    b.innerHTML = data[key].name + "<small>" + (data[key].desc || data[key].label) + "</small>";
+    if (key === pilih) b.classList.add("on");
+    b.onclick = () => { el.querySelectorAll("button").forEach(x => x.classList.remove("on")); b.classList.add("on"); onPick(key); };
+    el.appendChild(b);
+  }
+}
+isiPilih("pilihMotorBuat", MOTORS, sayaMotor, k => sayaMotor = k);
+isiPilih("pilihTrackBuat", TRACKS, sayaTrack, k => sayaTrack = k);
+isiPilih("pilihMotorGabung", MOTORS, sayaMotor, k => sayaMotor = k);
+isiPilih("pilihMotorSolo", MOTORS, sayaMotor, k => sayaMotor = k);
+isiPilih("pilihTrackSolo", TRACKS, sayaTrack, k => sayaTrack = k);
+document.querySelectorAll("[data-host]").forEach(b => b.onclick = () => {
+  saya = b.dataset.host;
+  document.querySelectorAll("[data-host]").forEach(x => x.classList.remove("on"));
+  b.classList.add("on");
+  $("hostErr").textContent = "";
+});
+
+$("btnBuat").onclick = () => { $("modeBox").classList.add("hidden"); $("buatBox").classList.remove("hidden"); };
+$("btnGabungShow").onclick = () => { $("modeBox").classList.add("hidden"); $("gabungBox").classList.remove("hidden"); };
+$("btnBuatRoom").onclick = () => {
+  if (!saya) { $("hostErr").textContent = "Pilih dulu: kamu Afis atau Dita."; return; }
+  hostMode = true; buatRoom();
+};
+$("btnMulai").onclick = () => {
+  kirim({ type: "start", track: sayaTrack });
+  mulaiRace(sayaTrack, true);
+};
+document.querySelectorAll("[data-gabung]").forEach(b => b.onclick = () => {
+  const k = $("inputKode").value.trim().toUpperCase();
+  if (k.length !== 4) { $("gabungErr").textContent = "Kode harus 4 huruf."; return; }
+  saya = b.dataset.gabung; soloMode = false; retryGabung = 0;
+  gabungRoom(k);
+});
+$("btnSolo").onclick = () => { $("modeBox").classList.add("hidden"); $("soloBox").classList.remove("hidden"); };
+$("btnMulaiLatihan").onclick = () => {
+  soloMode = true; saya = "Kamu"; lawan = "Bot 🤖";
+  mulaiRace(sayaTrack, true);
+};
+$("btnKiri").onclick = () => { if (race) pindahLane(race, -1); };
+$("btnKanan").onclick = () => { if (race) pindahLane(race, 1); };
+$("btnNitro").onclick = () => { if (race && pakaiNitro(race)) updateHUD(race, saya || "Kamu", soloMode ? "Bot 🤖" : (lawan || "Lawan")); };
+document.addEventListener("keydown", e => {
+  if (!race) return;
+  if (e.key === "ArrowLeft") pindahLane(race, -1);
+  if (e.key === "ArrowRight") pindahLane(race, 1);
+  if (e.key === " ") { e.preventDefault(); if (race) pakaiNitro(race); }
+});
+let tx0 = null;
+$("cv").addEventListener("touchstart", e => { tx0 = e.touches[0].clientX; }, { passive: true });
+$("cv").addEventListener("touchend", e => {
+  if (tx0 === null || !race) return;
+  const dx = e.changedTouches[0].clientX - tx0;
+  if (dx > 30) pindahLane(race, 1); else if (dx < -30) pindahLane(race, -1);
+  tx0 = null;
+}, { passive: true });
+$("btnLagi").onclick = () => {
+  if (soloMode) { mulaiRace(sayaTrack, true); return; }
+  kirim({ type: "rematch" });
+  mulaiRace(sayaTrack, false);
+};
+$("btnKeluar").onclick = keMode;
+</script>
+</body>
+</html>
