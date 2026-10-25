@@ -156,7 +156,7 @@ function baruRace(motorKey, trackKey) {
     motor: MOTORS[motorKey], track: TRACKS[trackKey],
     dist: 0, speed: 0, lane: 1, x: LANES[1], crashT: 0,
     nitro: 3, nitroT: 0, obstacles: [], spawnT: 1, roadOff: 0,
-    finished: false, over: false, winner: null, oppP: 0, oppCrash: false,
+    finished: false, over: false, winner: null, oppP: 0, oppCrash: false, oppLane: 1, oppX: LANES[1],
     botP: 0, botCrashT: 0, time: 0,
   };
 }
@@ -274,6 +274,17 @@ function renderRace(st) {
   ctx.setLineDash([]);
   for (const ob of st.obstacles) gambarRintangan(ob);
   gambarMotor(st.x, BIKE_Y, st.motor.color, st.crashT > 0);
+  // motor lawan di aspal yang sama: posisi vertikal = selisih progres (di depan = lebih ke atas)
+  if (typeof lawan !== "undefined" && lawan && !soloMode) {
+    const myP = st.dist / RACE_LEN * 100;
+    const diff = Math.max(-50, Math.min(170, (st.oppP - myP) * 3));
+    const oy = BIKE_Y - diff;
+    const oColor = (typeof MOTORS !== "undefined" && MOTORS[lawanMotor]) ? MOTORS[lawanMotor].color : "#ff7eb6";
+    gambarMotor(st.oppX, oy, oColor, st.oppCrash);
+    ctx.font = "700 13px sans-serif"; ctx.textAlign = "center";
+    ctx.strokeStyle = "#000"; ctx.lineWidth = 3; ctx.strokeText(lawan, st.oppX, oy - 46);
+    ctx.fillStyle = "#fff"; ctx.fillText(lawan, st.oppX, oy - 46);
+  }
   if (st.crashT > 0) {
     ctx.font = "900 34px sans-serif"; ctx.textAlign = "center";
     ctx.fillStyle = "#ff5252"; ctx.fillText("💥 CRASH!", 180, 200);
@@ -299,6 +310,9 @@ let retryGabung = 0, watchdogGabung = null, lawanMotor = "sport150";
 
 function pasangConn(c) {
   conn = c;
+  c.on("open", () => {
+    if (hostMode) kirim({ type: "hello", name: saya, bike: sayaMotor });
+  });
   conn.on("data", d => {
     if (!d) return;
     if (d.type === "hello") {
@@ -308,7 +322,11 @@ function pasangConn(c) {
     } else if (d.type === "start") {
       mulaiRace(d.track, false);
     } else if (d.type === "prog") {
-      if (race) { race.oppP = d.p; race.oppCrash = !!d.crash; }
+      if (race) {
+        race.oppP = d.p; race.oppCrash = !!d.crash;
+        if (typeof d.lane === "number") race.oppLane = d.lane;
+        if (d.bike && MOTORS[d.bike]) lawanMotor = d.bike;
+      }
     } else if (d.type === "finish") {
       if (race && !race.over) {
         race.over = true; race.winner = "lawan";
@@ -402,11 +420,12 @@ function mulaiRace(trackKey, isHostStart) {
       const loop = t => {
         const dt = Math.min(0.05, (t - lastT) / 1000); lastT = t;
         stepRace(race, dt, soloMode);
+        if (!soloMode) race.oppX += (LANES[race.oppLane] - race.oppX) * Math.min(1, 8 * dt);
         renderRace(race);
         updateHUD(race, saya || "Kamu", soloMode ? "Bot 🤖" : (lawan || "Lawan"));
         if (!soloMode && t - lastProg > 200) {
           lastProg = t;
-          kirim({ type: "prog", p: Math.min(100, race.dist / RACE_LEN * 100), crash: race.crashT > 0 });
+          kirim({ type: "prog", p: Math.min(100, race.dist / RACE_LEN * 100), crash: race.crashT > 0, lane: race.lane, bike: sayaMotor });
         }
         if (race.finished && !race._finishSent) {
           race._finishSent = true;
