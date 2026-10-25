@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tic Tac Toe — Afis &amp; Dita</title>
+<script src="https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"></script>
+<style>
+  * { box-sizing: border-box; }
+  body { font-family: -apple-system, "Segoe UI", Roboto, Arial, sans-serif; margin: 0; background: #0f1220; color: #fff; padding: 16px; }
+  a { color: #ffd970; text-decoration: none; }
+  h1 { font-size: 22px; margin: 4px 0 2px; text-align: center; }
+  .sub { text-align: center; color: #aab0c6; font-size: 13px; margin-bottom: 16px; }
+  .players { display: flex; justify-content: center; gap: 24px; margin-bottom: 14px; }
+  .pl { text-align: center; font-size: 13px; }
+  .pl img { width: 56px; height: 56px; border-radius: 50%; object-fit: cover; border: 3px solid #444; display: block; margin: 0 auto 4px; }
+  .pl.aktif img { border-color: #d4af37; box-shadow: 0 0 14px rgba(212,175,55,.6); }
+  .pl b { display: block; }
+  .pl .skor { color: #ffd970; font-weight: 700; }
+  .board { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; max-width: 330px; margin: 0 auto; }
+  .cell { aspect-ratio: 1; background: #1a1e33; border: 1px solid #2a2f4a; border-radius: 14px; font-size: 52px; font-weight: 800; display: flex; align-items: center; justify-content: center; cursor: pointer; }
+  .cell.x { color: #5ec8f8; }
+  .cell.o { color: #ff7eb6; }
+  .cell.menang { background: #3a2f00; border-color: #d4af37; }
+  #status { text-align: center; font-size: 16px; font-weight: 700; margin: 16px 0 10px; min-height: 22px; }
+  .box { max-width: 330px; margin: 0 auto; background: #1a1e33; border: 1px solid #2a2f4a; border-radius: 14px; padding: 14px; text-align: center; }
+  .box p { font-size: 13.5px; color: #c9cede; line-height: 1.6; margin: 0 0 10px; }
+  .box input { width: 100%; font-size: 16px; padding: 10px; border-radius: 10px; border: 1px solid #444; background: #0f1220; color: #fff; text-align: center; text-transform: uppercase; margin-bottom: 10px; }
+  button { font-size: 15px; padding: 11px 16px; border: none; border-radius: 10px; cursor: pointer; font-weight: 700; }
+  .btn-gold { background: #d4af37; color: #1a1a1a; width: 100%; margin-bottom: 8px; }
+  .btn-gelap { background: #2a2f4a; color: #fff; width: 100%; margin-bottom: 8px; }
+  .kode { font-size: 30px; letter-spacing: 6px; font-weight: 800; color: #ffd970; margin: 6px 0; }
+  .konek { font-size: 13px; color: #4caf50; font-weight: 700; }
+  .hidden { display: none !important; }
+</style>
+</head>
+<body>
+<p><a href="game-hub-afis-dita.html">← Kembali ke Menu Game</a></p>
+<h1>❌⭕ Tic Tac Toe</h1>
+<p class="sub">Afis (X) vs Dita (O) — 3 sejajar menang! Main jarak jauh, tanpa gantian HP.</p>
+
+<div class="players">
+  <div class="pl" id="plX"><img src="foto-afis.jpg" alt="Afis"><b>Afis ❌</b><span class="skor" id="skorX">0</span></div>
+  <div class="pl" id="plO"><img src="foto-dita.jpg" alt="Dita"><b>Dita ⭕</b><span class="skor" id="skorO">0</span></div>
+</div>
+
+<!-- MODE -->
+<div class="box" id="modeBox">
+  <p>Pilih cara main:</p>
+  <button class="btn-gold" id="btnBuat">🌐 Online — Buat Room</button>
+  <button class="btn-gelap" id="btnGabungShow">🌐 Online — Gabung Room</button>
+  <button class="btn-gelap" id="btn1hp">📱 1 HP Gantian (kalau lagi bareng)</button>
+</div>
+
+<!-- BUAT ROOM -->
+<div class="box hidden" id="buatBox">
+  <p>Kamu main sebagai siapa?</p>
+  <button class="btn-gold" data-saya="X">Saya Afis ❌</button>
+  <button class="btn-gelap" data-saya="O">Saya Dita ⭕</button>
+  <div id="buatHasil" class="hidden">
+    <p>Kirim kode ini ke pasanganmu:</p>
+    <div class="kode" id="kodeBuat"></div>
+    <p id="tunggu">Menghubungkan…</p>
+  </div>
+</div>
+
+<!-- GABUNG ROOM -->
+<div class="box hidden" id="gabungBox">
+  <p>Masukkan kode room, lalu pilih identitasmu:</p>
+  <input id="inputKode" maxlength="4" placeholder="XXXX">
+  <button class="btn-gold" data-gabung="X">Gabung sebagai Afis ❌</button>
+  <button class="btn-gelap" data-gabung="O">Gabung sebagai Dita ⭕</button>
+  <p id="gabungErr" style="color:#ff8080"></p>
+</div>
+
+<div id="gameArea" class="hidden">
+  <p class="konek hidden" id="konekInfo">✅ Terhubung — main dari HP masing-masing!</p>
+  <div class="board" id="board"></div>
+  <div id="status"></div>
+  <div class="box">
+    <button class="btn-gold" id="btnLagi">🔄 Main Lagi</button>
+    <button class="btn-gelap" id="btnKeluar">Keluar ke Menu Mode</button>
+  </div>
+</div>
+
+<script>
+const $ = id => document.getElementById(id);
+const MENANG = [[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]];
+const HURUF = "ABCDEFGHJKLMNPQRSTUVWXYZ";
+let mode = "online";        // online | 1hp
+let saya = null;            // X | O (online)
+let peer = null, conn = null, terhubung = false;
+let S = null;               // {board, turn, skorX, skorO, winner, winLine}
+
+function kodeAcak() {
+  let k = "";
+  for (let i = 0; i < 4; i++) k += HURUF[Math.floor(Math.random() * HURUF.length)];
+  return k;
+}
+function cekMenang(b) {
+  for (const line of MENANG) {
+    const [a, c, d] = line;
+    if (b[a] && b[a] === b[c] && b[a] === b[d]) return { p: b[a], line };
+  }
+  return null;
+}
+function baru() {
+  return { board: Array(9).fill(""), turn: "X", skorX: 0, skorO: 0, winner: null, winLine: null };
+}
+function render() {
+  $("skorX").textContent = S.skorX;
+  $("skorO").textContent = S.skorO;
+  $("plX").classList.toggle("aktif", !S.winner && S.turn === "X");
+  $("plO").classList.toggle("aktif", !S.winner && S.turn === "O");
+  const bd = $("board");
+  bd.innerHTML = "";
+  S.board.forEach((v, i) => {
+    const d = document.createElement("div");
+    d.className = "cell" + (v ? " " + v.toLowerCase() : "") + (S.winLine && S.winLine.includes(i) ? " menang" : "");
+    d.textContent = v === "X" ? "❌" : v === "O" ? "⭕" : "";
+    d.onclick = () => klik(i);
+    bd.appendChild(d);
+  });
+  if (S.winner === "seri") $("status").textContent = "Seri! Nggak ada yang menang 🤝";
+  else if (S.winner) $("status").textContent = (S.winner === "X" ? "Afis" : "Dita") + " MENANG! 🎉";
+  else {
+    const giliran = S.turn === "X" ? "Afis ❌" : "Dita ⭕";
+    $("status").textContent = mode === "online" && saya
+      ? (S.turn === saya ? "Giliranmu! (" + giliran + ")" : "Menunggu " + giliran + "…")
+      : "Giliran " + giliran;
+  }
+}
+function klik(i) {
+  if (S.winner || S.board[i]) return;
+  if (mode === "online" && S.turn !== saya) return;
+  S.board[i] = S.turn;
+  const m = cekMenang(S.board);
+  if (m) { S.winner = m.p; S.winLine = m.line; if (m.p === "X") S.skorX++; else S.skorO++; }
+  else if (S.board.every(Boolean)) S.winner = "seri";
+  else S.turn = S.turn === "X" ? "O" : "X";
+  render();
+  kirimState();
+}
+function kirimState() {
+  if (mode === "online" && conn && conn.open) conn.send({ type: "state", state: S });
+}
+function pasangConn(c) {
+  conn = c;
+  conn.on("data", d => {
+    if (d && d.type === "state" && d.state) { S = d.state; render(); }
+  });
+  conn.on("open", () => {
+    terhubung = true;
+    $("konekInfo").classList.remove("hidden");
+    mulaiGame();
+    kirimState();
+  });
+  conn.on("close", () => { $("status").textContent = "Koneksi putus — gabung ulang ya."; });
+}
+function mulaiGame() {
+  $("modeBox").classList.add("hidden");
+  $("buatBox").classList.add("hidden");
+  $("gabungBox").classList.add("hidden");
+  $("gameArea").classList.remove("hidden");
+  render();
+}
+function keMode() {
+  if (peer) { try { peer.destroy(); } catch (e) {} }
+  peer = null; conn = null; terhubung = false;
+  mode = "online"; saya = null; S = null;
+  $("konekInfo").classList.add("hidden");
+  $("gameArea").classList.add("hidden");
+  $("buatBox").classList.add("hidden");
+  $("gabungBox").classList.add("hidden");
+  $("modeBox").classList.remove("hidden");
+}
+$("btn1hp").onclick = () => {
+  mode = "1hp"; saya = null; S = baru();
+  $("modeBox").classList.add("hidden");
+  $("gameArea").classList.remove("hidden");
+  render();
+};
+$("btnBuat").onclick = () => {
+  $("modeBox").classList.add("hidden");
+  $("buatBox").classList.remove("hidden");
+};
+$("btnGabungShow").onclick = () => {
+  $("modeBox").classList.add("hidden");
+  $("gabungBox").classList.remove("hidden");
+};
+document.querySelectorAll("[data-saya]").forEach(b => b.onclick = () => {
+  saya = b.dataset.saya;
+  const kode = kodeAcak();
+  $("kodeBuat").textContent = kode;
+  $("buatHasil").classList.remove("hidden");
+  $("tunggu").textContent = "Menghubungkan… (tetap di halaman ini)";
+  mode = "online";
+  S = baru();
+  peer = new Peer("afisdita-" + kode, { host: "0.peerjs.com", secure: true, port: 443, path: "/" });
+  peer.on("open", () => { $("tunggu").textContent = "Kode aktif! Pasanganmu tinggal gabung."; });
+  peer.on("connection", c => { pasangConn(c); });
+  peer.on("error", e => { $("tunggu").textContent = "Gagal konek: " + e.type + " — coba lagi."; });
+});
+document.querySelectorAll("[data-gabung]").forEach(b => b.onclick = () => {
+  const k = $("inputKode").value.trim().toUpperCase();
+  if (k.length !== 4) { $("gabungErr").textContent = "Kode harus 4 huruf."; return; }
+  saya = b.dataset.gabung;
+  mode = "online";
+  S = baru();
+  $("gabungErr").textContent = "Menghubungkan…";
+  peer = new Peer({ host: "0.peerjs.com", secure: true, port: 443, path: "/" });
+  peer.on("open", () => {
+    const c = peer.connect("afisdita-" + k, { reliable: true });
+    pasangConn(c);
+  });
+  peer.on("error", e => { $("gabungErr").textContent = "Gagal gabung (" + e.type + ") — cek kodenya & coba lagi."; });
+});
+$("btnLagi").onclick = () => {
+  const skorX = S.skorX, skorO = S.skorO;
+  S = baru(); S.skorX = skorX; S.skorO = skorO;
+  render();
+  kirimState();
+};
+$("btnKeluar").onclick = keMode;
+</script>
+</body>
+</html>

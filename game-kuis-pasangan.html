@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kuis Pasangan — Afis &amp; Dita</title>
+<script src="https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"></script>
+<style>
+  * { box-sizing: border-box; }
+  body { font-family: -apple-system, "Segoe UI", Roboto, Arial, sans-serif; margin: 0; background: #0f1220; color: #fff; padding: 16px; }
+  a { color: #ffd970; text-decoration: none; }
+  h1 { font-size: 22px; margin: 4px 0 2px; text-align: center; }
+  .sub { text-align: center; color: #aab0c6; font-size: 13px; margin-bottom: 16px; }
+  .box { max-width: 420px; margin: 0 auto; background: #1a1e33; border: 1px solid #2a2f4a; border-radius: 14px; padding: 16px; text-align: center; }
+  .box p { font-size: 14px; color: #c9cede; line-height: 1.6; margin: 0 0 10px; }
+  .box input { width: 100%; font-size: 16px; padding: 10px; border-radius: 10px; border: 1px solid #444; background: #0f1220; color: #fff; text-align: center; text-transform: uppercase; margin-bottom: 10px; }
+  button { font-size: 15px; padding: 11px 16px; border: none; border-radius: 10px; cursor: pointer; font-weight: 700; }
+  .btn-gold { background: #d4af37; color: #1a1a1a; width: 100%; margin-bottom: 8px; }
+  .btn-gelap { background: #2a2f4a; color: #fff; width: 100%; margin-bottom: 8px; }
+  .kode { font-size: 30px; letter-spacing: 6px; font-weight: 800; color: #ffd970; margin: 6px 0; }
+  .soal-no { color: #ffd970; font-weight: 700; font-size: 13px; }
+  .soal-teks { font-size: 19px; font-weight: 700; margin: 8px 0 14px; line-height: 1.4; }
+  .opt { display: flex; gap: 8px; margin-bottom: 8px; }
+  .opt button { flex: 1; background: #2a2f4a; color: #fff; }
+  .opt button:active { background: #d4af37; color: #1a1a1a; }
+  .hasil-item { text-align: left; background: #0f1220; border-radius: 10px; padding: 10px 12px; margin-bottom: 8px; font-size: 13.5px; line-height: 1.5; }
+  .hasil-item.cocok { border-left: 4px solid #4caf50; }
+  .hasil-item.beda { border-left: 4px solid #ff7eb6; }
+  .skor-besar { font-size: 44px; font-weight: 800; color: #ffd970; }
+  .hidden { display: none !important; }
+</style>
+</head>
+<body>
+<p><a href="game-hub-afis-dita.html">← Kembali ke Menu Game</a></p>
+<h1>💘 Kuis Pasangan</h1>
+<p class="sub">Jawab 10 pertanyaan yang sama dari HP masing-masing, lalu lihat seberapa kompak kalian!</p>
+
+<div class="box" id="modeBox">
+  <p>Pilih cara main:</p>
+  <button class="btn-gold" id="btnBuat">🌐 Online — Buat Room</button>
+  <button class="btn-gelap" id="btnGabungShow">🌐 Online — Gabung Room</button>
+  <button class="btn-gelap" id="btn1hp">📱 1 HP Gantian (kalau lagi bareng)</button>
+</div>
+
+<div class="box hidden" id="buatBox">
+  <p>Kamu main sebagai siapa?</p>
+  <button class="btn-gold" data-saya="Afis">Saya Afis</button>
+  <button class="btn-gelap" data-saya="Dita">Saya Dita</button>
+  <div id="buatHasil" class="hidden">
+    <p>Kirim kode ini ke pasanganmu:</p>
+    <div class="kode" id="kodeBuat"></div>
+    <p id="tunggu">Menghubungkan…</p>
+  </div>
+</div>
+
+<div class="box hidden" id="gabungBox">
+  <p>Masukkan kode room, lalu pilih identitasmu:</p>
+  <input id="inputKode" maxlength="4" placeholder="XXXX">
+  <button class="btn-gold" data-gabung="Afis">Gabung sebagai Afis</button>
+  <button class="btn-gelap" data-gabung="Dita">Gabung sebagai Dita</button>
+  <p id="gabungErr" style="color:#ff8080"></p>
+</div>
+
+<div class="box hidden" id="coverBox">
+  <p id="coverTeks"></p>
+  <button class="btn-gold" id="btnMulaiJawab">Mulai Jawab ▶</button>
+</div>
+
+<div class="box hidden" id="soalBox">
+  <div class="soal-no" id="soalNo"></div>
+  <div class="soal-teks" id="soalTeks"></div>
+  <div class="opt">
+    <button data-jawab="Afis">Afis</button>
+    <button data-jawab="Dita">Dita</button>
+    <button data-jawab="Sama-sama">Sama-sama</button>
+  </div>
+</div>
+
+<div class="box hidden" id="tungguBox">
+  <p>Jawabanmu sudah terkirim! ✅<br>Menunggu pasanganmu selesai menjawab…</p>
+</div>
+
+<div class="box hidden" id="hasilBox">
+  <p>Skor Kecocokan Kalian</p>
+  <div class="skor-besar" id="skorBesar"></div>
+  <p id="vonis"></p>
+  <div id="daftarHasil"></div>
+  <button class="btn-gold" id="btnUlang">🔄 Main Lagi</button>
+  <button class="btn-gelap" id="btnKeluar">Keluar ke Menu Mode</button>
+</div>
+
+<script>
+const $ = id => document.getElementById(id);
+const SOAL = [
+  "Siapa yang lebih sering ngambek?",
+  "Siapa yang paling susah dibangunin pagi?",
+  "Siapa yang lebih romantis?",
+  "Siapa yang paling sering main HP?",
+  "Siapa yang jago masak?",
+  "Siapa yang lebih cemburuan?",
+  "Siapa yang lebih boros jajan?",
+  "Siapa yang paling gampang ketawa?",
+  "Siapa yang lebih sabar?",
+  "Siapa yang pertama kangen kalau lagi jauh?"
+];
+const HURUF = "ABCDEFGHJKLMNPQRSTUVWXYZ";
+let mode = "online", saya = null, peer = null, conn = null;
+let idx = 0, jawab = {}, giliran1hp = "Afis";
+
+function kodeAcak() {
+  let k = "";
+  for (let i = 0; i < 4; i++) k += HURUF[Math.floor(Math.random() * HURUF.length)];
+  return k;
+}
+function semuaBox() {
+  ["modeBox","buatBox","gabungBox","coverBox","soalBox","tungguBox","hasilBox"].forEach(id => $(id).classList.add("hidden"));
+}
+function tampilSoal() {
+  semuaBox();
+  $("soalBox").classList.remove("hidden");
+  $("soalNo").textContent = "Soal " + (idx + 1) + " / " + SOAL.length;
+  $("soalTeks").textContent = SOAL[idx];
+}
+function mulaiJawabSiapa(nama) {
+  idx = 0;
+  semuaBox();
+  $("coverBox").classList.remove("hidden");
+  $("coverTeks").innerHTML = mode === "online"
+    ? "Kamu menjawab sebagai <b>" + nama + "</b>. Jawab jujur ya! 💘"
+    : "Giliran <b>" + nama + "</b> menjawab.<br>Pasanganmu jangan ngintip ya! 🙈";
+  $("btnMulaiJawab").onclick = tampilSoal;
+}
+function cekLengkap() {
+  return jawab.Afis && jawab.Dita && jawab.Afis.length === SOAL.length && jawab.Dita.length === SOAL.length;
+}
+function pasangConn(c) {
+  conn = c;
+  conn.on("data", d => {
+    if (d && d.type === "answers") {
+      jawab[d.name] = d.answers;
+      if (cekLengkap()) {
+        tampilHasil();
+        if (conn && conn.open) conn.send({ type: "selesai" });
+      }
+    } else if (d && d.type === "selesai") {
+      tampilHasil();
+    }
+  });
+  conn.on("open", () => {
+    if (mode === "online") mulaiJawabSiapa(saya);
+  });
+  conn.on("close", () => { alert("Koneksi putus — gabung ulang ya."); });
+}
+async function kirimJawaban() {
+  if (mode === "online") {
+    if (conn && conn.open) conn.send({ type: "answers", name: saya, answers: jawab[saya] });
+    semuaBox();
+    $("tungguBox").classList.remove("hidden");
+    if (cekLengkap()) tampilHasil();
+  } else {
+    if (giliran1hp === "Afis") { giliran1hp = "Dita"; mulaiJawabSiapa("Dita"); }
+    else tampilHasil();
+  }
+}
+function vonis(n) {
+  if (n === 10) return "JODOH SEJATI 💙💍 — kalian udah kayak satu pikiran!";
+  if (n >= 8) return "Kompak banget! 💙 Tinggal selangkah lagi sempurna.";
+  if (n >= 5) return "Lumayan kenal, masih bisa lebih dekat lagi 😄";
+  if (n >= 2) return "Hmm, kayaknya masih PDKT 😂";
+  return "Kenalan dulu gih! 😂";
+}
+function tampilHasil() {
+  let cocok = 0, html = "";
+  SOAL.forEach((s, i) => {
+    const a = jawab.Afis ? jawab.Afis[i] : "-";
+    const d = jawab.Dita ? jawab.Dita[i] : "-";
+    const ok = a === d;
+    if (ok) cocok++;
+    html += '<div class="hasil-item ' + (ok ? "cocok" : "beda") + '"><b>' + s + '</b><br>' +
+      "Afis: " + a + " • Dita: " + d + " " + (ok ? "✅ Cocok!" : "❌ Beda") + "</div>";
+  });
+  semuaBox();
+  $("hasilBox").classList.remove("hidden");
+  $("skorBesar").textContent = cocok + " / 10";
+  $("vonis").textContent = vonis(cocok);
+  $("daftarHasil").innerHTML = html;
+}
+function keMode() {
+  if (peer) { try { peer.destroy(); } catch (e) {} }
+  peer = null; conn = null;
+  mode = "online"; saya = null; idx = 0; jawab = {}; giliran1hp = "Afis";
+  semuaBox();
+  $("modeBox").classList.remove("hidden");
+}
+$("btn1hp").onclick = () => { mode = "1hp"; jawab = {}; giliran1hp = "Afis"; mulaiJawabSiapa("Afis"); };
+$("btnBuat").onclick = () => { semuaBox(); $("buatBox").classList.remove("hidden"); };
+$("btnGabungShow").onclick = () => { semuaBox(); $("gabungBox").classList.remove("hidden"); };
+document.querySelectorAll("[data-saya]").forEach(b => b.onclick = () => {
+  saya = b.dataset.saya;
+  const kode = kodeAcak();
+  $("kodeBuat").textContent = kode;
+  $("buatHasil").classList.remove("hidden");
+  $("tunggu").textContent = "Kode aktif! Pasanganmu tinggal gabung.";
+  mode = "online"; jawab = {};
+  peer = new Peer("afisdita-" + kode, { host: "0.peerjs.com", secure: true, port: 443, path: "/" });
+  peer.on("connection", c => { pasangConn(c); });
+  peer.on("error", e => { $("tunggu").textContent = "Gagal konek: " + e.type + " — coba lagi."; });
+});
+document.querySelectorAll("[data-gabung]").forEach(b => b.onclick = () => {
+  const k = $("inputKode").value.trim().toUpperCase();
+  if (k.length !== 4) { $("gabungErr").textContent = "Kode harus 4 huruf."; return; }
+  saya = b.dataset.gabung;
+  mode = "online"; jawab = {};
+  $("gabungErr").textContent = "Menghubungkan…";
+  peer = new Peer({ host: "0.peerjs.com", secure: true, port: 443, path: "/" });
+  peer.on("open", () => {
+    const c = peer.connect("afisdita-" + k, { reliable: true });
+    pasangConn(c);
+  });
+  peer.on("error", e => { $("gabungErr").textContent = "Gagal gabung (" + e.type + ") — cek kodenya & coba lagi."; });
+});
+document.querySelectorAll("[data-jawab]").forEach(b => b.onclick = () => {
+  const siapa = mode === "online" ? saya : giliran1hp;
+  if (!jawab[siapa]) jawab[siapa] = [];
+  jawab[siapa][idx] = b.dataset.jawab;
+  idx++;
+  if (idx < SOAL.length) tampilSoal();
+  else kirimJawaban();
+});
+$("btnUlang").onclick = keMode;
+$("btnKeluar").onclick = keMode;
+</script>
+</body>
+</html>

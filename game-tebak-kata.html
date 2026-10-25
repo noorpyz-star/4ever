@@ -1,0 +1,253 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tebak Kata Duel — Afis &amp; Dita</title>
+<script src="https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"></script>
+<style>
+  * { box-sizing: border-box; }
+  body { font-family: -apple-system, "Segoe UI", Roboto, Arial, sans-serif; margin: 0; background: #0f1220; color: #fff; padding: 16px; }
+  a { color: #ffd970; text-decoration: none; }
+  h1 { font-size: 22px; margin: 4px 0 2px; text-align: center; }
+  .sub { text-align: center; color: #aab0c6; font-size: 13px; margin-bottom: 16px; }
+  .box { max-width: 420px; margin: 0 auto; background: #1a1e33; border: 1px solid #2a2f4a; border-radius: 14px; padding: 16px; text-align: center; }
+  .box p { font-size: 14px; color: #c9cede; line-height: 1.6; margin: 0 0 10px; }
+  .box input { width: 100%; font-size: 18px; padding: 10px; border-radius: 10px; border: 1px solid #444; background: #0f1220; color: #fff; text-align: center; text-transform: uppercase; letter-spacing: 6px; margin-bottom: 10px; }
+  button { font-size: 15px; padding: 11px 16px; border: none; border-radius: 10px; cursor: pointer; font-weight: 700; }
+  .btn-gold { background: #d4af37; color: #1a1a1a; width: 100%; margin-bottom: 8px; }
+  .btn-gelap { background: #2a2f4a; color: #fff; width: 100%; margin-bottom: 8px; }
+  .kode { font-size: 30px; letter-spacing: 6px; font-weight: 800; color: #ffd970; margin: 6px 0; }
+  .konek { font-size: 13px; color: #4caf50; font-weight: 700; text-align: center; }
+  .players { display: flex; justify-content: center; gap: 24px; margin-bottom: 14px; }
+  .pl { text-align: center; font-size: 13px; }
+  .pl img { width: 52px; height: 52px; border-radius: 50%; object-fit: cover; border: 3px solid #444; display: block; margin: 0 auto 4px; }
+  .pl.aktif img { border-color: #d4af37; box-shadow: 0 0 14px rgba(212,175,55,.6); }
+  .board { max-width: 300px; margin: 0 auto; display: flex; flex-direction: column; gap: 6px; }
+  .row { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; }
+  .tile { aspect-ratio: 1; background: #1a1e33; border: 1px solid #2a2f4a; border-radius: 8px; font-size: 26px; font-weight: 800; display: flex; align-items: center; justify-content: center; }
+  .tile.hijau { background: #2e7d32; border-color: #2e7d32; }
+  .tile.kuning { background: #b58900; border-color: #b58900; }
+  .tile.abu { background: #333; border-color: #333; color: #aaa; }
+  .row-label { font-size: 11px; color: #aab0c6; text-align: left; margin: 2px 0 0 2px; }
+  #status { text-align: center; font-size: 16px; font-weight: 700; margin: 16px 0 10px; min-height: 22px; }
+  .hidden { display: none !important; }
+</style>
+</head>
+<body>
+<p><a href="game-hub-afis-dita.html">← Kembali ke Menu Game</a></p>
+<h1>🔤 Tebak Kata Duel</h1>
+<p class="sub">Kata rahasia 5 huruf. Gantian nebak dari HP masing-masing — siapa duluan nebak benar, dia menang!</p>
+
+<div class="box" id="modeBox">
+  <p>Pilih cara main:</p>
+  <button class="btn-gold" id="btnBuat">🌐 Online — Buat Room</button>
+  <button class="btn-gelap" id="btnGabungShow">🌐 Online — Gabung Room</button>
+  <button class="btn-gelap" id="btn1hp">📱 1 HP Gantian (kalau lagi bareng)</button>
+</div>
+
+<div class="box hidden" id="buatBox">
+  <p>Kamu main sebagai siapa?</p>
+  <button class="btn-gold" data-saya="Afis">Saya Afis</button>
+  <button class="btn-gelap" data-saya="Dita">Saya Dita</button>
+  <div id="buatHasil" class="hidden">
+    <p>Kirim kode ini ke pasanganmu:</p>
+    <div class="kode" id="kodeBuat"></div>
+    <p id="tunggu">Menghubungkan…</p>
+  </div>
+</div>
+
+<div class="box hidden" id="gabungBox">
+  <p>Masukkan kode room, lalu pilih identitasmu:</p>
+  <input id="inputKode" maxlength="4" placeholder="XXXX" style="text-transform:uppercase">
+  <button class="btn-gold" data-gabung="Afis">Gabung sebagai Afis</button>
+  <button class="btn-gelap" data-gabung="Dita">Gabung sebagai Dita</button>
+  <p id="gabungErr" style="color:#ff8080"></p>
+</div>
+
+<div id="gameArea" class="hidden">
+  <p class="konek hidden" id="konekInfo">✅ Terhubung — main dari HP masing-masing!</p>
+  <div class="players">
+    <div class="pl" id="plAfis"><img src="foto-afis.jpg" alt="Afis"><b>Afis</b></div>
+    <div class="pl" id="plDita"><img src="foto-dita.jpg" alt="Dita"><b>Dita</b></div>
+  </div>
+  <div class="board" id="board"></div>
+  <div id="status"></div>
+  <div class="box" id="tebakBox">
+    <input id="inputKata" maxlength="5" placeholder="TEBAK (5 huruf)" autocomplete="off">
+    <button class="btn-gold" id="btnTebak">Tebak!</button>
+    <p id="tebakErr" style="color:#ff8080"></p>
+  </div>
+  <div class="box hidden" id="selesaiBox">
+    <button class="btn-gold" id="btnLagi">🔄 Kata Baru</button>
+    <button class="btn-gelap" id="btnKeluar">Keluar ke Menu Mode</button>
+  </div>
+</div>
+
+<script>
+const $ = id => document.getElementById(id);
+const KATA = ["CINTA","RINDU","SETIA","MANIS","KASIH","BUNGA","BULAN","PELUK","CUMBU","GEMAS","TULUS","ABADI","DAMAI","CERIA","HARUM","INDAH","MESRA","GELAP","TERIK","HUJAN","ANGIN","MIMPI","HARAP","YAKIN","PERGI","GALAU","BAPER","SENJA"];
+const MAX = 6;
+const HURUF = "ABCDEFGHJKLMNPQRSTUVWXYZ";
+let mode = "online", saya = null, peer = null, conn = null;
+let S = null; // {word, guesses:[{player, guess, colors}], turn, winner}
+
+function kodeAcak() {
+  let k = "";
+  for (let i = 0; i < 4; i++) k += HURUF[Math.floor(Math.random() * HURUF.length)];
+  return k;
+}
+function acakKata() { return KATA[Math.floor(Math.random() * KATA.length)]; }
+function warna(guess, word) {
+  const res = Array(5).fill("abu");
+  const sisa = {};
+  for (let i = 0; i < 5; i++) {
+    if (guess[i] === word[i]) res[i] = "hijau";
+    else sisa[word[i]] = (sisa[word[i]] || 0) + 1;
+  }
+  for (let i = 0; i < 5; i++) {
+    if (res[i] === "hijau") continue;
+    if (sisa[guess[i]] > 0) { res[i] = "kuning"; sisa[guess[i]]--; }
+  }
+  return res;
+}
+function render() {
+  $("plAfis").classList.toggle("aktif", !S.winner && S.turn === "Afis");
+  $("plDita").classList.toggle("aktif", !S.winner && S.turn === "Dita");
+  const bd = $("board");
+  bd.innerHTML = "";
+  S.guesses.forEach(g => {
+    const lab = document.createElement("div");
+    lab.className = "row-label";
+    lab.textContent = g.player;
+    bd.appendChild(lab);
+    const row = document.createElement("div");
+    row.className = "row";
+    for (let i = 0; i < 5; i++) {
+      const t = document.createElement("div");
+      t.className = "tile " + g.colors[i];
+      t.textContent = g.guess[i];
+      row.appendChild(t);
+    }
+    bd.appendChild(row);
+  });
+  for (let r = S.guesses.length; r < MAX; r++) {
+    const row = document.createElement("div");
+    row.className = "row";
+    for (let i = 0; i < 5; i++) {
+      const t = document.createElement("div");
+      t.className = "tile";
+      t.textContent = "";
+      row.appendChild(t);
+    }
+    bd.appendChild(row);
+  }
+  if (S.winner === "seri") {
+    $("status").textContent = "Yah, nggak ada yang nebak! Katanya: " + S.word + " 😅";
+    $("tebakBox").classList.add("hidden");
+    $("selesaiBox").classList.remove("hidden");
+  } else if (S.winner) {
+    $("status").textContent = S.winner + " MENANG! 🎉 Katanya: " + S.word;
+    $("tebakBox").classList.add("hidden");
+    $("selesaiBox").classList.remove("hidden");
+  } else {
+    const g = S.turn;
+    $("status").textContent = mode === "online" && saya
+      ? (S.turn === saya ? "Giliranmu menebak!" : "Menunggu " + g + " menebak…")
+      : "Giliran " + g + " menebak";
+    $("tebakBox").classList.remove("hidden");
+    $("selesaiBox").classList.add("hidden");
+  }
+}
+function kirimState() {
+  if (mode === "online" && conn && conn.open) conn.send({ type: "state", state: S });
+}
+function tebak() {
+  const v = $("inputKata").value.trim().toUpperCase();
+  if (!/^[A-Z]{5}$/.test(v)) { $("tebakErr").textContent = "Harus 5 huruf A–Z."; return; }
+  $("tebakErr").textContent = "";
+  if (S.winner) return;
+  if (mode === "online" && S.turn !== saya) return;
+  const pemain = mode === "online" ? saya : S.turn;
+  const colors = warna(v, S.word);
+  S.guesses.push({ player: pemain, guess: v, colors });
+  if (v === S.word) S.winner = pemain;
+  else if (S.guesses.length >= MAX) S.winner = "seri";
+  else S.turn = S.turn === "Afis" ? "Dita" : "Afis";
+  $("inputKata").value = "";
+  render();
+  kirimState();
+}
+function pasangConn(c) {
+  conn = c;
+  conn.on("data", d => {
+    if (d && d.type === "state" && d.state) { S = d.state; render(); }
+  });
+  conn.on("open", () => {
+    $("konekInfo").classList.remove("hidden");
+    mulaiGame();
+    kirimState();
+  });
+  conn.on("close", () => { $("status").textContent = "Koneksi putus — gabung ulang ya."; });
+}
+function mulaiGame() {
+  ["modeBox","buatBox","gabungBox"].forEach(id => $(id).classList.add("hidden"));
+  $("gameArea").classList.remove("hidden");
+  render();
+}
+function keMode() {
+  if (peer) { try { peer.destroy(); } catch (e) {} }
+  peer = null; conn = null;
+  mode = "online"; saya = null; S = null;
+  $("konekInfo").classList.add("hidden");
+  $("gameArea").classList.add("hidden");
+  $("buatBox").classList.add("hidden");
+  $("gabungBox").classList.add("hidden");
+  $("modeBox").classList.remove("hidden");
+}
+$("btn1hp").onclick = () => {
+  mode = "1hp"; saya = null;
+  S = { word: acakKata(), guesses: [], turn: "Afis", winner: null };
+  ["modeBox","buatBox","gabungBox"].forEach(id => $(id).classList.add("hidden"));
+  $("gameArea").classList.remove("hidden");
+  render();
+};
+$("btnBuat").onclick = () => { $("modeBox").classList.add("hidden"); $("buatBox").classList.remove("hidden"); };
+$("btnGabungShow").onclick = () => { $("modeBox").classList.add("hidden"); $("gabungBox").classList.remove("hidden"); };
+document.querySelectorAll("[data-saya]").forEach(b => b.onclick = () => {
+  saya = b.dataset.saya;
+  const kode = kodeAcak();
+  $("kodeBuat").textContent = kode;
+  $("buatHasil").classList.remove("hidden");
+  $("tunggu").textContent = "Kode aktif! Pasanganmu tinggal gabung.";
+  mode = "online";
+  S = { word: acakKata(), guesses: [], turn: "Afis", winner: null };
+  peer = new Peer("afisdita-" + kode, { host: "0.peerjs.com", secure: true, port: 443, path: "/" });
+  peer.on("connection", c => { pasangConn(c); });
+  peer.on("error", e => { $("tunggu").textContent = "Gagal konek: " + e.type + " — coba lagi."; });
+});
+document.querySelectorAll("[data-gabung]").forEach(b => b.onclick = () => {
+  const k = $("inputKode").value.trim().toUpperCase();
+  if (k.length !== 4) { $("gabungErr").textContent = "Kode harus 4 huruf."; return; }
+  saya = b.dataset.gabung;
+  mode = "online";
+  S = { word: acakKata(), guesses: [], turn: "Afis", winner: null };
+  $("gabungErr").textContent = "Menghubungkan…";
+  peer = new Peer({ host: "0.peerjs.com", secure: true, port: 443, path: "/" });
+  peer.on("open", () => {
+    const c = peer.connect("afisdita-" + k, { reliable: true });
+    pasangConn(c);
+  });
+  peer.on("error", e => { $("gabungErr").textContent = "Gagal gabung (" + e.type + ") — cek kodenya & coba lagi."; });
+});
+$("btnTebak").onclick = tebak;
+$("inputKata").addEventListener("keydown", e => { if (e.key === "Enter") tebak(); });
+$("btnLagi").onclick = () => {
+  S = { word: acakKata(), guesses: [], turn: "Afis", winner: null };
+  render();
+  kirimState();
+};
+$("btnKeluar").onclick = keMode;
+</script>
+</body>
+</html>

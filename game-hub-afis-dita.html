@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Game Afis &amp; Dita 💙</title>
+<style>
+  * { box-sizing: border-box; }
+  body { font-family: -apple-system, "Segoe UI", Roboto, Arial, sans-serif; margin: 0; background: #0f1220; color: #fff; padding-bottom: 40px; }
+  .banner { position: relative; text-align: center; padding: 28px 16px 20px; background: linear-gradient(180deg, #1b2140, #0f1220); }
+  .banner img { width: 150px; height: 150px; object-fit: cover; border-radius: 50%; border: 4px solid #d4af37; box-shadow: 0 0 30px rgba(212,175,55,.45); }
+  .banner h1 { margin: 14px 0 2px; font-size: 24px; }
+  .banner p { margin: 0; color: #c9cede; font-size: 14px; }
+  .banner .names { display: flex; justify-content: center; gap: 16px; margin-top: 14px; }
+  .banner .names span { display: flex; align-items: center; gap: 8px; background: rgba(255,255,255,.08); padding: 6px 12px 6px 6px; border-radius: 999px; font-size: 14px; }
+  .banner .names img { width: 30px; height: 30px; border: 2px solid #d4af37; }
+  .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; padding: 16px; max-width: 560px; margin: 0 auto; }
+  .card { background: #1a1e33; border: 1px solid #2a2f4a; border-radius: 16px; padding: 16px 12px; text-align: center; text-decoration: none; color: #fff; }
+  .card:active { transform: scale(.97); }
+  .card .ico { font-size: 38px; }
+  .card h2 { font-size: 16px; margin: 8px 0 4px; }
+  .card p { font-size: 12.5px; color: #aab0c6; margin: 0 0 10px; line-height: 1.4; }
+  .card .btn { display: inline-block; background: #d4af37; color: #1a1a1a; font-weight: 700; font-size: 13px; padding: 8px 18px; border-radius: 999px; }
+  .card.wide { grid-column: 1 / -1; }
+  .info { max-width: 560px; margin: 0 auto; padding: 0 16px; font-size: 13px; color: #aab0c6; line-height: 1.7; }
+  .info b { color: #fff; }
+  .info code { background: #22264a; padding: 1px 6px; border-radius: 6px; color: #ffd970; font-size: 12px; }
+</style>
+</head>
+<body>
+<div class="banner">
+  <img src="foto-afis-dita.jpg" alt="Afis & Dita">
+  <h1>Game Afis &amp; Dita 💙</h1>
+  <p>Main bareng, dari mana aja. Pilih gamenya!</p>
+  <div class="names">
+    <span><img src="foto-afis.jpg" alt="Afis"> Afis</span>
+    <span><img src="foto-dita.jpg" alt="Dita"> Dita</span>
+  </div>
+</div>
+
+<div class="grid">
+  <a class="card" href="game-tictactoe.html">
+    <div class="ico">❌⭕</div>
+    <h2>Tic Tac Toe</h2>
+    <p>Rebutan 3 sejajar. Cepat, seru, panas-panasan.</p>
+    <span class="btn">Main ▶</span>
+  </a>
+  <a class="card" href="game-kuis-pasangan.html">
+    <div class="ico">💘</div>
+    <h2>Kuis Pasangan</h2>
+    <p>Seberapa kenal kamu? Jawab bareng, lihat skor kecocokannya.</p>
+    <span class="btn">Main ▶</span>
+  </a>
+  <a class="card" href="game-tebak-kata.html">
+    <div class="ico">🔤</div>
+    <h2>Tebak Kata Duel</h2>
+    <p>Kata rahasia 5 huruf. Gantian nebak, siapa duluan dia menang.</p>
+    <span class="btn">Main ▶</span>
+  </a>
+  <a class="card" href="game-ular-tangga.html">
+    <div class="ico">🐍🎲</div>
+    <h2>Ular Tangga</h2>
+    <p>Balapan sampai kotak 100. Awas tangga licin &amp; ular!</p>
+    <span class="btn">Main ▶</span>
+  </a>
+  <div class="card wide">
+    <div class="ico">🌐</div>
+    <h2>Main Online Berdua (Jarak Jauh 💙)</h2>
+    <p>Di tiap game pilih <b style="color:#fff">Online</b>: satu buat room, satu gabung pakai kode 4 huruf — langsung main dari HP masing-masing, <b style="color:#fff">tanpa gantian HP dan tanpa deploy apa-apa</b>. Bisa juga <b style="color:#fff">1 HP gantian</b> kalau lagi bareng.</p>
+  </div>
+</div>
+
+<div class="info">
+  <b>Cara pasang di situsmu:</b> upload file-file ini ke repo GitHub (satu folder): <code>game-hub-afis-dita.html</code>, <code>game-tictactoe.html</code>, <code>game-kuis-pasangan.html</code>, <code>game-tebak-kata.html</code>, <code>game-ular-tangga.html</code>, <code>foto-afis-dita.jpg</code>, <code>foto-afis.jpg</code>, <code>foto-dita.jpg</code>.<br><br>
+  <b>Mode online:</b> langsung jalan, tanpa deploy apa-apa — koneksi HP-ke-HP lewat server gratis PeerJS. Catatan: Ular Tangga masih pakai cara lama (butuh deploy Worker <code>ular-game</code> dari file yang sudah dibuat sebelumnya); kalau mau, nanti aku ubah juga ke mode online yang sama. File <code>game-couple-worker.js</code> tetap ada sebagai cadangan kalau suatu saat mau pindah ke server sendiri.
+</div>
+</body>
+</html>
