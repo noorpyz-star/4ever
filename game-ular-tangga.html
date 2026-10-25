@@ -94,6 +94,8 @@ const LADDERS = { 2: 38, 4: 14, 9: 31, 21: 42, 28: 84, 36: 44, 51: 67, 71: 91, 8
 const SNAKES = { 16: 6, 47: 26, 49: 11, 56: 53, 62: 19, 64: 60, 87: 24, 93: 73, 95: 75, 98: 78 };
 const WAJAH = ['', '⚀', '⚁', '⚂', '⚃', '⚄', '⚅'];
 const HURUF = "ABCDEFGHJKLMNPQRSTUVWXYZ";
+// Server sinyal gratis PeerJS + STUN cadangan (biar tembus NAT yang rewel)
+const PEER_CFG = { host: "0.peerjs.com", secure: true, port: 443, path: "/", config: { iceServers: [{ urls: "stun:stun.l.google.com:19302" }, { urls: "stun:global.stun.twilio.com:3478" }] } };
 
 let peer = null, conn = null;
 let saya = 0;              // 0 = pembuat room, 1 = yang gabung
@@ -189,13 +191,10 @@ function pasangConn(c) {
   conn.on("close", () => { $('status').textContent = "Koneksi putus — gabung ulang ya."; });
 }
 
-$('btnBuat').onclick = () => {
-  const nama = $('nama').value.trim();
-  if (!nama) { $('errLobby').textContent = 'isi nama kamu dulu ya.'; return; }
-  $('errLobby').textContent = '';
-  try { localStorage.setItem('ular_nama', nama); } catch (e) {}
-  saya = 0;
+let retryBuatU = 0;
+function buatRoomUlar(nama) {
   const kode = kodeAcak();
+  saya = 0;
   room = {
     players: [{ name: nama, pos: 0 }],
     turn: 0, dice: 0,
@@ -205,7 +204,10 @@ $('btnBuat').onclick = () => {
   $('lobby').classList.add('hide');
   $('kodeBesar').textContent = kode;
   $('tunggu').classList.remove('hide');
-  peer = new Peer("afisdita-" + kode, { host: "0.peerjs.com", secure: true, port: 443, path: "/" });
+  document.querySelector('#tunggu .kode-sub').textContent = 'menghubungkan… (tetap di halaman ini)';
+  if (peer) { try { peer.destroy(); } catch (e) {} }
+  peer = new Peer("afisdita-" + kode, PEER_CFG);
+  peer.on("open", () => { retryBuatU = 0; document.querySelector('#tunggu .kode-sub').textContent = 'kode room kamu — kirim ke pasanganmu:'; });
   peer.on("connection", c => {
     // lawan gabung: tambah pemain kedua, lalu mulai
     pasangConn(c);
@@ -220,9 +222,53 @@ $('btnBuat').onclick = () => {
       }
     });
   });
-  peer.on("error", e => { document.querySelector('#tunggu .kode-sub').textContent = 'gagal konek (' + e.type + ') — muat ulang & coba lagi.'; });
+  peer.on("error", e => {
+    const sub = document.querySelector('#tunggu .kode-sub');
+    if (e.type === "network" && retryBuatU < 3) {
+      retryBuatU++;
+      sub.textContent = 'jaringan putus, mencoba lagi (' + retryBuatU + '/3)…';
+      setTimeout(() => { try { peer.reconnect(); } catch (err) { buatRoomUlar(nama); } }, 2000);
+    } else if (e.type === "unavailable-id") {
+      buatRoomUlar(nama);
+    } else {
+      sub.textContent = 'gagal konek (' + e.type + ') — muat ulang & buat room lagi.';
+    }
+  });
+}
+$('btnBuat').onclick = () => {
+  const nama = $('nama').value.trim();
+  if (!nama) { $('errLobby').textContent = 'isi nama kamu dulu ya.'; return; }
+  $('errLobby').textContent = '';
+  try { localStorage.setItem('ular_nama', nama); } catch (e) {}
+  retryBuatU = 0;
+  buatRoomUlar(nama);
 };
 
+let retryGabungU = 0;
+function gabungRoomUlar(kode, nama) {
+  saya = 1;
+  $('lobby').classList.add('hide');
+  $('tunggu').classList.remove('hide');
+  $('kodeBesar').textContent = kode;
+  document.querySelector('#tunggu .kode-sub').textContent = 'menghubungkan ke room ' + kode + '…';
+  if (peer) { try { peer.destroy(); } catch (e) {} }
+  peer = new Peer(PEER_CFG);
+  peer.on("open", () => {
+    const c = peer.connect("afisdita-" + kode, { reliable: true });
+    pasangConn(c);
+    c.on("open", () => { c.send({ type: "hello", name: nama }); });
+  });
+  peer.on("error", e => {
+    const sub = document.querySelector('#tunggu .kode-sub');
+    if (e.type === "peer-unavailable" && retryGabungU < 3) {
+      retryGabungU++;
+      sub.textContent = 'room belum ketemu, mencoba lagi (' + retryGabungU + '/3)… (pastikan pembuat room masih di layar tunggu)';
+      setTimeout(() => gabungRoomUlar(kode, nama), 2000);
+    } else {
+      sub.textContent = 'gagal gabung (' + e.type + ') — pastikan pembuat room masih di layar tunggu & kodenya benar.';
+    }
+  });
+}
 $('btnGabung').onclick = () => {
   const nama = $('nama').value.trim();
   const kode = $('kodeJoin').value.trim().toUpperCase();
@@ -230,18 +276,8 @@ $('btnGabung').onclick = () => {
   if (kode.length !== 4) { $('errLobby').textContent = 'kode room itu 4 huruf.'; return; }
   $('errLobby').textContent = '';
   try { localStorage.setItem('ular_nama', nama); localStorage.setItem('ular_kode', kode); } catch (e) {}
-  saya = 1;
-  $('lobby').classList.add('hide');
-  $('tunggu').classList.remove('hide');
-  $('kodeBesar').textContent = kode;
-  document.querySelector('#tunggu .kode-sub').textContent = 'menghubungkan ke room ' + kode + '…';
-  peer = new Peer({ host: "0.peerjs.com", secure: true, port: 443, path: "/" });
-  peer.on("open", () => {
-    const c = peer.connect("afisdita-" + kode, { reliable: true });
-    pasangConn(c);
-    c.on("open", () => { c.send({ type: "hello", name: nama }); });
-  });
-  peer.on("error", e => { $('errLobby').textContent = 'gagal gabung (' + e.type + ') — cek kodenya & coba lagi.'; $('tunggu').classList.add('hide'); $('lobby').classList.remove('hide'); });
+  retryGabungU = 0;
+  gabungRoomUlar(kode, nama);
 };
 
 $('btnWa').onclick = () => {

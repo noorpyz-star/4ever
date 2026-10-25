@@ -104,6 +104,8 @@ const SOAL = [
   "Siapa yang pertama kangen kalau lagi jauh?"
 ];
 const HURUF = "ABCDEFGHJKLMNPQRSTUVWXYZ";
+// Server sinyal gratis PeerJS + STUN cadangan (biar tembus NAT yang rewel)
+const PEER_CFG = { host: "0.peerjs.com", secure: true, port: 443, path: "/", config: { iceServers: [{ urls: "stun:stun.l.google.com:19302" }, { urls: "stun:global.stun.twilio.com:3478" }] } };
 let mode = "online", saya = null, peer = null, conn = null;
 let idx = 0, jawab = {}, giliran1hp = "Afis";
 
@@ -195,29 +197,60 @@ function keMode() {
 $("btn1hp").onclick = () => { mode = "1hp"; jawab = {}; giliran1hp = "Afis"; mulaiJawabSiapa("Afis"); };
 $("btnBuat").onclick = () => { semuaBox(); $("buatBox").classList.remove("hidden"); };
 $("btnGabungShow").onclick = () => { semuaBox(); $("gabungBox").classList.remove("hidden"); };
-document.querySelectorAll("[data-saya]").forEach(b => b.onclick = () => {
-  saya = b.dataset.saya;
+let retryBuat = 0;
+function buatRoomKuis() {
   const kode = kodeAcak();
   $("kodeBuat").textContent = kode;
   $("buatHasil").classList.remove("hidden");
-  $("tunggu").textContent = "Kode aktif! Pasanganmu tinggal gabung.";
-  mode = "online"; jawab = {};
-  peer = new Peer("afisdita-" + kode, { host: "0.peerjs.com", secure: true, port: 443, path: "/" });
+  $("tunggu").textContent = "Menghubungkan… (tetap di halaman ini)";
+  if (peer) { try { peer.destroy(); } catch (e) {} }
+  peer = new Peer("afisdita-" + kode, PEER_CFG);
+  peer.on("open", () => { retryBuat = 0; $("tunggu").textContent = "Kode aktif! Pasanganmu tinggal gabung."; });
   peer.on("connection", c => { pasangConn(c); });
-  peer.on("error", e => { $("tunggu").textContent = "Gagal konek: " + e.type + " — coba lagi."; });
+  peer.on("error", e => {
+    if (e.type === "network" && retryBuat < 3) {
+      retryBuat++;
+      $("tunggu").textContent = "Jaringan putus, mencoba lagi (" + retryBuat + "/3)…";
+      setTimeout(() => { try { peer.reconnect(); } catch (err) { buatRoomKuis(); } }, 2000);
+    } else if (e.type === "unavailable-id") {
+      buatRoomKuis();
+    } else {
+      $("tunggu").textContent = "Gagal konek (" + e.type + ") — tekan Keluar & buat room lagi.";
+    }
+  });
+}
+document.querySelectorAll("[data-saya]").forEach(b => b.onclick = () => {
+  saya = b.dataset.saya;
+  mode = "online"; jawab = {};
+  retryBuat = 0;
+  buatRoomKuis();
 });
+let retryGabung = 0;
+function gabungRoomKuis(k) {
+  $("gabungErr").textContent = "Menghubungkan…";
+  if (peer) { try { peer.destroy(); } catch (e) {} }
+  peer = new Peer(PEER_CFG);
+  peer.on("open", () => {
+    const c = peer.connect("afisdita-" + k, { reliable: true });
+    pasangConn(c);
+  });
+  peer.on("error", e => {
+    if (e.type === "peer-unavailable" && retryGabung < 3) {
+      retryGabung++;
+      $("gabungErr").textContent = "Room belum ketemu, mencoba lagi (" + retryGabung + "/3)… (pastikan pembuat room masih di layar tunggu)";
+      setTimeout(() => gabungRoomKuis(k), 2000);
+    } else {
+      $("gabungErr").textContent = "Gagal gabung (" + e.type + ") — pastikan pembuat room masih di layar tunggu & kodenya benar.";
+    }
+  });
+}
 document.querySelectorAll("[data-gabung]").forEach(b => b.onclick = () => {
   const k = $("inputKode").value.trim().toUpperCase();
   if (k.length !== 4) { $("gabungErr").textContent = "Kode harus 4 huruf."; return; }
   saya = b.dataset.gabung;
   mode = "online"; jawab = {};
-  $("gabungErr").textContent = "Menghubungkan…";
-  peer = new Peer({ host: "0.peerjs.com", secure: true, port: 443, path: "/" });
-  peer.on("open", () => {
-    const c = peer.connect("afisdita-" + k, { reliable: true });
-    pasangConn(c);
-  });
-  peer.on("error", e => { $("gabungErr").textContent = "Gagal gabung (" + e.type + ") — cek kodenya & coba lagi."; });
+  retryGabung = 0;
+  gabungRoomKuis(k);
 });
 document.querySelectorAll("[data-jawab]").forEach(b => b.onclick = () => {
   const siapa = mode === "online" ? saya : giliran1hp;
