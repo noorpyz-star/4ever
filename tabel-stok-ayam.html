@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Stok Ayam — Marinasi &amp; Masak</title>
+<style>
+  * { box-sizing: border-box; }
+  body { font-family: -apple-system, "Segoe UI", Roboto, Arial, sans-serif; margin: 0; padding: 16px; background: #f4f4f2; color: #222; }
+  h1 { font-size: 20px; margin: 0 0 4px; }
+  .sub { color: #666; font-size: 13px; margin-bottom: 14px; }
+  .top { display: flex; gap: 8px; align-items: center; margin-bottom: 12px; flex-wrap: wrap; }
+  .top label { font-size: 14px; }
+  .top input[type="date"] { font-size: 15px; padding: 6px 8px; border: 1px solid #ccc; border-radius: 8px; }
+  .wrap { overflow-x: auto; background: #fff; border-radius: 12px; box-shadow: 0 1px 4px rgba(0,0,0,.08); }
+  table { border-collapse: collapse; width: 100%; min-width: 640px; font-size: 14px; }
+  th, td { padding: 9px 8px; text-align: center; border-bottom: 1px solid #eee; }
+  th { background: #1f2937; color: #fff; font-size: 12.5px; }
+  td.jenis { text-align: left; font-weight: 600; white-space: nowrap; }
+  input.num { width: 74px; font-size: 15px; padding: 7px 6px; text-align: center; border: 1px solid #ccc; border-radius: 8px; }
+  input.num:focus { outline: 2px solid #d4af37; border-color: #d4af37; }
+  td.hasil { font-weight: 700; }
+  td.negatif { color: #c00; }
+  tr.total td { background: #fff8e1; font-weight: 700; border-top: 2px solid #d4af37; }
+  .rumus { font-size: 12.5px; color: #555; margin: 12px 2px; line-height: 1.6; }
+  .btns { display: flex; gap: 10px; margin-top: 12px; }
+  button { flex: 1; font-size: 15px; padding: 11px; border: none; border-radius: 10px; cursor: pointer; }
+  #btnReset { background: #e5e5e5; color: #333; }
+  #btnPrint { background: #1f2937; color: #fff; }
+  .saved { font-size: 12.5px; color: #2e7d32; margin-top: 8px; min-height: 16px; }
+</style>
+</head>
+<body>
+<h1>🍗 Stok Ayam — Marinasi &amp; Masak</h1>
+<p class="sub">Isi kolom putih, sisanya kehitung otomatis. Data tersimpan otomatis di HP.</p>
+
+<div class="top">
+  <label for="tgl">Tanggal:</label>
+  <input type="date" id="tgl">
+</div>
+
+<div class="wrap">
+<table id="tbl">
+  <thead>
+    <tr>
+      <th style="text-align:left">Jenis Ayam</th>
+      <th>Total<br>Marinasi</th>
+      <th>Keluar Freezer<br>→ Kulkas</th>
+      <th>Keluar Kulkas<br>→ Masak</th>
+      <th>Sisa di<br>Kulkas</th>
+      <th>Sisa di<br>Freezer</th>
+    </tr>
+  </thead>
+  <tbody id="body"></tbody>
+  <tfoot>
+    <tr class="total">
+      <td style="text-align:left">TOTAL</td>
+      <td id="tMarinasi">0</td>
+      <td id="tKeKulkas">0</td>
+      <td id="tMasak">0</td>
+      <td id="tSisaKulkas">0</td>
+      <td id="tSisaFreezer">0</td>
+    </tr>
+  </tfoot>
+</table>
+</div>
+
+<p class="rumus">
+  <b>Rumusnya:</b><br>
+  • Sisa di Kulkas = Keluar Freezer → Kulkas − Keluar Kulkas → Masak<br>
+  • Sisa di Freezer = Total Marinasi − Keluar Freezer → Kulkas<br>
+  • Total Habis Dimasak = jumlah kolom "Keluar Kulkas → Masak" (baris TOTAL).<br>
+  Satuan bebas — isi pakai potong, ekor, atau kg, asal konsisten.
+</p>
+
+<div class="btns">
+  <button id="btnReset">🔄 Reset Semua</button>
+  <button id="btnPrint">🖨️ Cetak / Simpan PDF</button>
+</div>
+<p class="saved" id="saved"></p>
+
+<script>
+const JENIS = ["Dada", "Paha Atas", "Paha Bawah", "Ayam Rempah", "Ayam Bakar Paha", "Ayam Bakar Dada"];
+const KEY = "stokAyam_v1";
+const body = document.getElementById("body");
+
+function num(v) { const n = parseFloat(v); return isNaN(n) ? 0 : n; }
+
+function bangun() {
+  body.innerHTML = "";
+  JENIS.forEach((j, i) => {
+    const tr = document.createElement("tr");
+    tr.innerHTML =
+      '<td class="jenis">' + j + '</td>' +
+      '<td><input class="num" type="number" min="0" inputmode="decimal" data-i="' + i + '" data-k="m" placeholder="0"></td>' +
+      '<td><input class="num" type="number" min="0" inputmode="decimal" data-i="' + i + '" data-k="k" placeholder="0"></td>' +
+      '<td><input class="num" type="number" min="0" inputmode="decimal" data-i="' + i + '" data-k="c" placeholder="0"></td>' +
+      '<td class="hasil" id="sk' + i + '">0</td>' +
+      '<td class="hasil" id="sf' + i + '">0</td>';
+    body.appendChild(tr);
+  });
+  body.querySelectorAll("input.num").forEach(el => el.addEventListener("input", hitung));
+}
+
+function hitung() {
+  let tm = 0, tk = 0, tc = 0, tsk = 0, tsf = 0;
+  JENIS.forEach((j, i) => {
+    const m = num(document.querySelector('[data-i="' + i + '"][data-k="m"]').value);
+    const k = num(document.querySelector('[data-i="' + i + '"][data-k="k"]').value);
+    const c = num(document.querySelector('[data-i="' + i + '"][data-k="c"]').value);
+    const sk = k - c, sf = m - k;
+    const elSk = document.getElementById("sk" + i), elSf = document.getElementById("sf" + i);
+    elSk.textContent = sk; elSf.textContent = sf;
+    elSk.classList.toggle("negatif", sk < 0);
+    elSf.classList.toggle("negatif", sf < 0);
+    tm += m; tk += k; tc += c; tsk += sk; tsf += sf;
+  });
+  document.getElementById("tMarinasi").textContent = tm;
+  document.getElementById("tKeKulkas").textContent = tk;
+  document.getElementById("tMasak").textContent = tc;
+  document.getElementById("tSisaKulkas").textContent = tsk;
+  document.getElementById("tSisaFreezer").textContent = tsf;
+  simpan();
+}
+
+function simpan() {
+  const data = { tgl: document.getElementById("tgl").value, rows: [] };
+  JENIS.forEach((j, i) => {
+    data.rows.push([
+      document.querySelector('[data-i="' + i + '"][data-k="m"]').value,
+      document.querySelector('[data-i="' + i + '"][data-k="k"]').value,
+      document.querySelector('[data-i="' + i + '"][data-k="c"]').value
+    ]);
+  });
+  try { localStorage.setItem(KEY, JSON.stringify(data)); } catch (e) {}
+  document.getElementById("saved").textContent = "✓ tersimpan otomatis";
+}
+
+function muat() {
+  try {
+    const d = JSON.parse(localStorage.getItem(KEY) || "null");
+    if (!d) return;
+    if (d.tgl) document.getElementById("tgl").value = d.tgl;
+    (d.rows || []).forEach((r, i) => {
+      if (!r) return;
+      const m = document.querySelector('[data-i="' + i + '"][data-k="m"]');
+      const k = document.querySelector('[data-i="' + i + '"][data-k="k"]');
+      const c = document.querySelector('[data-i="' + i + '"][data-k="c"]');
+      if (m) m.value = r[0] || "";
+      if (k) k.value = r[1] || "";
+      if (c) c.value = r[2] || "";
+    });
+  } catch (e) {}
+}
+
+document.getElementById("tgl").addEventListener("change", simpan);
+document.getElementById("btnReset").addEventListener("click", () => {
+  if (!confirm("Hapus semua angka?")) return;
+  body.querySelectorAll("input.num").forEach(el => el.value = "");
+  hitung();
+});
+document.getElementById("btnPrint").addEventListener("click", () => window.print());
+
+bangun();
+if (!document.getElementById("tgl").value) {
+  document.getElementById("tgl").valueAsDate = new Date();
+}
+muat();
+hitung();
+</script>
+</body>
+</html>
