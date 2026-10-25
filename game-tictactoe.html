@@ -88,7 +88,7 @@ const $ = id => document.getElementById(id);
 const MENANG = [[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]];
 const HURUF = "ABCDEFGHJKLMNPQRSTUVWXYZ";
 // Server sinyal gratis PeerJS + STUN cadangan (biar tembus NAT yang rewel)
-const PEER_CFG = { host: "0.peerjs.com", secure: true, port: 443, path: "/", config: { iceServers: [{ urls: "stun:stun.l.google.com:19302" }, { urls: "stun:stun1.l.google.com:19302" }, { urls: "stun:stun2.l.google.com:19302" }, { urls: "stun:global.stun.twilio.com:3478" }, { urls: "stun:stun.cloudflare.com:3478" }] } };
+const PEER_CFG = { host: "0.peerjs.com", secure: true, port: 443, path: "/", config: { iceServers: [{ urls: "stun:stun.l.google.com:19302" }, { urls: "stun:stun1.l.google.com:19302" }, { urls: "stun:stun2.l.google.com:19302" }, { urls: "stun:global.stun.twilio.com:3478" }, { urls: "stun:stun.cloudflare.com:3478" }, { urls: "turn:openrelay.metered.ca:80", username: "openrelayproject", credential: "openrelayproject" }, { urls: "turn:openrelay.metered.ca:443", username: "openrelayproject", credential: "openrelayproject" }, { urls: "turn:openrelay.metered.ca:443?transport=tcp", username: "openrelayproject", credential: "openrelayproject" }, { urls: "turns:openrelay.metered.ca:443", username: "openrelayproject", credential: "openrelayproject" }] } };
 let mode = "online";        // online | 1hp
 let saya = null;            // X | O (online)
 let peer = null, conn = null, terhubung = false;
