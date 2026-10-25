@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ular Tangga Online — Afis &amp; Dita</title>
+<script src="https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"></script>
+<style>
+  :root { --gold: #d4af37; --blue: #7db4ff; --pink: #ff7dab; --bg: #0b1020; --card: #141b31; --line: #26304d; --txt: #eef1f8; --dim: #9aa7c2; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--bg); color: var(--txt); font-family: Georgia, 'Times New Roman', serif; min-height: 100vh; padding: 18px 14px 40px; }
+  .wrap { max-width: 460px; margin: 0 auto; }
+  a { color: var(--gold); text-decoration: none; }
+  h1 { text-align: center; font-size: 24px; color: var(--gold); letter-spacing: 1px; }
+  .sub { text-align: center; color: var(--dim); font-size: 13px; margin: 6px 0 18px; font-style: italic; }
+  .card { background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 16px; margin-bottom: 14px; }
+  label { display: block; font-size: 12px; color: var(--dim); margin: 10px 0 5px; letter-spacing: .5px; }
+  input { width: 100%; padding: 12px; border-radius: 10px; border: 1px solid var(--line); background: #0d1428; color: var(--txt); font-size: 16px; font-family: inherit; }
+  .btn { display: block; width: 100%; padding: 13px; border-radius: 10px; border: 1px solid var(--gold); background: transparent; color: var(--gold); font-size: 15px; font-family: inherit; cursor: pointer; margin-top: 12px; letter-spacing: .5px; }
+  .btn:active { transform: scale(.98); }
+  .btn.blue { border-color: var(--blue); color: var(--blue); }
+  .btn.pink { border-color: var(--pink); color: var(--pink); }
+  .btn:disabled { opacity: .35; cursor: not-allowed; }
+  .kode { text-align: center; font-size: 40px; letter-spacing: 10px; color: var(--gold); font-weight: bold; padding: 8px 0 2px; }
+  .kode-sub { text-align: center; color: var(--dim); font-size: 13px; }
+  .papan { display: grid; grid-template-columns: repeat(10, 1fr); gap: 3px; margin: 6px 0 4px; }
+  .cell { position: relative; aspect-ratio: 1; border-radius: 6px; background: #101830; border: 1px solid #1d2745; font-size: 9px; color: var(--dim); padding: 2px 3px; overflow: visible; }
+  .cell.ganjil { background: #0d1428; }
+  .cell .mark { position: absolute; right: 2px; top: 1px; font-size: 9px; }
+  .pion { position: absolute; width: 17px; height: 17px; border-radius: 50%; border: 2px solid #fff3; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: bold; color: #fff; z-index: 3; transition: all .3s; }
+  .pion.p0 { background: #2563eb; left: 2px; bottom: 2px; }
+  .pion.p1 { background: #db2777; right: 2px; bottom: 2px; }
+  .cell.finish { background: #3a2f10; color: var(--gold); }
+  .vs { display: flex; gap: 8px; margin-bottom: 10px; }
+  .pbox { flex: 1; border: 1px solid var(--line); border-radius: 10px; padding: 9px 10px; font-size: 13px; background: #0d1428; }
+  .pbox .dot { display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-right: 6px; vertical-align: middle; }
+  .pbox.turn { outline: 2px solid var(--gold); }
+  .pbox .pos { color: var(--dim); font-size: 12px; }
+  .dadu { text-align: center; font-size: 52px; line-height: 1.1; min-height: 60px; }
+  .status { text-align: center; font-size: 14px; min-height: 20px; }
+  .log { font-size: 12.5px; color: var(--dim); line-height: 1.7; max-height: 130px; overflow-y: auto; }
+  .log div:last-child { color: var(--txt); }
+  .hide { display: none; }
+  .err { color: #ff8a8a; text-align: center; font-size: 13px; min-height: 18px; margin-top: 8px; }
+  .menang { text-align: center; font-size: 19px; color: var(--gold); padding: 8px 0 2px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <p><a href="game-hub-afis-dita.html">← Kembali ke Menu Game</a></p>
+  <h1>Ular Tangga Online</h1>
+  <p class="sub">main berdua dari HP masing-masing, tanpa gantian HP — yang kalah traktir</p>
+
+  <!-- LOBBY -->
+  <div class="card" id="lobby">
+    <label>NAMA KAMU</label>
+    <input id="nama" maxlength="16" placeholder="misal: Afis" autocomplete="off">
+    <button class="btn" id="btnBuat">Buat Room Baru</button>
+    <label style="margin-top:16px">ATAU GABUNG PAKAI KODE ROOM</label>
+    <input id="kodeJoin" maxlength="4" placeholder="misal: K7QX" style="text-transform:uppercase" autocomplete="off">
+    <button class="btn blue" id="btnGabung">Gabung Room</button>
+    <div class="err" id="errLobby"></div>
+  </div>
+
+  <!-- TUNGGU LAWAN -->
+  <div class="card hide" id="tunggu">
+    <div class="kode-sub">kode room kamu — kirim ke pasanganmu:</div>
+    <div class="kode" id="kodeBesar">----</div>
+    <button class="btn pink" id="btnWa">Kirim Kode via WhatsApp</button>
+    <p class="kode-sub" style="margin-top:10px">menunggu pemain kedua gabung…</p>
+  </div>
+
+  <!-- GAME -->
+  <div class="hide" id="game">
+    <div class="vs" id="vsBox"></div>
+    <div class="card">
+      <div class="papan" id="papan"></div>
+      <div class="dadu" id="dadu"></div>
+      <div class="status" id="status"></div>
+      <div class="menang hide" id="menangTxt"></div>
+      <button class="btn" id="btnDadu">Lempar Dadu</button>
+      <button class="btn blue hide" id="btnLagi">Main Lagi</button>
+      <button class="btn pink" id="btnKeluar">Keluar Room</button>
+    </div>
+    <div class="card">
+      <div class="log" id="log"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+// === ONLINE LANGSUNG HP-ke-HP (PeerJS, tanpa server sendiri) ===
+const LADDERS = { 2: 38, 4: 14, 9: 31, 21: 42, 28: 84, 36: 44, 51: 67, 71: 91, 80: 100 };
+const SNAKES = { 16: 6, 47: 26, 49: 11, 56: 53, 62: 19, 64: 60, 87: 24, 93: 73, 95: 75, 98: 78 };
+const WAJAH = ['', '⚀', '⚁', '⚂', '⚃', '⚄', '⚅'];
+const HURUF = "ABCDEFGHJKLMNPQRSTUVWXYZ";
+
+let peer = null, conn = null;
+let saya = 0;              // 0 = pembuat room, 1 = yang gabung
+let room = null;           // {players:[{name,pos}], turn, dice, log[], winner}
+
+const $ = id => document.getElementById(id);
+const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+function kodeAcak() {
+  let k = "";
+  for (let i = 0; i < 4; i++) k += HURUF[Math.floor(Math.random() * HURUF.length)];
+  return k;
+}
+function kirimState() {
+  if (conn && conn.open && room) conn.send({ type: "state", state: room });
+}
+
+// papan 100 kotak, pola zigzag dari bawah
+(function bangunPapan() {
+  const papan = $('papan');
+  let html = '';
+  for (let baris = 9; baris >= 0; baris--) {
+    const angka = [];
+    for (let k = 1; k <= 10; k++) angka.push(baris * 10 + k);
+    if (baris % 2 === 1) angka.reverse();
+    for (const n of angka) {
+      let mark = '';
+      if (LADDERS[n]) mark = '🪜';
+      if (SNAKES[n]) mark = '🐍';
+      html += '<div class="cell' + (n % 2 ? ' ganjil' : '') + (n === 100 ? ' finish' : '') + '" id="c' + n + '">' + n + (mark ? '<span class="mark">' + mark + '</span>' : '') + '</div>';
+    }
+  }
+  papan.innerHTML = html;
+})();
+
+function gambarPion() {
+  document.querySelectorAll('.pion').forEach(e => e.remove());
+  if (!room) return;
+  room.players.forEach((p, i) => {
+    if (p.pos < 1) return;
+    const cell = $('c' + p.pos);
+    if (!cell) return;
+    const el = document.createElement('div');
+    el.className = 'pion p' + i;
+    el.textContent = p.name.trim().charAt(0).toUpperCase() || (i + 1);
+    cell.appendChild(el);
+  });
+}
+
+function render() {
+  if (!room) return;
+  $('vsBox').innerHTML = room.players.map((p, i) =>
+    '<div class="pbox' + (room.turn === i && room.winner < 0 ? ' turn' : '') + '">' +
+    '<span class="dot" style="background:' + (i === 0 ? '#2563eb' : '#db2777') + '"></span>' +
+    '<b>' + esc(p.name) + '</b>' + (saya === i ? ' (kamu)' : '') +
+    '<div class="pos">kotak ' + p.pos + ' / 100</div></div>').join('');
+  $('dadu').textContent = room.dice ? WAJAH[room.dice] : '';
+  $('log').innerHTML = room.log.map(l => '<div>' + esc(l) + '</div>').join('');
+  $('log').scrollTop = 99999;
+  gambarPion();
+  const selesai = room.winner >= 0;
+  $('menangTxt').classList.toggle('hide', !selesai);
+  if (selesai) $('menangTxt').textContent = '🏆 ' + room.players[room.winner].name + ' MENANG!';
+  $('btnLagi').classList.toggle('hide', !selesai);
+  const giliranku = room.turn === saya && !selesai && room.players.length === 2;
+  $('btnDadu').disabled = !giliranku;
+  $('btnDadu').textContent = selesai ? 'Permainan Selesai' : (giliranku ? '🎲 Lempar Dadu — giliranmu!' : 'Menunggu giliran lawan…');
+  $('status').textContent = room.players.length < 2 ? 'menunggu pemain kedua…' :
+    (selesai ? '' : (giliranku ? 'giliran kamu, lempar dadunya!' : 'giliran ' + room.players[room.turn].name + '…'));
+}
+
+function mulaiGame() {
+  $('lobby').classList.add('hide');
+  $('tunggu').classList.add('hide');
+  $('game').classList.remove('hide');
+  render();
+}
+
+function pasangConn(c) {
+  conn = c;
+  conn.on("data", d => {
+    if (d && d.type === "state" && d.state) {
+      room = d.state;
+      // kalau nama lawan belum ada (pembuat room), isi dari state
+      mulaiGame();
+      render();
+    }
+  });
+  conn.on("open", () => {
+    // begitu konek, kirim state terbaru ke lawan
+    kirimState();
+    mulaiGame();
+  });
+  conn.on("close", () => { $('status').textContent = "Koneksi putus — gabung ulang ya."; });
+}
+
+$('btnBuat').onclick = () => {
+  const nama = $('nama').value.trim();
+  if (!nama) { $('errLobby').textContent = 'isi nama kamu dulu ya.'; return; }
+  $('errLobby').textContent = '';
+  try { localStorage.setItem('ular_nama', nama); } catch (e) {}
+  saya = 0;
+  const kode = kodeAcak();
+  room = {
+    players: [{ name: nama, pos: 0 }],
+    turn: 0, dice: 0,
+    log: [nama + ' membuat room. Menunggu lawan…'],
+    winner: -1
+  };
+  $('lobby').classList.add('hide');
+  $('kodeBesar').textContent = kode;
+  $('tunggu').classList.remove('hide');
+  peer = new Peer("afisdita-" + kode, { host: "0.peerjs.com", secure: true, port: 443, path: "/" });
+  peer.on("connection", c => {
+    // lawan gabung: tambah pemain kedua, lalu mulai
+    pasangConn(c);
+    c.on("data", d => {
+      if (d && d.type === "hello") {
+        if (room.players.length < 2) {
+          room.players.push({ name: d.name, pos: 0 });
+          room.log.push(d.name + ' bergabung! ' + room.players[0].name + ' mulai duluan.');
+          kirimState();
+          mulaiGame();
+        }
+      }
+    });
+  });
+  peer.on("error", e => { document.querySelector('#tunggu .kode-sub').textContent = 'gagal konek (' + e.type + ') — muat ulang & coba lagi.'; });
+};
+
+$('btnGabung').onclick = () => {
+  const nama = $('nama').value.trim();
+  const kode = $('kodeJoin').value.trim().toUpperCase();
+  if (!nama) { $('errLobby').textContent = 'isi nama kamu dulu ya.'; return; }
+  if (kode.length !== 4) { $('errLobby').textContent = 'kode room itu 4 huruf.'; return; }
+  $('errLobby').textContent = '';
+  try { localStorage.setItem('ular_nama', nama); localStorage.setItem('ular_kode', kode); } catch (e) {}
+  saya = 1;
+  $('lobby').classList.add('hide');
+  $('tunggu').classList.remove('hide');
+  $('kodeBesar').textContent = kode;
+  document.querySelector('#tunggu .kode-sub').textContent = 'menghubungkan ke room ' + kode + '…';
+  peer = new Peer({ host: "0.peerjs.com", secure: true, port: 443, path: "/" });
+  peer.on("open", () => {
+    const c = peer.connect("afisdita-" + kode, { reliable: true });
+    pasangConn(c);
+    c.on("open", () => { c.send({ type: "hello", name: nama }); });
+  });
+  peer.on("error", e => { $('errLobby').textContent = 'gagal gabung (' + e.type + ') — cek kodenya & coba lagi.'; $('tunggu').classList.add('hide'); $('lobby').classList.remove('hide'); });
+};
+
+$('btnWa').onclick = () => {
+  const kode = $('kodeBesar').textContent;
+  const teks = 'main Ular Tangga Online sama aku yuk! buka https://4ever.ai.id/game-hub-afis-dita.html, pilih Ular Tangga, terus Gabung Room pakai kode: ' + kode;
+  window.open('https://wa.me/?text=' + encodeURIComponent(teks), '_blank');
+};
+
+$('btnDadu').onclick = () => {
+  if (!room || room.turn !== saya || room.winner >= 0 || room.players.length < 2) return;
+  $('btnDadu').disabled = true;
+  let n = 0;
+  const anim = setInterval(() => { $('dadu').textContent = WAJAH[1 + Math.floor(Math.random() * 6)]; if (++n > 6) clearInterval(anim); }, 80);
+  setTimeout(() => {
+    const d = 1 + Math.floor(Math.random() * 6);
+    const p = room.players[saya];
+    let tujuan = p.pos + d;
+    let pesan = p.name + ' dapat ' + d + ': ' + p.pos + ' → ';
+    if (tujuan > 100) {
+      pesan += 'melewati 100, tetap di ' + p.pos + '.';
+      tujuan = p.pos;
+    } else {
+      if (LADDERS[tujuan]) { pesan += tujuan + ' naik tangga! 🪜 → ' + LADDERS[tujuan] + '.'; tujuan = LADDERS[tujuan]; }
+      else if (SNAKES[tujuan]) { pesan += tujuan + ' kena ular! 🐍 → ' + SNAKES[tujuan] + '.'; tujuan = SNAKES[tujuan]; }
+      else pesan += tujuan + '.';
+    }
+    p.pos = tujuan;
+    room.dice = d;
+    room.log.push(pesan);
+    if (tujuan === 100) {
+      room.winner = saya;
+      room.log.push('🏆 ' + p.name + ' sampai di 100 dan MENANG!');
+    } else {
+      room.turn = saya === 0 ? 1 : 0;
+    }
+    render();
+    kirimState();
+  }, 500);
+};
+
+$('btnLagi').onclick = () => {
+  if (!room) return;
+  room = {
+    players: room.players.map(p => ({ name: p.name, pos: 0 })),
+    turn: 0, dice: 0,
+    log: ['Permainan baru dimulai! ' + room.players[0].name + ' mulai duluan.'],
+    winner: -1
+  };
+  render();
+  kirimState();
+};
+
+$('btnKeluar').onclick = () => {
+  if (peer) { try { peer.destroy(); } catch (e) {} }
+  location.reload();
+};
+
+// isi otomatis nama/kode terakhir
+try {
+  const n = localStorage.getItem('ular_nama');
+  const k = localStorage.getItem('ular_kode');
+  if (n) $('nama').value = n;
+  if (k) $('kodeJoin').value = k;
+} catch (e) {}
+</script>
+</body>
+</html>
