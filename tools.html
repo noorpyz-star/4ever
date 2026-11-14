@@ -27,7 +27,11 @@
     background: linear-gradient(180deg, rgba(255,255,255,.05), rgba(255,255,255,.02));
     box-shadow: 0 8px 24px rgba(0,0,0,.45); text-align: left; scroll-margin-top: 16px;
   }
-  .tool h2 { color: #fff; font-size: 1.12rem; margin-bottom: 6px; display: flex; align-items: center; gap: 8px; }
+  .tool h2 { color: #fff; font-size: 1.12rem; margin-bottom: 6px; display: flex; align-items: center; gap: 8px; cursor: pointer; }
+  .tool h2::after { content: '›'; margin-left: auto; color: #d4af37; font-size: 1.4rem; line-height: 1; transition: transform .2s; }
+  .tool.open h2::after { transform: rotate(90deg); }
+  .tool-body { display: none; }
+  .tool.open .tool-body { display: block; }
   .tool .d { color: #aaa; font-size: .87rem; line-height: 1.55; margin-bottom: 12px; }
   .field {
     width: 100%; padding: 12px 14px; border-radius: 10px; border: 1px solid #555;
@@ -81,7 +85,7 @@
 <div class="wrap">
   <h1><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="color:#d4af37;vertical-align:-4px;flex:none"><path d="M4 7h8"/><circle cx="16.5" cy="7" r="2.3"/><path d="M19 7h1.5"/><path d="M4 17h2"/><circle cx="9.5" cy="17" r="2.3"/><path d="M12.5 17H20"/></svg> Tools</h1>
   <div class="sub">4EVER.AI.ID</div>
-  <div class="tagline">13 tools gratis, langsung dari browser — tanpa login ✨</div>
+  <div class="tagline">13 tools gratis, langsung dari browser — tap salah satu buat membukanya ✨</div>
   <div class="chips">
     <a href="#t1">Fancy Text</a>
     <a href="#t2">Caption</a>
@@ -305,6 +309,31 @@ async function fetchJSON(url, ms) {
     return await r.json();
   } finally { clearTimeout(t); }
 }
+
+/* ============ ACCORDION: tap judul → tool-nya muncul ============ */
+document.querySelectorAll('.tool').forEach(tool => {
+  const h2 = tool.querySelector('h2');
+  const body = document.createElement('div');
+  body.className = 'tool-body';
+  while (tool.children.length > 1) body.appendChild(tool.children[1]);
+  tool.appendChild(body);
+  h2.addEventListener('click', () => {
+    const wasOpen = tool.classList.contains('open');
+    document.querySelectorAll('.tool.open').forEach(t => t.classList.remove('open'));
+    if (!wasOpen) tool.classList.add('open');
+  });
+});
+/* chip navigasi: buka tool-nya lalu scroll ke sana */
+document.querySelectorAll('.chips a').forEach(a => {
+  a.addEventListener('click', e => {
+    e.preventDefault();
+    const tool = document.querySelector(a.getAttribute('href'));
+    if (!tool) return;
+    document.querySelectorAll('.tool.open').forEach(t => t.classList.remove('open'));
+    tool.classList.add('open');
+    tool.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  });
+});
 
 /* ============ 1. FANCY TEXT ============ */
 const STYLES = [
