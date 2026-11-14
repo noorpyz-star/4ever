@@ -26,6 +26,7 @@
     font-size: 1.05rem; font-weight: bold; font-family: inherit;
   }
   .go-btn:active { transform: scale(.98); }
+  .go-btn:disabled { opacity: .6; cursor: wait; }
   .status { min-height: 24px; color: #f0c75e; font-size: .92rem; margin-top: 12px; line-height: 1.5; }
   .result { display: none; margin-top: 8px; padding: 16px; border: 1px solid #555; border-radius: 14px; background: rgba(255,255,255,.04); }
   .result img.cover { width: 150px; border-radius: 10px; border: 1px solid #444; }
@@ -41,10 +42,11 @@
     background: rgba(255,255,255,.05); border: 1px solid #3a3a3a; color: #fff;
     padding: 15px 18px; border-radius: 14px; margin: 10px 0; text-align: left;
   }
-  a.link-btn .ic { font-size: 1.5rem; }
+  a.link-btn .ic { font-size: 1.5rem; flex: none; }
   a.link-btn .tt { font-weight: bold; display: block; }
   a.link-btn .ds { color: #999; font-size: .8rem; display: block; margin-top: 2px; }
   a.link-btn .arr { margin-left: auto; color: #d4af37; font-size: 1.2rem; }
+  .note { color: #777; font-size: .8rem; line-height: 1.5; margin-top: 10px; }
   .back { display: inline-block; margin-top: 30px; color: #d4af37; text-decoration: none; font-size: .95rem; }
   footer { color: #555; font-size: .78rem; padding: 24px 0 6px; }
 </style>
@@ -53,7 +55,7 @@
 <div class="wrap">
   <h1><svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="color:#d4af37;vertical-align:-4px;flex:none"><path d="M12 4v10.2"/><path d="M6.6 10.2L12 15.6l5.4-5.4"/><path d="M4.5 19.5h15"/><path d="M4.5 15.5v4M19.5 15.5v4"/></svg> Download Video</h1>
   <div class="sub">TOOLS — 4EVER.AI.ID</div>
-  <p class="desc">Tempel link video TikTok di bawah ini, terus pencet tombolnya. Video bisa di-download <b style="color:#fff">tanpa watermark</b> atau jadi MP3.</p>
+  <p class="desc">TikTok bisa download <b style="color:#fff">langsung di sini</b>. Untuk Facebook, Instagram &amp; YouTube, pencet tombol di bawah — link videonya ditempel di situs download-nya (gratis, tanpa login).</p>
 
   <div class="group-title"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="color:#d4af37;vertical-align:-4px;flex:none"><path d="M9.6 18.1V6.2l9.9-2v11.6"/><circle cx="6.9" cy="18.1" r="2.7"/><circle cx="16.8" cy="15.8" r="2.7"/></svg> TIKTOK — LANGSUNG DI SINI</div>
   <input class="field" id="ttUrl" type="url" placeholder="tempel link TikTok di sini…">
@@ -64,35 +66,48 @@
     <img class="cover" id="ttCover" alt="cover video">
     <div class="vtitle" id="ttTitle"></div>
     <div class="vauthor" id="ttAuthor"></div>
-    <a class="dl-btn" id="dlNoWm" target="_blank"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="color:#d4af37;vertical-align:-4px;flex:none"><path d="M12 4v10.2"/><path d="M6.6 10.2L12 15.6l5.4-5.4"/><path d="M4.5 19.5h15"/><path d="M4.5 15.5v4M19.5 15.5v4"/></svg> Download Tanpa Watermark</a>
-    <a class="dl-btn" id="dlHd" target="_blank"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="color:#d4af37;vertical-align:-4px;flex:none"><path d="M12 4v10.2"/><path d="M6.6 10.2L12 15.6l5.4-5.4"/><path d="M4.5 19.5h15"/><path d="M4.5 15.5v4M19.5 15.5v4"/></svg> Download HD (kalau ada)</a>
-    <a class="dl-btn" id="dlWm" target="_blank"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="color:#d4af37;vertical-align:-4px;flex:none"><path d="M12 4v10.2"/><path d="M6.6 10.2L12 15.6l5.4-5.4"/><path d="M4.5 19.5h15"/><path d="M4.5 15.5v4M19.5 15.5v4"/></svg> Download Dengan Watermark</a>
-    <a class="dl-btn" id="dlMp3" target="_blank"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="color:#d4af37;vertical-align:-4px;flex:none"><path d="M9.6 18.1V6.2l9.9-2v11.6"/><circle cx="6.9" cy="18.1" r="2.7"/><circle cx="16.8" cy="15.8" r="2.7"/></svg> Download MP3 (lagunya aja)</a>
+    <a class="dl-btn" id="dlNoWm" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="color:#d4af37;vertical-align:-4px;flex:none"><path d="M12 4v10.2"/><path d="M6.6 10.2L12 15.6l5.4-5.4"/><path d="M4.5 19.5h15"/><path d="M4.5 15.5v4M19.5 15.5v4"/></svg> Download Tanpa Watermark</a>
+    <a class="dl-btn" id="dlHd" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="color:#d4af37;vertical-align:-4px;flex:none"><path d="M12 4v10.2"/><path d="M6.6 10.2L12 15.6l5.4-5.4"/><path d="M4.5 19.5h15"/><path d="M4.5 15.5v4M19.5 15.5v4"/></svg> Download HD (kalau ada)</a>
+    <a class="dl-btn" id="dlWm" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="color:#d4af37;vertical-align:-4px;flex:none"><path d="M12 4v10.2"/><path d="M6.6 10.2L12 15.6l5.4-5.4"/><path d="M4.5 19.5h15"/><path d="M4.5 15.5v4M19.5 15.5v4"/></svg> Download Dengan Watermark</a>
+    <a class="dl-btn" id="dlMp3" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="color:#d4af37;vertical-align:-4px;flex:none"><path d="M9.6 18.1V6.2l9.9-2v11.6"/><circle cx="6.9" cy="18.1" r="2.7"/><circle cx="16.8" cy="15.8" r="2.7"/></svg> Download MP3 (lagunya aja)</a>
   </div>
 
+  <div class="group-title"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="color:#d4af37;vertical-align:-4px;flex:none"><rect x="3.8" y="3.8" width="16.4" height="16.4" rx="4.6"/><circle cx="12" cy="12" r="3.7"/><circle cx="17.1" cy="6.9" r="1.05" fill="currentColor" stroke="none"/></svg> INSTAGRAM</div>
+  <a class="link-btn" href="https://indown.io/" target="_blank" rel="noopener">
+    <span class="ic"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="color:#d4af37;vertical-align:-4px;flex:none"><rect x="3.8" y="3.8" width="16.4" height="16.4" rx="4.6"/><circle cx="12" cy="12" r="3.7"/><circle cx="17.1" cy="6.9" r="1.05" fill="currentColor" stroke="none"/></svg></span>
+    <span><span class="tt">Download Video/Reels Instagram — indown.io</span><span class="ds">tempel link postingan/reels IG di situs itu</span></span>
+    <span class="arr">›</span>
+  </a>
+  <a class="link-btn" href="https://fastdl.app/" target="_blank" rel="noopener">
+    <span class="ic"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="color:#d4af37;vertical-align:-4px;flex:none"><rect x="3.8" y="3.8" width="16.4" height="16.4" rx="4.6"/><circle cx="12" cy="12" r="3.7"/><circle cx="17.1" cy="6.9" r="1.05" fill="currentColor" stroke="none"/></svg></span>
+    <span><span class="tt">Download Instagram — FastDl</span><span class="ds">alternatif kalau yang atas nggak bisa</span></span>
+    <span class="arr">›</span>
+  </a>
+
   <div class="group-title"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="color:#d4af37;vertical-align:-4px;flex:none"><path d="M8.2 11.4V20H4.6v-8.6h3.6z"/><path d="M8.2 11.4c2.7-.5 4.2-2.3 4.9-5.2.2-1 .9-1.9 1.9-1.9.9 0 1.5.8 1.4 1.8l-.6 3h4.6c1 0 1.7.9 1.5 1.9l-.9 4.3c-.2 1-1 1.7-2 1.7H8.2"/></svg> FACEBOOK</div>
-  <a class="link-btn" href="https://snapsave.app" target="_blank">
+  <a class="link-btn" href="https://snapsave.app/" target="_blank" rel="noopener">
     <span class="ic"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="color:#d4af37;vertical-align:-4px;flex:none"><path d="M8.2 11.4V20H4.6v-8.6h3.6z"/><path d="M8.2 11.4c2.7-.5 4.2-2.3 4.9-5.2.2-1 .9-1.9 1.9-1.9.9 0 1.5.8 1.4 1.8l-.6 3h4.6c1 0 1.7.9 1.5 1.9l-.9 4.3c-.2 1-1 1.7-2 1.7H8.2"/></svg></span>
     <span><span class="tt">Download Video Facebook — SnapSave</span><span class="ds">tempel link video FB di situs itu</span></span>
     <span class="arr">›</span>
   </a>
-  <a class="link-btn" href="https://fdown.net" target="_blank">
+  <a class="link-btn" href="https://fdown.net/" target="_blank" rel="noopener">
     <span class="ic"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="color:#d4af37;vertical-align:-4px;flex:none"><path d="M8.2 11.4V20H4.6v-8.6h3.6z"/><path d="M8.2 11.4c2.7-.5 4.2-2.3 4.9-5.2.2-1 .9-1.9 1.9-1.9.9 0 1.5.8 1.4 1.8l-.6 3h4.6c1 0 1.7.9 1.5 1.9l-.9 4.3c-.2 1-1 1.7-2 1.7H8.2"/></svg></span>
     <span><span class="tt">Download Video Facebook — FDown</span><span class="ds">alternatif kalau yang atas nggak bisa</span></span>
     <span class="arr">›</span>
   </a>
 
-  <div class="group-title"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="color:#d4af37;vertical-align:-4px;flex:none"><rect x="3.8" y="3.8" width="16.4" height="16.4" rx="4.6"/><circle cx="12" cy="12" r="3.7"/><circle cx="17.1" cy="6.9" r="1.05" fill="currentColor" stroke="none"/></svg> INSTAGRAM</div>
-  <a class="link-btn" href="https://snapinsta.app" target="_blank">
-    <span class="ic"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="color:#d4af37;vertical-align:-4px;flex:none"><rect x="3.8" y="3.8" width="16.4" height="16.4" rx="4.6"/><circle cx="12" cy="12" r="3.7"/><circle cx="17.1" cy="6.9" r="1.05" fill="currentColor" stroke="none"/></svg></span>
-    <span><span class="tt">Download Video/Reels Instagram — SnapInsta</span><span class="ds">tempel link postingan/reels IG di situs itu</span></span>
+  <div class="group-title"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="color:#d4af37;vertical-align:-4px;flex:none"><path d="M6 4.5h12.5v15H6z"/><path d="M10.2 9.3v5.4l4.7-2.7z" fill="currentColor" stroke="none"/></svg> YOUTUBE</div>
+  <a class="link-btn" href="https://ssyoutube.com/" target="_blank" rel="noopener">
+    <span class="ic"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="color:#d4af37;vertical-align:-4px;flex:none"><path d="M6 4.5h12.5v15H6z"/><path d="M10.2 9.3v5.4l4.7-2.7z" fill="currentColor" stroke="none"/></svg></span>
+    <span><span class="tt">Download Video YouTube — SSYouTube</span><span class="ds">tempel link video YouTube di situs itu</span></span>
     <span class="arr">›</span>
   </a>
-  <a class="link-btn" href="https://fastdl.app" target="_blank">
-    <span class="ic"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="color:#d4af37;vertical-align:-4px;flex:none"><rect x="3.8" y="3.8" width="16.4" height="16.4" rx="4.6"/><circle cx="12" cy="12" r="3.7"/><circle cx="17.1" cy="6.9" r="1.05" fill="currentColor" stroke="none"/></svg></span>
-    <span><span class="tt">Download Instagram — FastDl</span><span class="ds">alternatif kalau yang atas nggak bisa</span></span>
+  <a class="link-btn" href="https://en.savefrom.net/" target="_blank" rel="noopener">
+    <span class="ic"><svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="color:#d4af37;vertical-align:-4px;flex:none"><path d="M6 4.5h12.5v15H6z"/><path d="M10.2 9.3v5.4l4.7-2.7z" fill="currentColor" stroke="none"/></svg></span>
+    <span><span class="tt">Download Video YouTube — SaveFrom</span><span class="ds">alternatif kalau yang atas nggak bisa</span></span>
     <span class="arr">›</span>
   </a>
+  <p class="note">Catatan: download langsung di halaman ini baru bisa untuk TikTok. Buat FB, IG &amp; YouTube belum ada layanan gratis yang boleh dipakai langsung dari situs ini — jadi diarahkan ke situs download-nya. Semua yang di atas sudah dicek dan masih jalan.</p>
 
   <a class="back" href="https://4ever.ai.id/">← kembali ke halaman utama</a>
   <footer>© 2026 4ever.ai.id</footer>
@@ -101,22 +116,29 @@
 <script>
 const statusEl = document.getElementById('ttStatus');
 const resultEl = document.getElementById('ttResult');
+const btn = document.getElementById('ttBtn');
 
 function fixUrl(u) {
   if (!u) return '';
   return u.startsWith('http') ? u : 'https://www.tikwm.com' + u;
 }
 
-document.getElementById('ttBtn').onclick = async () => {
-  const url = document.getElementById('ttUrl').value.trim();
+btn.onclick = async () => {
+  let url = document.getElementById('ttUrl').value.trim();
+  const mUrl = url.match(/https?:\/\/[^\s"']*tiktok\.com[^\s"']*/i);
+  if (mUrl) url = mUrl[0];
   resultEl.style.display = 'none';
   if (!url || !/tiktok\.com/.test(url)) {
     statusEl.textContent = '⚠️ tempel dulu link TikTok yang bener ya (ada tulisan tiktok.com-nya)';
     return;
   }
+  btn.disabled = true;
   statusEl.textContent = '⏳ lagi ngambil videonya, tunggu sebentar…';
   try {
-    const res = await fetch('https://www.tikwm.com/api/?url=' + encodeURIComponent(url));
+    const ctrl = new AbortController();
+    const timer = setTimeout(() => ctrl.abort(), 12000);
+    const res = await fetch('https://www.tikwm.com/api/?url=' + encodeURIComponent(url), { signal: ctrl.signal });
+    clearTimeout(timer);
     const json = await res.json();
     if (json.code !== 0 || !json.data) {
       statusEl.textContent = '❌ gagal ngambil video. Cek lagi linknya, atau videonya mungkin diprivate.';
@@ -137,7 +159,11 @@ document.getElementById('ttBtn').onclick = async () => {
     resultEl.style.display = 'block';
     statusEl.textContent = '✅ ketemu! tinggal pencet tombol download-nya di bawah 👇';
   } catch (e) {
-    statusEl.textContent = '❌ lagi ada gangguan jaringan/layanan. Coba lagi sebentar ya.';
+    statusEl.textContent = e.name === 'AbortError'
+      ? '❌ kelamaan, layanannya lagi lemot. Coba pencet lagi ya.'
+      : '❌ lagi ada gangguan jaringan/layanan. Coba lagi sebentar ya.';
+  } finally {
+    btn.disabled = false;
   }
 };
 </script>
