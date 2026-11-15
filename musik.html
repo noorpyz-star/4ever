@@ -8,7 +8,14 @@
 <style>
   * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
   :root { --bg:#121212; --panel:#181818; --panel2:#282828; --txt:#fff; --sub:#b3b3b3; --green:#1ed760; --dyn:#2a2a2a; --dynDark:#121212; }
-  body { font-family:-apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif; background:linear-gradient(180deg,var(--dynDark) 0%,var(--bg) 260px); color:var(--txt); min-height:100vh; padding:20px 16px 168px; transition:background 1s ease; }
+  body { font-family:-apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif; background:linear-gradient(180deg,var(--dynDark) 0%,var(--bg) 260px); color:var(--txt); min-height:100vh; padding:0 16px 168px; transition:background 1s ease; }
+  .topbar { position:sticky; top:0; z-index:50; background:rgba(18,18,18,.92); backdrop-filter:blur(8px); -webkit-backdrop-filter:blur(8px); border-bottom:1px solid #2c2c2c; margin:0 -16px; }
+  .topbar-in { max-width:620px; margin:0 auto; display:flex; align-items:center; gap:12px; padding:10px 16px; }
+  .topbar nav { margin-left:auto; display:flex; gap:14px; overflow-x:auto; scrollbar-width:none; }
+  .topbar nav::-webkit-scrollbar { display:none; }
+  .topbar nav a { color:#b3b3b3; text-decoration:none; font-size:.83rem; font-weight:600; white-space:nowrap; }
+  .topbar nav a:hover, .topbar nav a.on { color:#fff; }
+  .topbar nav a.on { color:var(--green); }
   .wrap { max-width:620px; margin:0 auto; }
   .brand { display:flex; align-items:center; gap:9px; font-weight:800; font-size:1.05rem; letter-spacing:.2px; }
   .brand .dot { width:30px; height:30px; border-radius:50%; background:var(--green); color:#000; display:flex; align-items:center; justify-content:center; font-size:1rem; }
@@ -104,8 +111,19 @@
 </style>
 </head>
 <body>
-<div class="wrap">
+<div class="topbar"><div class="topbar-in">
   <div class="brand"><span class="dot">🎵</span><span>4ever <small>Musik</small></span></div>
+  <nav>
+    <a href="https://4ever.ai.id/index.html">Beranda</a>
+    <a href="https://4ever.ai.id/musik.html" class="on">Mode Audio</a>
+    <a href="https://4ever.ai.id/musik-yt.html">Mode YouTube</a>
+    <a href="https://4ever.ai.id/tools.html">Tools</a>
+    <a href="https://4ever.ai.id/download-video.html">Download</a>
+    <a href="https://4ever.ai.id/tv-gratis.html">TV</a>
+    <a href="https://4ever.ai.id/berita-kripto.html">Berita</a>
+  </nav>
+</div></div>
+<div class="wrap">
   <h1 class="greet" id="greet">Selamat malam</h1>
   <p class="sub">putar lagu full, tanpa iklan. bikin playlistmu sendiri 🎧</p>
   <div><span class="dtpill">📅 <span id="tgl">…</span> &nbsp;•&nbsp; 🕐 <b id="jam">--:--:--</b> WIB</span></div>
