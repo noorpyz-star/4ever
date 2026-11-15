@@ -90,9 +90,32 @@
   }
   a.btn-link { text-decoration: none; }
   .divider { width: 120px; height: 1px; background: linear-gradient(90deg, transparent, #999, transparent); margin: 26px auto 0; }
+
+  .topbar { position:sticky; top:0; z-index:50; background:rgba(17,17,17,.95); backdrop-filter:blur(8px); -webkit-backdrop-filter:blur(8px); border-bottom:1px solid #2c2c2c; }
+  .topbar-in { max-width:640px; margin:0 auto; display:flex; align-items:center; gap:12px; padding:10px 16px; }
+  .tb-logo { font-weight:900; font-size:1rem; letter-spacing:.02em; text-decoration:none; color:#d4af37; flex:none; }
+  .topbar nav { margin-left:auto; display:flex; gap:14px; overflow-x:auto; scrollbar-width:none; }
+  .topbar nav::-webkit-scrollbar { display:none; }
+  .topbar nav a { color:#b3b3b3; text-decoration:none; font-size:.83rem; font-weight:600; white-space:nowrap; }
+  .topbar nav a:hover { color:#fff; }
+  .topbar nav a.on { color:#d4af37; }
 </style>
 </head>
 <body>
+<div class="topbar"><div class="topbar-in">
+  <a class="tb-logo" href="https://4ever.ai.id/">4EVER</a>
+  <nav>
+    <a href="https://4ever.ai.id/">Beranda</a>
+    <a href="https://4ever.ai.id/profil.html">Profil</a>
+    <a href="https://4ever.ai.id/musik-yt.html">Musik</a>
+    <a href="https://4ever.ai.id/tools.html">Tools</a>
+    <a href="https://4ever.ai.id/download-video.html">Download</a>
+    <a href="https://4ever.ai.id/tv-gratis.html">TV</a>
+    <a href="https://4ever.ai.id/berita-kripto.html">Berita</a>
+    <a href="https://4ever.ai.id/game-hub-afis-dita.html">Game</a>
+  </nav>
+</div></div>
+
 
 <!-- ================= COVER ================= -->
 <div id="cover">
@@ -107,7 +130,7 @@
       Kepada Yth.<br>Bapak/Ibu/Saudara/i<br>
       <span id="guestName">Tamu Undangan</span>
     </div>
-    <button class="btn" id="openBtn">✉️ Buka Undangan</button>
+    <button class="btn" id="openBtn"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="color:#d4af37;vertical-align:-4px;flex:none"><rect x="3.6" y="5.8" width="16.8" height="12.4" rx="2"/><path d="M4.5 7.6L12 13l7.5-5.4"/></svg> Buka Undangan</button>
     <div style="margin-top:14px;color:#8a8a8a;font-size:.78rem">*mohon maaf apabila terdapat kesalahan penulisan nama &amp; gelar</div>
   </div>
 </div>
@@ -168,7 +191,7 @@
   </div>
 
   <div class="sec">
-    <h2 class="sec-title">💌 RSVP &amp; UCAPAN</h2>
+    <h2 class="sec-title"><svg viewBox="0 0 24 24" width="21" height="21" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="color:#d4af37;vertical-align:-4px;flex:none"><rect x="3.6" y="5.8" width="16.8" height="12.4" rx="2"/><path d="M4.5 7.6L12 13l7.5-5.4"/></svg> RSVP &amp; UCAPAN</h2>
     <p style="color:#bdbdbd">Konfirmasi kehadiran &amp; kirim doa terbaikmu buat kami:</p>
     <input class="field" id="rsvpNama" type="text" placeholder="Nama kamu">
     <select class="field" id="rsvpHadir">
@@ -177,22 +200,22 @@
       <option value="Masih ragu">🤔 Masih ragu</option>
     </select>
     <textarea class="field" id="rsvpPesan" placeholder="Tulis ucapan &amp; doa buat mempelai..."></textarea>
-    <button class="btn" id="rsvpBtn">💌 Kirim via WhatsApp</button>
+    <button class="btn" id="rsvpBtn"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="color:#d4af37;vertical-align:-4px;flex:none"><path d="M20.6 3.6L4.8 10.4l6 3 3 6z"/><path d="M10.8 13.4l9.8-9.8"/></svg> Kirim via WhatsApp</button>
     <div class="divider"></div>
   </div>
 
   <div class="sec">
-    <h2 class="sec-title">🎁 AMPLOP DIGITAL</h2>
+    <h2 class="sec-title"><svg viewBox="0 0 24 24" width="21" height="21" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="color:#d4af37;vertical-align:-4px;flex:none"><rect x="4.5" y="10" width="15" height="3.8"/><path d="M6.2 13.8V20a.8.8 0 0 0 .8.8h10a.8.8 0 0 0 .8-.8v-6.2"/><path d="M12 10v10.8"/><path d="M12 10c-4.6 0-5.2-4.6-2.9-4.6C11.6 5.4 12 10 12 10zm0 0c4.6 0 5.2-4.6 2.9-4.6C12.4 5.4 12 10 12 10z"/></svg> AMPLOP DIGITAL</h2>
     <p style="color:#bdbdbd">Doa restu kamu adalah hadiah terindah. Tapi kalau mau kasih tanda kasih juga, boleh lewat sini:</p>
     <div class="event-card">
       <div class="ev-title">🏦 REKENING</div>
       <p style="margin-top:8px">(nomor rekening menyusul)</p>
-      <button class="copy-btn" data-copy="">📋 Salin Nomor</button>
+      <button class="copy-btn" data-copy=""><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="color:#d4af37;vertical-align:-3px"><path d="M9 4.8H7.2A1.7 1.7 0 0 0 5.5 6.5v12A1.7 1.7 0 0 0 7.2 20.2h9.6a1.7 1.7 0 0 0 1.7-1.7v-12A1.7 1.7 0 0 0 16.8 4.8H15"/><rect x="8.8" y="2.8" width="6.4" height="4.6" rx="1.3"/></svg> Salin Nomor</button>
     </div>
     <div class="event-card">
       <div class="ev-title">📱 E-WALLET</div>
       <p style="margin-top:8px">(nomor e-wallet menyusul)</p>
-      <button class="copy-btn" data-copy="">📋 Salin Nomor</button>
+      <button class="copy-btn" data-copy=""><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="color:#d4af37;vertical-align:-3px"><path d="M9 4.8H7.2A1.7 1.7 0 0 0 5.5 6.5v12A1.7 1.7 0 0 0 7.2 20.2h9.6a1.7 1.7 0 0 0 1.7-1.7v-12A1.7 1.7 0 0 0 16.8 4.8H15"/><rect x="8.8" y="2.8" width="6.4" height="4.6" rx="1.3"/></svg> Salin Nomor</button>
     </div>
     <div class="divider"></div>
   </div>
@@ -209,7 +232,7 @@
   <footer>undangan digital — Afis &amp; Dita 💍</footer>
 </div>
 
-<button class="mute-btn" id="muteBtn" title="Musik">🔊</button>
+<button class="mute-btn" id="muteBtn" title="Musik"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="color:#d4af37;vertical-align:-3px"><path d="M4 9.5v5h3.5L12 18.5v-13L7.5 9.5H4z"/><path d="M15.5 9.8a3.6 3.6 0 0 1 0 4.4"/><path d="M18 7.2a7.2 7.2 0 0 1 0 9.6"/></svg></button>
 
 <script>
 // nama tamu dari link: ?to=Nama+Tamu
@@ -307,8 +330,8 @@ function startMusic() {
 }
 document.getElementById('muteBtn').onclick = () => {
   if (!mCtx) return;
-  if (mOn) { mOn = false; clearTimeout(mTimer); mCtx.suspend(); document.getElementById('muteBtn').textContent = '🔇'; }
-  else { mCtx.resume(); mOn = true; mSched(); document.getElementById('muteBtn').textContent = '🔊'; }
+  if (mOn) { mOn = false; clearTimeout(mTimer); mCtx.suspend(); document.getElementById('muteBtn').innerHTML = SPK_OFF_HTML; }
+  else { mCtx.resume(); mOn = true; mSched(); document.getElementById('muteBtn').innerHTML = SPK_ON_HTML; }
 };
 
 // (2) RSVP via WhatsApp mempelai
@@ -321,14 +344,18 @@ document.getElementById('rsvpBtn').onclick = () => {
   window.open('https://wa.me/' + WA_NUMBER + '?text=' + teks, '_blank');
 };
 
+const SALIN_HTML = '<svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="color:#d4af37;vertical-align:-3px"><path d="M9 4.8H7.2A1.7 1.7 0 0 0 5.5 6.5v12A1.7 1.7 0 0 0 7.2 20.2h9.6a1.7 1.7 0 0 0 1.7-1.7v-12A1.7 1.7 0 0 0 16.8 4.8H15"/><rect x="8.8" y="2.8" width="6.4" height="4.6" rx="1.3"/></svg> Salin Nomor';
+const SPK_ON_HTML = '<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="color:#d4af37;vertical-align:-3px"><path d="M4 9.5v5h3.5L12 18.5v-13L7.5 9.5H4z"/><path d="M15.5 9.8a3.6 3.6 0 0 1 0 4.4"/><path d="M18 7.2a7.2 7.2 0 0 1 0 9.6"/></svg>';
+const SPK_OFF_HTML = '<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="color:#d4af37;vertical-align:-3px"><path d="M4 9.5v5h3.5L12 18.5v-13L7.5 9.5H4z"/><path d="M16 9.8l4.8 4.8M20.8 9.8L16 14.6"/></svg>';
+
 // (3) tombol salin nomor amplop
 document.querySelectorAll('.copy-btn').forEach(b => {
   b.addEventListener('click', () => {
     const v = b.getAttribute('data-copy');
     if (!v) { b.textContent = '⏳ nomornya menyusul ya'; return; }
     if (navigator.clipboard) navigator.clipboard.writeText(v).catch(() => {});
-    b.textContent = '✅ Tersalin!';
-    setTimeout(() => { b.textContent = '📋 Salin Nomor'; }, 2000);
+    b.innerHTML = '✅ Tersalin!';
+    setTimeout(() => { b.innerHTML = SALIN_HTML; }, 2000);
   });
 });
 

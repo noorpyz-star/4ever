@@ -26,9 +26,32 @@
   .ch .panah { margin-left:auto; color:#e53935; font-weight:400; }
   .catatan { background:#fafafa; border:1px solid #e0e0e0; border-radius:12px; padding:12px 14px; font-size:13px; color:#555; line-height:1.55; margin-bottom:12px; }
   .kembali { display:block; text-align:center; margin-top:22px; color:#43a047; text-decoration:none; font-size:14px; }
+
+  .topbar { position:sticky; top:0; z-index:50; background:rgba(255,255,255,.95); backdrop-filter:blur(8px); -webkit-backdrop-filter:blur(8px); border-bottom:1px solid #eee; box-shadow:0 2px 10px rgba(0,0,0,.05); }
+  .topbar-in { max-width:640px; margin:0 auto; display:flex; align-items:center; gap:12px; padding:10px 16px; }
+  .tb-logo { font-weight:900; font-size:1rem; letter-spacing:.02em; text-decoration:none; background-image:linear-gradient(90deg,#e53935,#f9a825,#43a047); -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent; color:transparent; flex:none; }
+  .topbar nav { margin-left:auto; display:flex; gap:14px; overflow-x:auto; scrollbar-width:none; }
+  .topbar nav::-webkit-scrollbar { display:none; }
+  .topbar nav a { color:#666; text-decoration:none; font-size:.83rem; font-weight:600; white-space:nowrap; }
+  .topbar nav a:hover { color:#111; }
+  .topbar nav a.on { color:#e53935; }
 </style>
 </head>
 <body>
+<div class="topbar"><div class="topbar-in">
+  <a class="tb-logo" href="https://4ever.ai.id/">4EVER</a>
+  <nav>
+    <a href="https://4ever.ai.id/">Beranda</a>
+    <a href="https://4ever.ai.id/profil.html">Profil</a>
+    <a href="https://4ever.ai.id/musik-yt.html">Musik</a>
+    <a href="https://4ever.ai.id/tools.html">Tools</a>
+    <a href="https://4ever.ai.id/download-video.html">Download</a>
+    <a href="https://4ever.ai.id/tv-gratis.html" class="on">TV</a>
+    <a href="https://4ever.ai.id/berita-kripto.html">Berita</a>
+    <a href="https://4ever.ai.id/game-hub-afis-dita.html">Game</a>
+  </nav>
+</div></div>
+
 <div class="wrap">
   <header><h1>TV <span class="gold">GRATIS</span></h1></header>
   <div id="jam">memuat jam…</div>
