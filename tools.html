@@ -26,7 +26,9 @@
     margin: 26px 0; padding: 22px 18px; border: 1px solid rgba(67,160,71,.35); border-radius: 18px;
     background: #ffffff;
     box-shadow: 0 8px 24px rgba(0,0,0,.08); text-align: left; scroll-margin-top: 16px;
+    position: relative; overflow: hidden;
   }
+  .tool::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 4px; background: linear-gradient(90deg, #e53935, #f9a825, #43a047); }
   .tool h2 { color: #1a1a1a; font-size: 1.12rem; margin-bottom: 6px; display: flex; align-items: center; gap: 8px; cursor: pointer; }
   .tool h2::after { content: '›'; margin-left: auto; color: #e53935; font-size: 1.4rem; line-height: 1; transition: transform .2s; }
   .tool.open h2::after { transform: rotate(90deg); }
