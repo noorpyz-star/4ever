@@ -7,26 +7,26 @@
 <script src="https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"></script>
 <style>
   * { box-sizing: border-box; }
-  body { font-family: -apple-system, "Segoe UI", Roboto, Arial, sans-serif; margin: 0; background: #0f1220; color: #fff; padding: 16px; }
-  a { color: #ffd970; text-decoration: none; }
+  body { font-family: -apple-system, "Segoe UI", Roboto, Arial, sans-serif; margin: 0; background: #ffffff; color: #222; padding: 16px; }
+  a { color: #e53935; text-decoration: none; }
   h1 { font-size: 22px; margin: 4px 0 2px; text-align: center; }
-  .sub { text-align: center; color: #aab0c6; font-size: 13px; margin-bottom: 16px; }
-  .box { max-width: 420px; margin: 0 auto; background: #1a1e33; border: 1px solid #2a2f4a; border-radius: 14px; padding: 16px; text-align: center; }
-  .box p { font-size: 14px; color: #c9cede; line-height: 1.6; margin: 0 0 10px; }
-  .box input { width: 100%; font-size: 16px; padding: 10px; border-radius: 10px; border: 1px solid #444; background: #0f1220; color: #fff; text-align: center; text-transform: uppercase; margin-bottom: 10px; }
+  .sub { text-align: center; color: #666; font-size: 13px; margin-bottom: 16px; }
+  .box { max-width: 420px; margin: 0 auto; background: #ffffff; border: 1px solid #e0e0e0; box-shadow: 0 2px 10px rgba(0,0,0,.05); border-radius: 14px; padding: 16px; text-align: center; }
+  .box p { font-size: 14px; color: #666; line-height: 1.6; margin: 0 0 10px; }
+  .box input { width: 100%; font-size: 16px; padding: 10px; border-radius: 10px; border: 1px solid #ccc; background: #ffffff; color: #222; text-align: center; text-transform: uppercase; margin-bottom: 10px; }
   button { font-size: 15px; padding: 11px 16px; border: none; border-radius: 10px; cursor: pointer; font-weight: 700; }
-  .btn-gold { background: #d4af37; color: #1a1a1a; width: 100%; margin-bottom: 8px; }
+  .btn-gold { background: #e53935; color: #fff; width: 100%; margin-bottom: 8px; }
   .btn-gelap { background: #2a2f4a; color: #fff; width: 100%; margin-bottom: 8px; }
-  .kode { font-size: 30px; letter-spacing: 6px; font-weight: 800; color: #ffd970; margin: 6px 0; }
-  .soal-no { color: #ffd970; font-weight: 700; font-size: 13px; }
+  .kode { font-size: 30px; letter-spacing: 6px; font-weight: 800; color: #e53935; margin: 6px 0; }
+  .soal-no { color: #e53935; font-weight: 700; font-size: 13px; }
   .soal-teks { font-size: 19px; font-weight: 700; margin: 8px 0 14px; line-height: 1.4; }
   .opt { display: flex; gap: 8px; margin-bottom: 8px; }
   .opt button { flex: 1; background: #2a2f4a; color: #fff; }
-  .opt button:active { background: #d4af37; color: #1a1a1a; }
-  .hasil-item { text-align: left; background: #0f1220; border-radius: 10px; padding: 10px 12px; margin-bottom: 8px; font-size: 13.5px; line-height: 1.5; }
+  .opt button:active { background: #e53935; color: #fff; }
+  .hasil-item { text-align: left; background: #f5f5f5; border-radius: 10px; padding: 10px 12px; margin-bottom: 8px; font-size: 13.5px; line-height: 1.5; }
   .hasil-item.cocok { border-left: 4px solid #4caf50; }
   .hasil-item.beda { border-left: 4px solid #ff7eb6; }
-  .skor-besar { font-size: 44px; font-weight: 800; color: #ffd970; }
+  .skor-besar { font-size: 44px; font-weight: 800; color: #e53935; }
   .hidden { display: none !important; }
 </style>
 </head>

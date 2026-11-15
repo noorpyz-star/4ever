@@ -8,35 +8,48 @@
   * { box-sizing: border-box; }
   body { font-family: -apple-system, "Segoe UI", Roboto, Arial, sans-serif; margin: 0; padding: 16px; background: #f4f4f2; color: #222; }
   h1 { font-size: 20px; margin: 0 0 4px; }
+  h2 { font-size: 16px; margin: 22px 0 8px; }
   .sub { color: #666; font-size: 13px; margin-bottom: 14px; }
   .top { display: flex; gap: 8px; align-items: center; margin-bottom: 12px; flex-wrap: wrap; }
   .top label { font-size: 14px; }
   .top input[type="date"] { font-size: 15px; padding: 6px 8px; border: 1px solid #ccc; border-radius: 8px; }
+  .top button { font-size: 13px; padding: 7px 12px; border: none; border-radius: 8px; background: #1f2937; color: #fff; cursor: pointer; }
   .wrap { overflow-x: auto; background: #fff; border-radius: 12px; box-shadow: 0 1px 4px rgba(0,0,0,.08); }
   table { border-collapse: collapse; width: 100%; min-width: 640px; font-size: 14px; }
   th, td { padding: 9px 8px; text-align: center; border-bottom: 1px solid #eee; }
   th { background: #1f2937; color: #fff; font-size: 12.5px; }
   td.jenis { text-align: left; font-weight: 600; white-space: nowrap; }
   input.num { width: 74px; font-size: 15px; padding: 7px 6px; text-align: center; border: 1px solid #ccc; border-radius: 8px; }
-  input.num:focus { outline: 2px solid #d4af37; border-color: #d4af37; }
+  input.num:focus { outline: 2px solid #43a047; border-color: #43a047; }
   td.hasil { font-weight: 700; }
   td.negatif { color: #c00; }
-  tr.total td { background: #fff8e1; font-weight: 700; border-top: 2px solid #d4af37; }
+  tr.total td { background: #fff8e1; font-weight: 700; border-top: 2px solid #e53935; }
   .rumus { font-size: 12.5px; color: #555; margin: 12px 2px; line-height: 1.6; }
   .btns { display: flex; gap: 10px; margin-top: 12px; }
-  button { flex: 1; font-size: 15px; padding: 11px; border: none; border-radius: 10px; cursor: pointer; }
+  .btns button { flex: 1; font-size: 15px; padding: 11px; border: none; border-radius: 10px; cursor: pointer; }
   #btnReset { background: #e5e5e5; color: #333; }
   #btnPrint { background: #1f2937; color: #fff; }
   .saved { font-size: 12.5px; color: #2e7d32; margin-top: 8px; min-height: 16px; }
+  .hist { display: flex; flex-direction: column; gap: 8px; }
+  .hist-item { background: #fff; border-radius: 10px; padding: 10px 12px; display: flex; justify-content: space-between; align-items: center; gap: 8px; box-shadow: 0 1px 3px rgba(0,0,0,.06); }
+  .hist-item.aktif { outline: 2px solid #43a047; }
+  .hist-tgl { font-weight: 700; font-size: 14px; }
+  .hist-angka { font-size: 12.5px; color: #555; margin-top: 2px; }
+  .hist-btns { display: flex; gap: 6px; flex-shrink: 0; }
+  .hist-btns button { font-size: 13px; padding: 7px 11px; border: none; border-radius: 8px; cursor: pointer; }
+  .btn-buka { background: #1f2937; color: #fff; }
+  .btn-hapus { background: #fde8e8; color: #b00; }
+  .hist-kosong { color: #888; font-size: 13px; }
 </style>
 </head>
 <body>
 <h1>🍗 Stok Ayam — Marinasi &amp; Masak</h1>
-<p class="sub">Isi kolom putih, sisanya kehitung otomatis. Data tersimpan otomatis di HP.</p>
+<p class="sub">Isi kolom putih, sisanya kehitung otomatis. Ganti hari = form kosong otomatis, data hari lama tersimpan di Riwayat di bawah.</p>
 
 <div class="top">
   <label for="tgl">Tanggal:</label>
   <input type="date" id="tgl">
+  <button id="btnHariIni" type="button">📅 Hari Ini</button>
 </div>
 
 <div class="wrap">
@@ -74,17 +87,46 @@
 </p>
 
 <div class="btns">
-  <button id="btnReset">🔄 Reset Semua</button>
+  <button id="btnReset">🔄 Reset Hari Ini</button>
   <button id="btnPrint">🖨️ Cetak / Simpan PDF</button>
 </div>
 <p class="saved" id="saved"></p>
 
+<h2>📋 Riwayat Hari Sebelumnya</h2>
+<div class="hist" id="hist"></div>
+
 <script>
 const JENIS = ["Dada", "Paha Atas", "Paha Bawah", "Ayam Rempah", "Ayam Bakar Paha", "Ayam Bakar Dada"];
-const KEY = "stokAyam_v1";
+const KEY = "stokAyam_v2";
+const OLD = "stokAyam_v1";
 const body = document.getElementById("body");
+const tglEl = document.getElementById("tgl");
+let data = {};
 
 function num(v) { const n = parseFloat(v); return isNaN(n) ? 0 : n; }
+function todayStr() {
+  const d = new Date();
+  return d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0");
+}
+function tglIndo(s) {
+  const p = s.split("-");
+  const bln = ["Jan", "Feb", "Mar", "Apr", "Mei", "Jun", "Jul", "Agu", "Sep", "Okt", "Nov", "Des"];
+  return p[2] + " " + bln[+p[1] - 1] + " " + p[0];
+}
+function persist() { try { localStorage.setItem(KEY, JSON.stringify(data)); } catch (e) {} }
+
+function loadAll() {
+  try { data = JSON.parse(localStorage.getItem(KEY) || "null") || {}; } catch (e) { data = {}; }
+  // migrasi dari versi lama (satu hari) ke format per-tanggal
+  try {
+    const old = JSON.parse(localStorage.getItem(OLD) || "null");
+    if (old && old.rows) {
+      const d = old.tgl || todayStr();
+      if (!data[d]) { data[d] = old.rows; persist(); }
+      localStorage.removeItem(OLD);
+    }
+  } catch (e) {}
+}
 
 function bangun() {
   body.innerHTML = "";
@@ -102,12 +144,23 @@ function bangun() {
   body.querySelectorAll("input.num").forEach(el => el.addEventListener("input", hitung));
 }
 
-function hitung() {
-  let tm = 0, tk = 0, tc = 0, tsk = 0, tsf = 0;
+function bacaForm() {
+  const rows = [];
   JENIS.forEach((j, i) => {
-    const m = num(document.querySelector('[data-i="' + i + '"][data-k="m"]').value);
-    const k = num(document.querySelector('[data-i="' + i + '"][data-k="k"]').value);
-    const c = num(document.querySelector('[data-i="' + i + '"][data-k="c"]').value);
+    rows.push([
+      document.querySelector('[data-i="' + i + '"][data-k="m"]').value,
+      document.querySelector('[data-i="' + i + '"][data-k="k"]').value,
+      document.querySelector('[data-i="' + i + '"][data-k="c"]').value
+    ]);
+  });
+  return rows;
+}
+
+function hitung() {
+  const rows = bacaForm();
+  let tm = 0, tk = 0, tc = 0, tsk = 0, tsf = 0;
+  rows.forEach((r, i) => {
+    const m = num(r[0]), k = num(r[1]), c = num(r[2]);
     const sk = k - c, sf = m - k;
     const elSk = document.getElementById("sk" + i), elSf = document.getElementById("sf" + i);
     elSk.textContent = sk; elSf.textContent = sf;
@@ -120,53 +173,87 @@ function hitung() {
   document.getElementById("tMasak").textContent = tc;
   document.getElementById("tSisaKulkas").textContent = tsk;
   document.getElementById("tSisaFreezer").textContent = tsf;
-  simpan();
+  simpan(rows);
 }
 
-function simpan() {
-  const data = { tgl: document.getElementById("tgl").value, rows: [] };
+function simpan(rows) {
+  const t = tglEl.value || todayStr();
+  const adaIsi = rows.some(r => r.some(v => v !== "" && v !== null));
+  if (adaIsi) data[t] = rows; else delete data[t];
+  persist();
+  renderRiwayat();
+  document.getElementById("saved").textContent = "✓ tersimpan otomatis (" + tglIndo(t) + ")";
+}
+
+function muatTanggal(t) {
+  const rows = data[t] || [];
   JENIS.forEach((j, i) => {
-    data.rows.push([
-      document.querySelector('[data-i="' + i + '"][data-k="m"]').value,
-      document.querySelector('[data-i="' + i + '"][data-k="k"]').value,
-      document.querySelector('[data-i="' + i + '"][data-k="c"]').value
-    ]);
+    const r = rows[i] || ["", "", ""];
+    document.querySelector('[data-i="' + i + '"][data-k="m"]').value = r[0] || "";
+    document.querySelector('[data-i="' + i + '"][data-k="k"]').value = r[1] || "";
+    document.querySelector('[data-i="' + i + '"][data-k="c"]').value = r[2] || "";
   });
-  try { localStorage.setItem(KEY, JSON.stringify(data)); } catch (e) {}
-  document.getElementById("saved").textContent = "✓ tersimpan otomatis";
+  hitung();
 }
 
-function muat() {
-  try {
-    const d = JSON.parse(localStorage.getItem(KEY) || "null");
-    if (!d) return;
-    if (d.tgl) document.getElementById("tgl").value = d.tgl;
-    (d.rows || []).forEach((r, i) => {
-      if (!r) return;
-      const m = document.querySelector('[data-i="' + i + '"][data-k="m"]');
-      const k = document.querySelector('[data-i="' + i + '"][data-k="k"]');
-      const c = document.querySelector('[data-i="' + i + '"][data-k="c"]');
-      if (m) m.value = r[0] || "";
-      if (k) k.value = r[1] || "";
-      if (c) c.value = r[2] || "";
-    });
-  } catch (e) {}
+function totalHari(rows) {
+  let tm = 0, tk = 0, tc = 0;
+  (rows || []).forEach(r => { tm += num(r[0]); tk += num(r[1]); tc += num(r[2]); });
+  return { tm, tk, tc, tsk: tk - tc, tsf: tm - tk };
 }
 
-document.getElementById("tgl").addEventListener("change", simpan);
+function renderRiwayat() {
+  const el = document.getElementById("hist");
+  const aktif = tglEl.value || todayStr();
+  const daftar = Object.keys(data).sort().reverse();
+  if (!daftar.length) {
+    el.innerHTML = '<p class="hist-kosong">Belum ada riwayat. Isi tabel di atas, data hari ini otomatis tersimpan.</p>';
+    return;
+  }
+  el.innerHTML = "";
+  daftar.forEach(t => {
+    const tot = totalHari(data[t]);
+    const div = document.createElement("div");
+    div.className = "hist-item" + (t === aktif ? " aktif" : "");
+    div.innerHTML =
+      '<div><div class="hist-tgl">' + tglIndo(t) + (t === aktif ? ' • sedang dibuka' : '') + '</div>' +
+      '<div class="hist-angka">Marinasi: ' + tot.tm + ' • Ke kulkas: ' + tot.tk + ' • Dimasak: ' + tot.tc +
+      ' • Sisa kulkas: ' + tot.tsk + ' • Sisa freezer: ' + tot.tsf + '</div></div>' +
+      '<div class="hist-btns">' +
+      '<button class="btn-buka" data-t="' + t + '">Buka</button>' +
+      '<button class="btn-hapus" data-t="' + t + '">Hapus</button>' +
+      '</div>';
+    el.appendChild(div);
+  });
+  el.querySelectorAll(".btn-buka").forEach(b => b.addEventListener("click", () => {
+    tglEl.value = b.dataset.t;
+    muatTanggal(b.dataset.t);
+  }));
+  el.querySelectorAll(".btn-hapus").forEach(b => b.addEventListener("click", () => {
+    if (!confirm("Hapus data " + tglIndo(b.dataset.t) + "?")) return;
+    delete data[b.dataset.t];
+    persist();
+    if (b.dataset.t === (tglEl.value || todayStr())) muatTanggal(tglEl.value || todayStr());
+    else renderRiwayat();
+  }));
+}
+
+tglEl.addEventListener("change", () => muatTanggal(tglEl.value || todayStr()));
+document.getElementById("btnHariIni").addEventListener("click", () => {
+  tglEl.value = todayStr();
+  muatTanggal(todayStr());
+});
 document.getElementById("btnReset").addEventListener("click", () => {
-  if (!confirm("Hapus semua angka?")) return;
+  if (!confirm("Hapus semua angka hari ini? Riwayat hari lain tidak ikut terhapus.")) return;
   body.querySelectorAll("input.num").forEach(el => el.value = "");
   hitung();
 });
 document.getElementById("btnPrint").addEventListener("click", () => window.print());
 
 bangun();
-if (!document.getElementById("tgl").value) {
-  document.getElementById("tgl").valueAsDate = new Date();
-}
-muat();
-hitung();
+loadAll();
+if (!tglEl.value) tglEl.value = todayStr();
+muatTanggal(tglEl.value);
 </script>
 </body>
 </html>

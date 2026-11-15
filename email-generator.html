@@ -8,48 +8,48 @@
   * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
   body {
     font-family: 'Segoe UI', Arial, sans-serif;
-    background: radial-gradient(circle at 50% 8%, #181818 0%, #000000 60%, #000000 100%);
-    color: #eee; min-height: 100vh; text-align: center;
+    background: #ffffff;
+    color: #222; min-height: 100vh; text-align: center;
   }
   .wrap { max-width: 480px; margin: 0 auto; padding: 44px 20px 40px; }
-  h1 { color: #fff; font-size: 1.5rem; }
-  .sub { color: #d4af37; letter-spacing: 2px; font-size: .8rem; margin-top: 6px; }
-  .desc { color: #aaa; font-size: .92rem; line-height: 1.6; margin: 14px 4px 4px; }
+  h1 { color: #1a1a1a; font-size: 1.5rem; }
+  .sub { color: #e53935; letter-spacing: 2px; font-size: .8rem; margin-top: 6px; }
+  .desc { color: #777; font-size: .92rem; line-height: 1.6; margin: 14px 4px 4px; }
   .field {
-    width: 100%; padding: 13px 15px; border-radius: 11px; border: 1px solid #555;
-    background: #101010; color: #fff; font-size: 1rem; font-family: inherit; margin-top: 10px;
+    width: 100%; padding: 13px 15px; border-radius: 11px; border: 1px solid #ccc;
+    background: #ffffff; color: #222; font-size: 1rem; font-family: inherit; margin-top: 10px;
   }
   .btn {
     width: 100%; margin-top: 12px; padding: 14px; border: none; border-radius: 11px; cursor: pointer;
-    background: linear-gradient(90deg, #d4af37, #f5e08c); color: #111;
+    background: linear-gradient(90deg, #43a047, #2e7d32); color: #fff;
     font-size: 1.03rem; font-weight: bold; font-family: inherit;
   }
   .btn:active { transform: scale(.98); }
-  .btn.ghost { background: transparent; border: 1px solid #d4af37; color: #fff; }
-  label.lbl { color: #bbb; font-size: .85rem; display: block; margin-top: 14px; text-align: left; }
+  .btn.ghost { background: transparent; border: 1px solid #43a047; color: #2e7d32; }
+  label.lbl { color: #666; font-size: .85rem; display: block; margin-top: 14px; text-align: left; }
   .row2 { display: flex; gap: 10px; }
   .row2 > * { flex: 1; }
   .mail-row {
     display: flex; align-items: center; gap: 10px; margin-top: 10px; padding: 12px 14px;
-    background: #0b0b0b; border: 1px solid #333; border-radius: 10px; text-align: left;
+    background: #ffffff; border: 1px solid #e0e0e0; border-radius: 10px; text-align: left;
   }
-  .mail-row .addr { flex: 1; color: #fff; font-size: .97rem; word-break: break-all; }
+  .mail-row .addr { flex: 1; color: #1a1a1a; font-size: .97rem; word-break: break-all; }
   .mini-btn {
-    border: 1px solid #d4af37; background: transparent; color: #f5e08c; border-radius: 8px;
+    border: 1px solid #43a047; background: transparent; color: #2e7d32; border-radius: 8px;
     padding: 7px 12px; cursor: pointer; font-family: inherit; font-size: .85rem; white-space: nowrap;
   }
   .note {
-    margin-top: 22px; padding: 14px 16px; border: 1px solid #3a3a3a; border-radius: 12px;
-    background: rgba(255,255,255,.04); color: #999; font-size: .85rem; line-height: 1.65; text-align: left;
+    margin-top: 22px; padding: 14px 16px; border: 1px solid #e0e0e0; border-radius: 12px;
+    background: #fafafa; color: #666; font-size: .85rem; line-height: 1.65; text-align: left;
   }
-  .back { display: inline-block; margin-top: 26px; color: #d4af37; text-decoration: none; }
+  .back { display: inline-block; margin-top: 26px; color: #43a047; text-decoration: none; }
   .inbox-item {
-    margin-top: 10px; padding: 13px 15px; background: #0b0b0b; border: 1px solid #333;
+    margin-top: 10px; padding: 13px 15px; background: #ffffff; border: 1px solid #e0e0e0;
     border-radius: 11px; text-align: left; cursor: pointer;
   }
-  .inbox-item .sj { color: #fff; font-weight: bold; }
-  .inbox-item .fm { color: #999; font-size: .82rem; margin-top: 3px; word-break: break-all; }
-  .inbox-item .tm { color: #666; font-size: .77rem; margin-top: 2px; }
+  .inbox-item .sj { color: #1a1a1a; font-weight: bold; }
+  .inbox-item .fm { color: #777; font-size: .82rem; margin-top: 3px; word-break: break-all; }
+  .inbox-item .tm { color: #999; font-size: .77rem; margin-top: 2px; }
   #inList { max-height: 48vh; overflow-y: auto; -webkit-overflow-scrolling: touch; }
   pre.mail-body { max-height: 42vh; overflow-y: auto; }
   .kode-chip {
@@ -58,31 +58,31 @@
     font-size: 1.12rem; font-weight: bold; letter-spacing: 3px;
   }
   pre.mail-body {
-    white-space: pre-wrap; word-break: break-word; color: #ddd; font-size: .9rem; line-height: 1.65;
-    background: #0b0b0b; border: 1px solid #333; border-radius: 12px; padding: 16px; margin-top: 12px; text-align: left;
+    white-space: pre-wrap; word-break: break-word; color: #333; font-size: .9rem; line-height: 1.65;
+    background: #fafafa; border: 1px solid #e0e0e0; border-radius: 12px; padding: 16px; margin-top: 12px; text-align: left;
   }
-  footer { color: #555; font-size: .78rem; padding: 22px 0 6px; }
+  footer { color: #999; font-size: .78rem; padding: 22px 0 6px; }
 </style>
 </head>
 <body>
 <div class="wrap">
-  <h1><svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="color:#d4af37;vertical-align:-4px;flex:none"><rect x="3.6" y="5.8" width="16.8" height="12.4" rx="2"/><path d="M4.5 7.6L12 13l7.5-5.4"/></svg> Email Generator</h1>
+  <h1><svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="color:#e53935;vertical-align:-4px;flex:none"><rect x="3.6" y="5.8" width="16.8" height="12.4" rx="2"/><path d="M4.5 7.6L12 13l7.5-5.4"/></svg> Email Generator</h1>
   <div class="sub">DOMAIN SENDIRI — 4EVER.AI.ID</div>
   <p class="desc">Bikin alamat email pakai domain kamu sendiri. Pilih gaya alamatnya, pencet tombolnya — jadi! Tinggal copy.</p>
 
   <div style="margin-top:26px;border-bottom:1px solid #333;padding-bottom:26px;">
-    <h2 style="color:#fff;font-size:1.22rem;"><svg viewBox="0 0 24 24" width="21" height="21" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="color:#d4af37;vertical-align:-4px;flex:none"><path d="M4 13.8l2.1-6.9A1.9 1.9 0 0 1 7.9 5.5h8.2a1.9 1.9 0 0 1 1.8 1.4L20 13.8v4.4a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2z"/><path d="M4 13.8h4.6l1.2 2.2h4.4l1.2-2.2H20"/></svg> Inbox — Email &amp; Kode Masuk</h2>
+    <h2 style="color:#1a1a1a;font-size:1.22rem;"><svg viewBox="0 0 24 24" width="21" height="21" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="color:#e53935;vertical-align:-4px;flex:none"><path d="M4 13.8l2.1-6.9A1.9 1.9 0 0 1 7.9 5.5h8.2a1.9 1.9 0 0 1 1.8 1.4L20 13.8v4.4a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2z"/><path d="M4 13.8h4.6l1.2 2.2h4.4l1.2-2.2H20"/></svg> Inbox — Email &amp; Kode Masuk</h2>
     <p class="desc">inbox ini cuma nampilin email buat <b>alamat yang kamu pantau</b> — jadi selalu fresh, nggak ada kode numpuk punya siapa-siapa. email tersimpan 3 hari.</p>
     <div id="inBox">
-      <button class="btn ghost" id="inRefresh"><svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="color:#d4af37;vertical-align:-4px;flex:none"><path d="M20 12a8 8 0 1 1-2.5-5.9"/><path d="M20 3.5V8h-4.5"/></svg> Muat Ulang</button>
+      <button class="btn ghost" id="inRefresh"><svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="color:#e53935;vertical-align:-4px;flex:none"><path d="M20 12a8 8 0 1 1-2.5-5.9"/><path d="M20 3.5V8h-4.5"/></svg> Muat Ulang</button>
       <input class="field" id="inFilter" type="text" placeholder="alamat yang dipantau (keisi otomatis pas generate)">
       <div id="inList"></div>
       <div id="inDetail"></div>
     </div>
   </div>
 
-  <label class="lbl">Domain email (terkunci <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="color:#d4af37;vertical-align:-4px;flex:none"><rect x="5.4" y="10.4" width="13.2" height="9.6" rx="2.2"/><path d="M8.4 10.4V7.8a3.6 3.6 0 0 1 7.2 0v2.6"/><circle cx="12" cy="14.8" r="1.25" fill="currentColor" stroke="none"/></svg>):</label>
-  <div class="field" style="color:#f5e08c;font-weight:bold;"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="color:#d4af37;vertical-align:-4px;flex:none"><rect x="3.6" y="5.8" width="16.8" height="12.4" rx="2"/><path d="M4.5 7.6L12 13l7.5-5.4"/></svg> @netplix.my.id</div>
+  <label class="lbl">Domain email (terkunci <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="color:#e53935;vertical-align:-4px;flex:none"><rect x="5.4" y="10.4" width="13.2" height="9.6" rx="2.2"/><path d="M8.4 10.4V7.8a3.6 3.6 0 0 1 7.2 0v2.6"/><circle cx="12" cy="14.8" r="1.25" fill="currentColor" stroke="none"/></svg>):</label>
+  <div class="field" style="color:#2e7d32;font-weight:bold;"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="color:#e53935;vertical-align:-4px;flex:none"><rect x="3.6" y="5.8" width="16.8" height="12.4" rx="2"/><path d="M4.5 7.6L12 13l7.5-5.4"/></svg> @netplix.my.id</div>
 
   <label class="lbl">Gaya alamat:</label>
   <select class="field" id="modeIn">
@@ -104,9 +104,9 @@
     <option value="20">20 alamat</option>
   </select>
 
-  <button class="btn" id="genBtn"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="color:#d4af37;vertical-align:-4px;flex:none"><rect x="3.6" y="5.8" width="16.8" height="12.4" rx="2"/><path d="M4.5 7.6L12 13l7.5-5.4"/></svg> Buat Email</button>
+  <button class="btn" id="genBtn"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="color:#e53935;vertical-align:-4px;flex:none"><rect x="3.6" y="5.8" width="16.8" height="12.4" rx="2"/><path d="M4.5 7.6L12 13l7.5-5.4"/></svg> Buat Email</button>
   <div id="results"></div>
-  <button class="btn ghost" id="copyAllBtn" style="display:none"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="color:#d4af37;vertical-align:-4px;flex:none"><path d="M9 4.8H7.2A1.7 1.7 0 0 0 5.5 6.5v12A1.7 1.7 0 0 0 7.2 20.2h9.6a1.7 1.7 0 0 0 1.7-1.7v-12A1.7 1.7 0 0 0 16.8 4.8H15"/><rect x="8.8" y="2.8" width="6.4" height="4.6" rx="1.3"/></svg> Salin Semua</button>
+  <button class="btn ghost" id="copyAllBtn" style="display:none"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="color:#e53935;vertical-align:-4px;flex:none"><path d="M9 4.8H7.2A1.7 1.7 0 0 0 5.5 6.5v12A1.7 1.7 0 0 0 7.2 20.2h9.6a1.7 1.7 0 0 0 1.7-1.7v-12A1.7 1.7 0 0 0 16.8 4.8H15"/><rect x="8.8" y="2.8" width="6.4" height="4.6" rx="1.3"/></svg> Salin Semua</button>
 
   <div class="note">
     ℹ️ <b style="color:#ddd">Catatan:</b> generator ini bikin <i>alamatnya</i>. Biar email yang masuk ke alamat-alamat itu beneran bisa kamu terima, domainnya perlu dipasang <b style="color:#ddd">email routing (catch-all)</b> — misalnya pakai Cloudflare Email Routing (gratis), nanti semua email ke *@netplix.my.id diteruskan ke email pribadi kamu.
@@ -150,8 +150,8 @@ document.getElementById('modeIn').addEventListener('change', e => {
   document.getElementById('customBox').style.display = e.target.value === 'custom' ? 'block' : 'none';
 });
 
-const CLIP_SVG = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="color:#d4af37;vertical-align:-3px"><path d="M9 4.8H7.2A1.7 1.7 0 0 0 5.5 6.5v12A1.7 1.7 0 0 0 7.2 20.2h9.6a1.7 1.7 0 0 0 1.7-1.7v-12A1.7 1.7 0 0 0 16.8 4.8H15"/><rect x="8.8" y="2.8" width="6.4" height="4.6" rx="1.3"/></svg>';
-const TRASH_SVG = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="color:#d4af37;vertical-align:-3px"><path d="M4.5 6.5h15"/><path d="M9 6V4.8A1.3 1.3 0 0 1 10.3 3.5h3.4A1.3 1.3 0 0 1 15 4.8V6"/><path d="M6.5 6.5l1 12.7A1.8 1.8 0 0 0 9.3 20.7h5.4a1.8 1.8 0 0 0 1.8-1.5l1-12.7"/><path d="M10 10.5v6M14 10.5v6"/></svg>';
+const CLIP_SVG = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="color:#e53935;vertical-align:-3px"><path d="M9 4.8H7.2A1.7 1.7 0 0 0 5.5 6.5v12A1.7 1.7 0 0 0 7.2 20.2h9.6a1.7 1.7 0 0 0 1.7-1.7v-12A1.7 1.7 0 0 0 16.8 4.8H15"/><rect x="8.8" y="2.8" width="6.4" height="4.6" rx="1.3"/></svg>';
+const TRASH_SVG = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="color:#e53935;vertical-align:-3px"><path d="M4.5 6.5h15"/><path d="M9 6V4.8A1.3 1.3 0 0 1 10.3 3.5h3.4A1.3 1.3 0 0 1 15 4.8V6"/><path d="M6.5 6.5l1 12.7A1.8 1.8 0 0 0 9.3 20.7h5.4a1.8 1.8 0 0 0 1.8-1.5l1-12.7"/><path d="M10 10.5v6M14 10.5v6"/></svg>';
 function copyText(t, btn) {
   const done = () => { if (btn) { const o = btn.innerHTML; btn.innerHTML = '✅'; setTimeout(() => btn.innerHTML = o, 1400); } };
   if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(t).then(done).catch(done);
@@ -213,7 +213,7 @@ function renderInbox() {
   document.getElementById('inDetail').innerHTML = '';
   const q = (document.getElementById('inFilter').value || '').toLowerCase().trim();
   if (!q) {
-    box.innerHTML = '<p style="color:#888;margin-top:26px;line-height:1.7;"><svg viewBox="0 0 24 24" width="30" height="30" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="color:#d4af37;vertical-align:-4px;flex:none"><path d="M4 13.8l2.1-6.9A1.9 1.9 0 0 1 7.9 5.5h8.2a1.9 1.9 0 0 1 1.8 1.4L20 13.8v4.4a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2z"/><path d="M4 13.8h4.6l1.2 2.2h4.4l1.2-2.2H20"/></svg><br>inbox kamu masih fresh.<br>generate alamat di bawah — kode buat alamat itu tampil di sini, cuma punya kamu.</p>';
+    box.innerHTML = '<p style="color:#777;margin-top:26px;line-height:1.7;"><svg viewBox="0 0 24 24" width="30" height="30" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="color:#e53935;vertical-align:-4px;flex:none"><path d="M4 13.8l2.1-6.9A1.9 1.9 0 0 1 7.9 5.5h8.2a1.9 1.9 0 0 1 1.8 1.4L20 13.8v4.4a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2z"/><path d="M4 13.8h4.6l1.2 2.2h4.4l1.2-2.2H20"/></svg><br>inbox kamu masih fresh.<br>generate alamat di bawah — kode buat alamat itu tampil di sini, cuma punya kamu.</p>';
     return;
   }
   const cocok = LAST_ITEMS.filter(m => (m.to || '').toLowerCase() === q);

@@ -6,7 +6,7 @@
 <title>Ular Tangga Online — Afis &amp; Dita</title>
 <script src="https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"></script>
 <style>
-  :root { --gold: #d4af37; --blue: #7db4ff; --pink: #ff7dab; --bg: #0b1020; --card: #141b31; --line: #26304d; --txt: #eef1f8; --dim: #9aa7c2; }
+  :root { --gold: #e53935; --blue: #1e88e5; --pink: #d81b60; --bg: #ffffff; --card: #ffffff; --line: #e0e0e0; --txt: #222; --dim: #666; }
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body { background: var(--bg); color: var(--txt); font-family: Georgia, 'Times New Roman', serif; min-height: 100vh; padding: 18px 14px 40px; }
   .wrap { max-width: 460px; margin: 0 auto; }
@@ -15,7 +15,7 @@
   .sub { text-align: center; color: var(--dim); font-size: 13px; margin: 6px 0 18px; font-style: italic; }
   .card { background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 16px; margin-bottom: 14px; }
   label { display: block; font-size: 12px; color: var(--dim); margin: 10px 0 5px; letter-spacing: .5px; }
-  input { width: 100%; padding: 12px; border-radius: 10px; border: 1px solid var(--line); background: #0d1428; color: var(--txt); font-size: 16px; font-family: inherit; }
+  input { width: 100%; padding: 12px; border-radius: 10px; border: 1px solid var(--line); background: #ffffff; color: var(--txt); font-size: 16px; font-family: inherit; }
   .btn { display: block; width: 100%; padding: 13px; border-radius: 10px; border: 1px solid var(--gold); background: transparent; color: var(--gold); font-size: 15px; font-family: inherit; cursor: pointer; margin-top: 12px; letter-spacing: .5px; }
   .btn:active { transform: scale(.98); }
   .btn.blue { border-color: var(--blue); color: var(--blue); }
@@ -24,15 +24,15 @@
   .kode { text-align: center; font-size: 40px; letter-spacing: 10px; color: var(--gold); font-weight: bold; padding: 8px 0 2px; }
   .kode-sub { text-align: center; color: var(--dim); font-size: 13px; }
   .papan { display: grid; grid-template-columns: repeat(10, 1fr); gap: 3px; margin: 6px 0 4px; }
-  .cell { position: relative; aspect-ratio: 1; border-radius: 6px; background: #101830; border: 1px solid #1d2745; font-size: 9px; color: var(--dim); padding: 2px 3px; overflow: visible; }
+  .cell { position: relative; aspect-ratio: 1; border-radius: 6px; background: #101830; border: 1px solid #1d2745; font-size: 9px; color: #9aa7c2; padding: 2px 3px; overflow: visible; }
   .cell.ganjil { background: #0d1428; }
   .cell .mark { position: absolute; right: 2px; top: 1px; font-size: 9px; }
   .pion { position: absolute; width: 17px; height: 17px; border-radius: 50%; border: 2px solid #fff3; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: bold; color: #fff; z-index: 3; transition: all .3s; }
   .pion.p0 { background: #2563eb; left: 2px; bottom: 2px; }
   .pion.p1 { background: #db2777; right: 2px; bottom: 2px; }
-  .cell.finish { background: #3a2f10; color: var(--gold); }
+  .cell.finish { background: #fff8e1; color: #e53935; }
   .vs { display: flex; gap: 8px; margin-bottom: 10px; }
-  .pbox { flex: 1; border: 1px solid var(--line); border-radius: 10px; padding: 9px 10px; font-size: 13px; background: #0d1428; }
+  .pbox { flex: 1; border: 1px solid var(--line); border-radius: 10px; padding: 9px 10px; font-size: 13px; background: #f5f5f5; }
   .pbox .dot { display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-right: 6px; vertical-align: middle; }
   .pbox.turn { outline: 2px solid var(--gold); }
   .pbox .pos { color: var(--dim); font-size: 12px; }
@@ -41,7 +41,7 @@
   .log { font-size: 12.5px; color: var(--dim); line-height: 1.7; max-height: 130px; overflow-y: auto; }
   .log div:last-child { color: var(--txt); }
   .hide { display: none; }
-  .err { color: #ff8a8a; text-align: center; font-size: 13px; min-height: 18px; margin-top: 8px; }
+  .err { color: #d32f2f; text-align: center; font-size: 13px; min-height: 18px; margin-top: 8px; }
   .menang { text-align: center; font-size: 19px; color: var(--gold); padding: 8px 0 2px; }
 </style>
 </head>
