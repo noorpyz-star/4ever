@@ -19,6 +19,13 @@
   .logo-img {
     width: min(320px, 84vw); display: block; margin: 0 auto 18px; border-radius: 14px;
     border: 1px solid #e0e0e0; box-shadow: 0 0 30px rgba(0,0,0,.12);
+    animation: logoJalan 3s ease-in-out infinite;
+  }
+  @keyframes logoJalan {
+    0%, 100% { transform: translateY(0) translateX(0) rotate(0deg); }
+    25% { transform: translateY(-8px) translateX(-6px) rotate(-1.5deg); }
+    50% { transform: translateY(0) translateX(0) rotate(0deg); }
+    75% { transform: translateY(-8px) translateX(6px) rotate(1.5deg); }
   }
   h1 { font-size: 1.45rem; color: #1a1a1a; }
   .uname { color: #e53935; letter-spacing: 2px; font-size: .85rem; margin-top: 6px; }
