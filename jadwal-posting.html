@@ -132,6 +132,16 @@
       .badge-on { background: var(--green-soft); color: var(--green); }
       .badge-off { background: var(--gray-soft); color: var(--ink-soft); }
       .badge-main { background: var(--accent-soft); color: var(--accent-ink); }
+
+      /* Last-post checkmarks */
+      .lp-rows { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 14px; }
+      @media (max-width: 560px) { .lp-rows { grid-template-columns: 1fr; } }
+      .lp-row { display: flex; align-items: center; gap: 10px; padding: 10px 12px; border: 1px solid var(--line); border-radius: 10px; background: var(--surface-2); }
+      .lp-mark { width: 26px; height: 26px; flex: none; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 15px; background: var(--green); color: #fff; }
+      .lp-mark.no { background: #e0e0e0; color: #888; }
+      .lp-name { font-weight: 700; font-size: 14px; }
+      .lp-sub { font-size: 12px; color: var(--ink-soft); }
+      .lp-time { font-size: 13px; color: var(--ink-soft); margin-top: 6px; }
       .card-desc { color: var(--ink-soft); font-size: 15px; margin: 8px 0 0; max-width: 62ch; }
 
       /* Platform rows */
@@ -240,6 +250,19 @@
           </div>
         </div>
       </header>
+
+      <!-- ======= Last post ======= -->
+      <section>
+        <article class="card" id="lastpost">
+          <div class="card-head">
+            <h3>Post Terakhir</h3>
+            <span class="badge badge-on" id="lp-status">Memuat…</span>
+          </div>
+          <p class="card-desc" id="lp-product">Memuat postingan terakhir…</p>
+          <div class="lp-time mono" id="lp-time"></div>
+          <div class="lp-rows" id="lp-rows"></div>
+        </article>
+      </section>
 
       <!-- ======= Main schedule ======= -->
       <section>
@@ -477,6 +500,53 @@
         }
         SLOT_MINUTES.forEach(function (min) { addMark(min, "post", ":" + pad(min)); });
         [0, 10, 20, 30, 40, 50].forEach(function (min) { addMark(min, "like", ""); });
+
+        // Last post: fetch last-post.json (updated by each cron run) and render checkmarks.
+        (function () {
+          var rowsEl = document.getElementById("lp-rows");
+          var prodEl = document.getElementById("lp-product");
+          var timeEl = document.getElementById("lp-time");
+          var statusEl = document.getElementById("lp-status");
+          var LABELS = { threads: "Threads", facebook: "Facebook", whatsapp: "Channel WA", web: "Katalog Web" };
+          function render(d) {
+            prodEl.textContent = d.product + " — " + d.price;
+            timeEl.textContent = d.time_wib + " • Run " + d.run;
+            var allOk = true;
+            rowsEl.innerHTML = "";
+            ["threads", "facebook", "whatsapp", "web"].forEach(function (k) {
+              var s = d.surfaces[k] || {};
+              var ok = !!s.ok;
+              if (!ok) allOk = false;
+              var row = document.createElement("div");
+              row.className = "lp-row";
+              var mark = document.createElement("span");
+              mark.className = "lp-mark" + (ok ? "" : " no");
+              mark.textContent = ok ? "✓" : "✗";
+              var txt = document.createElement("div");
+              var nm = document.createElement("div");
+              nm.className = "lp-name";
+              nm.textContent = LABELS[k];
+              var sub = document.createElement("div");
+              sub.className = "lp-sub";
+              sub.textContent = ok ? (s.note || "Terkirim") : (s.note || "Gagal / dilewati");
+              txt.appendChild(nm); txt.appendChild(sub);
+              row.appendChild(mark); row.appendChild(txt);
+              if (ok && s.url) {
+                row.style.cursor = "pointer";
+                row.addEventListener("click", function () { window.open(s.url, "_blank"); });
+              }
+              rowsEl.appendChild(row);
+            });
+            statusEl.textContent = allOk ? "✓ Semua terkirim" : "Sebagian gagal";
+          }
+          fetch("last-post.json?v=" + Date.now())
+            .then(function (r) { return r.json(); })
+            .then(render)
+            .catch(function () {
+              prodEl.textContent = "Belum ada data postingan terakhir.";
+              statusEl.textContent = "Belum ada data";
+            });
+        })();
       })();
     </script>
   </body>
