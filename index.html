@@ -62,6 +62,8 @@
   a.link-btn::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 5px; background: linear-gradient(180deg, #e53935, #f9a825 50%, #43a047); }
   a.link-btn:hover { transform: translateY(-2px); border-color: #f9a825; box-shadow: 0 8px 22px rgba(0,0,0,.10); }
   a.link-btn:active { transform: scale(.98); border-color: #43a047; }
+  a.link-btn.featured { border-color: #e53935; background: linear-gradient(180deg, #fff5f5, #ffffff); box-shadow: 0 6px 20px rgba(229,57,53,.14); }
+  a.link-btn.featured .ic { background: #e53935; color: #fff; }
   a.link-btn .ic { font-size: 1.5rem; }
   .link-btn .ic { color: #2e7d32; background: #e8f5e9; width: 46px; height: 46px; flex: none; display: flex; align-items: center; justify-content: center; border-radius: 13px; }
   #ditaLinks .link-btn .ic { background: #fdecea; color: #d32f2f; }
@@ -117,26 +119,26 @@
   <div class="logo-wrap"><div class="logo-anim">4EVER</div><span class="logo-heart">♥</span></div>
   <h1>Muhammad Nur Afis Siswanto</h1>
   <div class="uname">@4EVER.AI.ID</div>
-  <p class="tag">website resmi <b style="color:#e53935">4ever.ai.id</b> — rumah digital Afis. Di sini ada tools gratis buat bikin email, artikel, musik gratis tanpa iklan, live TV Indonesia, game yang bisa dimainkan bareng jarak jauh, plus halaman-halaman spesial buat Ibu Dita. Semuanya dalam satu tempat 💙</p>
+  <p class="tag">website resmi <b style="color:#e53935">4ever.ai.id</b> — rumah digital Afis. Di sini ada tools gratis buat bikin email, artikel, musik gratis tanpa iklan, live TV Indonesia, game yang bisa dimainkan bareng jarak jauh, plus halaman-halaman spesial buat Ibu Dita. Semuanya dalam satu tempat.</p>
 
   <div><span class="clock-pill" id="clockPill">…</span></div>
 
   <a class="musik-cta" href="https://4ever.ai.id/katalog.html" style="background:linear-gradient(135deg,#e53935,#f9a825);">
-    <span class="ic">🛒</span>
+    <span class="ic"><svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="20" r="1.6"/><circle cx="17" cy="20" r="1.6"/><path d="M3 3.5h2.2l2.4 11.4h9.9l2-8.4H6.2"/></svg></span>
     <span><span class="tt2">Katalog Promo Shopee</span><span class="ds2">barang murah tiap hari — harga coret + link beli langsung</span></span>
     <span class="arr">›</span>
   </a>
   <a class="link-btn" href="https://4ever.ai.id/jadwal-posting.html">
-    <span class="ic">🗓️</span>
+    <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="5" width="17" height="15.5" rx="2"/><path d="M3.5 9.5h17M8 3v4M16 3v4"/></svg></span>
     <span><span class="tt">Jadwal Posting</span><span class="ds">jadwal posting promo ke Threads, Facebook &amp; channel WA — tiap 15 menit, barengan</span></span>
     <span class="arr">›</span>
   </a>
 
   <div id="loveWrap" style="display:none">
   <div class="love-card">
-    <div class="big">💞 hari ke-<span id="loveDays">–</span></div>
+    <div class="big"><span style="color:#e53935">♥</span> hari ke-<span id="loveDays">–</span></div>
     <div class="lbl">AFIS &amp; DITA BERSAMA</div>
-    <div class="sub">sejak 28 Maret 2026 — dan <b style="color:#1a1a1a"><span id="loveLeft">–</span> hari lagi</b> menuju anniversary ke-1 (28 Maret 2027) 💍</div>
+    <div class="sub">sejak 28 Maret 2026 — dan <b style="color:#1a1a1a"><span id="loveLeft">–</span> hari lagi</b> menuju anniversary ke-1 (28 Maret 2027)</div>
   </div>
   </div>
 
@@ -147,7 +149,7 @@
     <p style="color:#bbb;font-size:.87rem;line-height:1.6;margin-top:6px;">bagian ini dikunci.<br>masukkan <b style="color:#1a1a1a">tanggal jadian</b> buat membuka isinya</p>
     <input id="ditaPass" type="password" inputmode="numeric" maxlength="12" placeholder="••••••••" autocomplete="off"
       style="width:100%;margin-top:12px;padding:13px;border-radius:11px;border:1px solid #ccc;background:#ffffff;color:#1a1a1a;font-size:1.1rem;text-align:center;letter-spacing:5px;font-family:inherit;">
-    <button id="ditaOpen" style="width:100%;margin-top:10px;padding:13px;border:none;border-radius:11px;background:#e53935;color:#fff;font-size:1rem;font-weight:bold;font-family:inherit;cursor:pointer;">💙 Buka</button>
+    <button id="ditaOpen" style="width:100%;margin-top:10px;padding:13px;border:none;border-radius:11px;background:#e53935;color:#fff;font-size:1rem;font-weight:bold;font-family:inherit;cursor:pointer;">♥ Buka</button>
     <div id="ditaErr" style="color:#d32f2f;font-size:.86rem;margin-top:9px;min-height:1.1em;"></div>
   </div>
   <div id="ditaLinks" style="display:none">
@@ -172,20 +174,20 @@
   <div id="umumSections">
   <div class="group-title"><svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="color:#43a047;vertical-align:-4px;flex:none"><path d="M14.8 6.2a4.2 4.2 0 0 1 5.6-4L17.8 4.8l1.1 2 2 .9 2.7-2.4a4.2 4.2 0 0 1-5.7 5.5L7.5 19a1.9 1.9 0 0 1-2.7-2.7l10-10.1z"/></svg> TOOLS</div>
   <p class="sec-desc">Kumpulan tools gratis buatan Afis — semuanya bisa dipakai langsung di browser, tanpa install dan tanpa daftar. Bikin alamat email sekali pakai, kompres foto, sampai 13 tools kecil lainnya dalam satu halaman.</p>
+  <a class="link-btn featured" href="https://4ever.ai.id/musik-clone.html">
+    <span class="ic"><svg viewBox="0 0 24 24" width="27" height="27" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9.6 18.1V6.2l9.9-2v11.6"/><circle cx="6.9" cy="18.1" r="2.7"/><circle cx="16.8" cy="15.8" r="2.7"/></svg></span>
+    <span><span class="tt">Musik Gratis — Tanpa Iklan</span><span class="ds">putar lagu full + bikin playlist, kayak spotify</span></span>
+    <span class="arr">›</span>
+  </a>
   <a class="link-btn" href="https://4ever.ai.id/tools.html">
     <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4.3" y="4.3" width="6.4" height="6.4" rx="1.8"/><rect x="13.3" y="4.3" width="6.4" height="6.4" rx="1.8"/><rect x="4.3" y="13.3" width="6.4" height="6.4" rx="1.8"/><rect x="13.3" y="13.3" width="6.4" height="6.4" rx="1.8"/></svg></span>
-    <span><span class="tt">Tools Lainnya — 13 Tools Gratis!</span><span class="ds">fancy text • caption &amp; hashtag • jadwal sholat • cuaca • kompres foto • QR code • kalkulator diskon &amp; komisi • password generator • hitung umur • konverter • kurs • undi giveaway — semuanya dalam SATU page, klik di sini 👉</span></span>
+    <span><span class="tt">Tools Lainnya — 13 Tools Gratis!</span><span class="ds">fancy text • caption &amp; hashtag • jadwal sholat • cuaca • kompres foto • QR code • kalkulator diskon &amp; komisi • password generator • hitung umur • konverter • kurs • undi giveaway — semuanya dalam SATU page</span></span>
     <span class="arr">›</span>
   </a>
 
   <a class="link-btn" href="https://4ever.ai.id/email-generator.html">
     <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3.6" y="5.8" width="16.8" height="12.4" rx="2"/><path d="M4.5 7.6L12 13l7.5-5.4"/></svg></span>
-    <span><span class="tt">Email Generator</span><span class="ds">bikin alamat email @netflix.my.id — nama acak / kata acak / custom, sekali klik copy</span></span>
-    <span class="arr">›</span>
-  </a>
-  <a class="link-btn" href="https://4ever.ai.id/musik-clone.html">
-    <span class="ic"><svg viewBox="0 0 24 24" width="27" height="27" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9.6 18.1V6.2l9.9-2v11.6"/><circle cx="6.9" cy="18.1" r="2.7"/><circle cx="16.8" cy="15.8" r="2.7"/></svg></span>
-    <span><span class="tt">Musik Gratis — Tanpa Iklan</span><span class="ds">putar lagu full + bikin playlist, kayak spotify</span></span>
+    <span><span class="tt">Email Generator</span><span class="ds">bikin alamat email @netplix.my.id — nama acak / kata acak / custom, sekali klik copy</span></span>
     <span class="arr">›</span>
   </a>
   <a class="link-btn" href="https://4ever.ai.id/tv-gratis.html">
@@ -195,7 +197,7 @@
   </a>
   <a class="link-btn" href="https://4ever.ai.id/game-hub-afis-dita.html">
     <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9.5h12a4 4 0 0 1 4 4c0 1.7-1.2 2.9-2.8 2.9-.9 0-1.6-.4-2.2-1.2H7c-.6.8-1.3 1.2-2.2 1.2C3.2 16.4 2 15.2 2 13.5a4 4 0 0 1 4-4z"/><path d="M7.5 11.5v3M6 13h3"/><circle cx="16.8" cy="12.2" r=".6" fill="currentColor"/><circle cx="18.8" cy="13.8" r=".6" fill="currentColor"/></svg></span>
-    <span><span class="tt">Game Afis &amp; Dita 💙</span><span class="ds">main bareng jarak jauh: ular tangga, tic tac toe, kuis pasangan, tebak kata — online tanpa gantian HP</span></span>
+    <span><span class="tt">Game Afis &amp; Dita</span><span class="ds">main bareng jarak jauh: ular tangga, tic tac toe, kuis pasangan, tebak kata — online tanpa gantian HP</span></span>
     <span class="arr">›</span>
   </a>
 
@@ -282,7 +284,7 @@ for (let i = 0; i < 20; i++) {
     const now = new Date();
     const tgl = now.toLocaleDateString('id-ID', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric', timeZone: 'Asia/Jakarta' });
     const jam = now.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false, timeZone: 'Asia/Jakarta' }).replace(/\./g, ':');
-    document.getElementById('clockPill').textContent = '🗓️ ' + tgl + ' • 🕐 ' + jam + ' WIB';
+    document.getElementById('clockPill').textContent = tgl + ' • ' + jam + ' WIB';
   }
   tick(); setInterval(tick, 1000);
 })();
