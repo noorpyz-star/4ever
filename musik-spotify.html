@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6449037107513086" crossorigin="anonymous"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#121212">
+<title>4ever Musik — Mode Spotify</title>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+  :root { --bg:#121212; --panel:#181818; --panel2:#282828; --txt:#fff; --sub:#b3b3b3; --green:#1ed760; --dynDark:#121212; }
+  body { font-family:-apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif; background:linear-gradient(180deg,var(--dynDark) 0%,var(--bg) 300px); color:var(--txt); min-height:100vh; padding:0 16px 170px; transition:background 1s ease; }
+  .topbar { position:sticky; top:0; z-index:50; background:rgba(18,18,18,.92); backdrop-filter:blur(8px); -webkit-backdrop-filter:blur(8px); border-bottom:1px solid #2c2c2c; margin:0 -16px; }
+  .topbar-in { max-width:620px; margin:0 auto; display:flex; align-items:center; gap:12px; padding:10px 16px; }
+  .topbar nav { margin-left:auto; display:flex; gap:14px; overflow-x:auto; scrollbar-width:none; }
+  .topbar nav::-webkit-scrollbar { display:none; }
+  .topbar nav a { color:#b3b3b3; text-decoration:none; font-size:.83rem; font-weight:600; white-space:nowrap; }
+  .topbar nav a:hover, .topbar nav a.on { color:#fff; }
+  .topbar nav a.on { color:var(--green); }
+  .wrap { max-width:620px; margin:0 auto; }
+  .brand { display:flex; align-items:center; gap:9px; font-weight:800; font-size:1.05rem; }
+  .brand .dot { width:30px; height:30px; border-radius:50%; background:var(--green); color:#000; display:flex; align-items:center; justify-content:center; font-size:1rem; }
+  .brand small { color:var(--green); }
+  h1.greet { font-size:1.55rem; font-weight:800; margin-top:20px; letter-spacing:-.3px; }
+  .sub { color:var(--sub); font-size:.86rem; margin-top:5px; line-height:1.55; }
+  .dtpill { display:inline-block; margin-top:14px; background:var(--panel2); border-radius:16px; padding:7px 14px; font-size:.83rem; font-weight:600; }
+  .dtpill b { color:var(--green); font-variant-numeric:tabular-nums; }
+  .modes { display:flex; gap:9px; margin-top:18px; }
+  .modepill { flex:1; text-align:center; padding:11px 6px; border-radius:22px; background:#282828; color:#fff; font-weight:700; font-size:.92rem; text-decoration:none; }
+  .modepill.on { background:var(--green); color:#000; font-weight:800; }
+  .search { display:flex; align-items:center; gap:9px; background:#fff; border-radius:26px; padding:0 8px 0 16px; margin-top:20px; }
+  .search span { color:#555; }
+  .search input { flex:1; border:none; outline:none; padding:13px 0; font-size:.98rem; color:#111; font-family:inherit; background:transparent; min-width:0; }
+  .search button { border:none; background:var(--green); color:#000; font-weight:700; border-radius:20px; padding:9px 16px; font-size:.9rem; cursor:pointer; font-family:inherit; }
+  .chips { display:flex; gap:8px; margin-top:14px; overflow-x:auto; padding-bottom:4px; }
+  .chip { flex:none; padding:8px 14px; border-radius:20px; border:none; background:var(--panel2); color:var(--txt); font-family:inherit; font-size:.85rem; font-weight:600; cursor:pointer; }
+  .chip.on { background:#fff; color:#000; }
+  .sec-title { font-size:1.15rem; font-weight:800; margin:24px 0 6px; }
+  .row { display:flex; align-items:center; gap:12px; width:100%; text-align:left; background:transparent; border:none; border-radius:9px; padding:8px; cursor:pointer; font-family:inherit; color:var(--txt); }
+  .row:hover { background:var(--panel); }
+  .row.playing { background:var(--panel2); }
+  .row img { width:54px; height:54px; border-radius:6px; object-fit:cover; flex:none; background:#333; }
+  .row .meta { flex:1; min-width:0; }
+  .row .tt { font-weight:600; font-size:.94rem; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .row.playing .tt { color:var(--green); }
+  .row .ar { color:var(--sub); font-size:.82rem; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; margin-top:2px; }
+  .row .dur { color:var(--sub); font-size:.8rem; flex:none; font-variant-numeric:tabular-nums; }
+  .row .heart { flex:none; font-size:1.25rem; color:#777; padding:4px 2px; cursor:pointer; line-height:1; }
+  .row .heart.liked { color:var(--green); }
+  .row .eq { flex:none; display:none; gap:2.5px; align-items:flex-end; height:16px; }
+  .row.playing .eq { display:flex; }
+  .row .eq i { width:3.5px; background:var(--green); border-radius:2px; animation:eq 0.9s ease-in-out infinite; }
+  .row .eq i:nth-child(2) { animation-delay:.25s; } .row .eq i:nth-child(3) { animation-delay:.5s; }
+  @keyframes eq { 0%,100% { height:6px; } 50% { height:16px; } }
+  .empty { color:var(--sub); margin-top:22px; line-height:1.7; font-size:.92rem; text-align:center; }
+  .back { display:inline-block; margin-top:28px; color:var(--sub); text-decoration:none; font-size:.88rem; }
+  footer { color:#6a6a6a; font-size:.75rem; padding:18px 0 4px; }
+  .player { position:fixed; left:8px; right:8px; bottom:calc(8px + env(safe-area-inset-bottom)); background:#2a2a2a; border-radius:10px; padding:9px 11px 10px; z-index:50; box-shadow:0 10px 30px rgba(0,0,0,.6); }
+  .player .rowp { display:flex; align-items:center; gap:11px; }
+  .player img { width:44px; height:44px; border-radius:5px; object-fit:cover; background:#333; flex:none; }
+  .player .meta { flex:1; min-width:0; }
+  .player .tt { font-weight:700; font-size:.9rem; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .player .ar { color:var(--sub); font-size:.78rem; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .pbtn { flex:none; width:38px; height:38px; border-radius:50%; border:none; background:transparent; color:#fff; font-size:1.05rem; cursor:pointer; }
+  .pbtn.main { width:46px; height:46px; background:#fff; color:#000; font-size:1.15rem; }
+  .prog { display:flex; align-items:center; gap:8px; color:var(--sub); font-size:.7rem; margin-top:8px; }
+  .bar { flex:1; height:4px; border-radius:2px; background:#4d4d4d; cursor:pointer; position:relative; }
+  .bar .fill { position:absolute; left:0; top:0; bottom:0; width:0%; border-radius:2px; background:var(--green); }
+  .prog input[type=range] { width:64px; accent-color:var(--green); }
+  .pvnote { color:#777; font-size:.7rem; text-align:center; margin-top:6px; }
+</style>
+</head>
+<body>
+<div class="topbar"><div class="topbar-in">
+  <div class="brand"><span class="dot">🎵</span><span>4ever <small>Musik</small></span></div>
+  <nav>
+    <a href="https://4ever.ai.id/">Beranda</a>
+    <a href="https://4ever.ai.id/profil.html">Profil</a>
+    <a href="https://4ever.ai.id/musik-spotify.html" class="on">Musik</a>
+    <a href="https://4ever.ai.id/tools.html">Tools</a>
+    <a href="https://4ever.ai.id/artikel.html">Artikel</a>
+    <a href="https://4ever.ai.id/tv-gratis.html">TV</a>
+    <a href="https://4ever.ai.id/berita.html">Berita</a>
+    <a href="https://4ever.ai.id/game-hub-afis-dita.html">Game</a>
+  </nav>
+</div></div>
+<div class="wrap">
+  <h1 class="greet" id="greet">Selamat malam</h1>
+  <p class="sub">cari lagu apa pun, pencet buat dengerin cuplikannya. hatiin lagu favoritmu biar kesimpen di Playlist Saya. 🟢</p>
+  <div><span class="dtpill">📅 <span id="tgl">…</span> &nbsp;•&nbsp; 🕐 <b id="jam">--:--:--</b> WIB</span></div>
+
+  <div class="modes">
+    <a class="modepill" href="https://4ever.ai.id/musik.html">🎧 Mode Audio</a>
+    <a class="modepill" href="https://4ever.ai.id/musik-yt.html">▶️ Mode YouTube</a>
+    <span class="modepill on">🟢 Mode Spotify</span>
+  </div>
+
+  <div class="search">
+    <span>🔍</span>
+    <input id="q" type="search" placeholder="Cari lagu atau artis..." enterkeyhint="search">
+    <button id="searchBtn">Cari</button>
+  </div>
+
+  <div class="chips" id="chips">
+    <button class="chip" data-q="top hits indonesia">🔥 Trending</button>
+    <button class="chip" data-q="lagu indonesia">🇮🇩 Lagu Indo</button>
+    <button class="chip" data-q="viral tiktok">📱 Viral TikTok</button>
+    <button class="chip" data-q="For Revenge">🎸 For Revenge</button>
+    <button class="chip" data-q="sholawat">🕌 Sholawat</button>
+    <button class="chip" id="likesChip">❤️ Playlist Saya (0)</button>
+  </div>
+
+  <div class="sec-title" id="resTitle">Mau dengerin apa? 👇</div>
+  <div id="results"><p class="empty">Cari lagu favoritmu... 🎵<br>ketik di atas, atau pencet salah satu tombol cepatnya.</p></div>
+
+  <a class="back" href="https://4ever.ai.id/">← kembali ke 4ever.ai.id</a>
+  <footer>© 2026 4ever.ai.id — katalog lagu: Deezer • yang diputar di sini cuplikan 30 detik</footer>
+</div>
+
+<div class="player" id="playerBar" style="display:none">
+  <div class="rowp">
+    <img id="pArt" alt="">
+    <div class="meta">
+      <div class="tt" id="pTitle">—</div>
+      <div class="ar" id="pArtist">—</div>
+    </div>
+    <button class="pbtn" id="prevBtn">⏮</button>
+    <button class="pbtn main" id="playBtn">▶</button>
+    <button class="pbtn" id="nextBtn">⏭</button>
+  </div>
+  <div class="prog">
+    <span id="tNow">0:00</span>
+    <div class="bar" id="bar"><div class="fill" id="fill"></div></div>
+    <span id="tEnd">0:30</span>
+    <span>🔊</span><input type="range" id="volSlider" min="0" max="100" value="80" aria-label="Volume">
+  </div>
+  <div class="pvnote" id="previewNote">🎧 Preview 30 detik</div>
+</div>
+
+<audio id="au" preload="metadata"></audio>
+
+<script>
+/* salam + jam (WIB) + warna dinamis dari cover */
+(function () {
+  const h = new Date().getHours();
+  document.getElementById('greet').textContent = h < 11 ? 'Selamat pagi ☀️' : h < 15 ? 'Selamat siang 🌤️' : h < 19 ? 'Selamat sore 🌇' : 'Selamat malam 🌙';
+})();
+function bagianJakarta() {
+  const parts = new Intl.DateTimeFormat('id-ID', { timeZone: 'Asia/Jakarta', weekday: 'long', day: 'numeric', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false }).formatToParts(new Date());
+  const o = {}; parts.forEach(x => o[x.type] = x.value);
+  return o;
+}
+function tickJam() {
+  const o = bagianJakarta();
+  document.getElementById('tgl').textContent = o.weekday + ', ' + o.day + ' ' + o.month + ' ' + o.year;
+  document.getElementById('jam').textContent = (o.hour === '24' ? '00' : o.hour) + ':' + o.minute + ':' + o.second;
+}
+tickJam(); setInterval(tickJam, 1000);
+function applyDyn(rgb) {
+  if (!rgb) { document.documentElement.style.setProperty('--dynDark', '#121212'); return; }
+  document.documentElement.style.setProperty('--dynDark', 'rgb(' + Math.round(rgb[0] * .42) + ',' + Math.round(rgb[1] * .42) + ',' + Math.round(rgb[2] * .42) + ')');
+}
+function setDynColor(url) {
+  if (!url) { applyDyn(null); return; }
+  const img = new Image();
+  img.crossOrigin = 'anonymous';
+  img.onload = () => {
+    try {
+      const c = document.createElement('canvas'); const S = 24; c.width = S; c.height = S;
+      const x = c.getContext('2d'); x.drawImage(img, 0, 0, S, S);
+      const d = x.getImageData(0, 0, S, S).data;
+      let r = 0, g = 0, b = 0, n = 0;
+      for (let i = 0; i < d.length; i += 16) { r += d[i]; g += d[i + 1]; b += d[i + 2]; n++; }
+      applyDyn([Math.round(r / n), Math.round(g / n), Math.round(b / n)]);
+    } catch (e) { applyDyn(null); }
+  };
+  img.onerror = () => applyDyn(null);
+  img.src = url;
+}
+</script>
+
+<script>
+const WORKER = 'https://musik-yt.instayul01.workers.dev';
+const LIKE_KEY = 'spotify-likes';
+const au = document.getElementById('au');
+const resultsBox = document.getElementById('results');
+const playBtn = document.getElementById('playBtn');
+let queue = [];
+let curIdx = -1;
+let curTrack = null;
+let view = 'search'; /* 'search' | 'likes' */
+let lastResults = [];
+
+const fmt = s => { s = Math.max(0, Math.floor(s || 0)); return Math.floor(s / 60) + ':' + String(s % 60).padStart(2, '0'); };
+const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const keyOf = it => (it.title || '') + '|' + (it.artists || '');
+async function getJSON(url) { const r = await fetch(url); if (!r.ok) throw new Error('http ' + r.status); return r.json(); }
+
+/* ---------- Playlist Saya (localStorage) ---------- */
+function loadLikes() { try { return JSON.parse(localStorage.getItem(LIKE_KEY)) || []; } catch (e) { return []; } }
+function saveLikes(l) { try { localStorage.setItem(LIKE_KEY, JSON.stringify(l)); } catch (e) {} }
+function isLiked(it) { return loadLikes().some(x => keyOf(x) === keyOf(it)); }
+function updateLikeChip() {
+  const n = loadLikes().length;
+  document.getElementById('likesChip').textContent = '❤️ Playlist Saya (' + n + ')';
+}
+function toggleLike(it, btnEl) {
+  const likes = loadLikes();
+  const k = keyOf(it);
+  const i = likes.findIndex(x => keyOf(x) === k);
+  if (i >= 0) likes.splice(i, 1); else likes.push(it);
+  saveLikes(likes);
+  if (btnEl) { const liked = i < 0; btnEl.classList.toggle('liked', liked); btnEl.textContent = liked ? '♥' : '♡'; }
+  updateLikeChip();
+  if (view === 'likes') renderLikes();
+}
+
+/* ---------- render hasil ---------- */
+function renderRows(items) {
+  resultsBox.innerHTML = items.map((it, i) =>
+    '<button class="row' + (curTrack && keyOf(curTrack) === keyOf(it) ? ' playing' : '') + '" data-i="' + i + '">' +
+    '<img src="' + esc(it.cover) + '" alt="" loading="lazy">' +
+    '<span class="meta"><span class="tt">' + esc(it.title) + '</span>' +
+    '<span class="ar" style="display:block">' + esc(it.artists) + (it.album ? ' — ' + esc(it.album) : '') + '</span></span>' +
+    '<span class="dur">' + fmt(it.duration) + '</span>' +
+    '<span class="heart' + (isLiked(it) ? ' liked' : '') + '" data-heart="' + i + '">' + (isLiked(it) ? '♥' : '♡') + '</span>' +
+    '<span class="eq"><i></i><i></i><i></i></span></button>').join('');
+}
+function markPlaying() {
+  document.querySelectorAll('.row').forEach(c => c.classList.toggle('playing', +c.getAttribute('data-i') === curIdx));
+}
+function renderLikes() {
+  view = 'likes';
+  const likes = loadLikes();
+  document.getElementById('resTitle').textContent = 'Playlist Saya ❤️ (' + likes.length + ' lagu)';
+  document.querySelectorAll('[data-q]').forEach(c => c.classList.remove('on'));
+  document.getElementById('likesChip').classList.add('on');
+  if (!likes.length) {
+    queue = []; curIdx = -1;
+    resultsBox.innerHTML = '<p class="empty">belum ada lagu yang kamu suka.<br>pencet tombol ♥ di lagu mana pun buat nyimpen ke sini.</p>';
+    return;
+  }
+  queue = likes;
+  renderRows(likes);
+}
+resultsBox.addEventListener('click', e => {
+  const heartEl = e.target.closest('[data-heart]');
+  if (heartEl) {
+    const it = queue[+heartEl.getAttribute('data-heart')];
+    if (it) toggleLike(it, heartEl);
+    return;
+  }
+  const row = e.target.closest('.row');
+  if (row) playIdx(+row.getAttribute('data-i'));
+});
+
+/* ---------- pencarian ---------- */
+async function doSearch(q) {
+  q = (q || '').trim();
+  if (!q) return;
+  view = 'search';
+  document.getElementById('likesChip').classList.remove('on');
+  document.querySelectorAll('[data-q]').forEach(c => c.classList.toggle('on', c.getAttribute('data-q') === q));
+  document.getElementById('resTitle').textContent = 'Hasil buat "' + q + '"';
+  resultsBox.innerHTML = '<p class="empty">⏳ lagi nyari…</p>';
+  try {
+    const j = await getJSON(WORKER + '/?dz=' + encodeURIComponent(q));
+    const items = (j.items || []).filter(x => x.preview);
+    if (!items.length) {
+      lastResults = []; queue = []; curIdx = -1;
+      resultsBox.innerHTML = '<p class="empty">nggak ketemu. coba kata kunci lain ya.</p>';
+      return;
+    }
+    lastResults = items; queue = items; curIdx = -1;
+    renderRows(items);
+  } catch (err) {
+    resultsBox.innerHTML = '<p class="empty">❌ nggak bisa terhubung, coba lagi.</p>';
+  }
+}
+document.getElementById('searchBtn').onclick = () => doSearch(document.getElementById('q').value);
+document.getElementById('q').addEventListener('keydown', e => { if (e.key === 'Enter') doSearch(e.target.value); });
+document.querySelectorAll('[data-q]').forEach(c => c.addEventListener('click', () => { document.getElementById('q').value = c.getAttribute('data-q'); doSearch(c.getAttribute('data-q')); }));
+document.getElementById('likesChip').onclick = renderLikes;
+
+/* ---------- pemutar (cuplikan 30 detik) ---------- */
+function playIdx(i) {
+  if (i < 0 || i >= queue.length) return;
+  curIdx = i; curTrack = queue[i];
+  au.src = curTrack.preview;
+  au.play().catch(() => {});
+  document.getElementById('playerBar').style.display = 'block';
+  document.getElementById('pArt').src = curTrack.cover || '';
+  document.getElementById('pTitle').textContent = curTrack.title;
+  document.getElementById('pArtist').textContent = curTrack.artists;
+  document.getElementById('tEnd').textContent = '0:30';
+  document.getElementById('previewNote').textContent = '🎧 Preview 30 detik';
+  setDynColor(curTrack.cover);
+  markPlaying();
+  if ('mediaSession' in navigator) {
+    try {
+      navigator.mediaSession.metadata = new MediaMetadata({ title: curTrack.title, artist: curTrack.artists, album: curTrack.album || '', artwork: curTrack.cover ? [{ src: curTrack.cover, sizes: '1000x1000' }] : [] });
+      navigator.mediaSession.setActionHandler('previoustrack', () => playIdx(curIdx - 1));
+      navigator.mediaSession.setActionHandler('nexttrack', () => playIdx(curIdx + 1));
+    } catch (e) {}
+  }
+}
+au.addEventListener('play', () => { playBtn.textContent = '⏸'; });
+au.addEventListener('pause', () => { playBtn.textContent = '▶'; });
+au.addEventListener('ended', () => { if (curIdx + 1 < queue.length) playIdx(curIdx + 1); else playBtn.textContent = '▶'; });
+au.addEventListener('loadedmetadata', () => { if (au.duration && isFinite(au.duration)) document.getElementById('tEnd').textContent = fmt(au.duration); });
+au.addEventListener('timeupdate', () => {
+  document.getElementById('tNow').textContent = fmt(au.currentTime);
+  if (au.duration && isFinite(au.duration)) document.getElementById('fill').style.width = (au.currentTime / au.duration * 100) + '%';
+});
+playBtn.onclick = () => { if (!curTrack) return; if (au.paused) au.play().catch(() => {}); else au.pause(); };
+document.getElementById('nextBtn').onclick = () => playIdx(curIdx + 1);
+document.getElementById('prevBtn').onclick = () => playIdx(curIdx - 1);
+document.getElementById('bar').addEventListener('click', e => {
+  if (!au.duration || !isFinite(au.duration)) return;
+  const r = e.currentTarget.getBoundingClientRect();
+  au.currentTime = (e.clientX - r.left) / r.width * au.duration;
+});
+const volSlider = document.getElementById('volSlider');
+au.volume = volSlider.value / 100;
+volSlider.addEventListener('input', () => { au.volume = volSlider.value / 100; });
+
+updateLikeChip();
+</script>
+</body>
+</html>
