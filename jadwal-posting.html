@@ -540,13 +540,19 @@
             });
             statusEl.textContent = allOk ? "✓ Semua terkirim" : "Sebagian gagal";
           }
+          var LIVE_URL = "https://live.netplix.my.id/";
           function load() {
-            fetch("last-post.json?v=" + Date.now())
-              .then(function (r) { return r.json(); })
+            fetch(LIVE_URL + "?v=" + Date.now())
+              .then(function (r) { if (!r.ok) throw new Error("live unavailable"); return r.json(); })
               .then(render)
               .catch(function () {
-                prodEl.textContent = "Belum ada data postingan terakhir.";
-                statusEl.textContent = "Belum ada data";
+                fetch("last-post.json?v=" + Date.now())
+                  .then(function (r) { return r.json(); })
+                  .then(render)
+                  .catch(function () {
+                    prodEl.textContent = "Belum ada data postingan terakhir.";
+                    statusEl.textContent = "Belum ada data";
+                  });
               });
           }
           load();
