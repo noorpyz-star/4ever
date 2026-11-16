@@ -46,6 +46,7 @@
   .row.playing .tt { color:var(--red); }
   .row .ar { color:var(--sub); font-size:.82rem; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; margin-top:2px; }
   .row .badge-full { flex:none; font-size:.68rem; font-weight:800; color:#fff; background:var(--green); border-radius:4px; padding:2px 6px; letter-spacing:.4px; }
+  .row .badge-ori { flex:none; font-size:.68rem; font-weight:800; color:#fff; background:var(--red); border-radius:4px; padding:2px 6px; letter-spacing:.4px; }
   .row .dur { color:var(--sub); font-size:.8rem; flex:none; font-variant-numeric:tabular-nums; }
   .row .heart { flex:none; font-size:1.25rem; color:#aaa; padding:4px 2px; cursor:pointer; line-height:1; }
   .row .heart.liked { color:var(--red); }
@@ -268,6 +269,7 @@ function rowHtml(it, i) {
     '<span class="meta"><span class="tt">' + esc(it.title) + '</span>' +
     '<span class="ar" style="display:block">' + esc(it.artists) + (it.album ? ' — ' + esc(it.album) : '') + '</span></span>' +
     '<span class="badge-full">FULL</span>' +
+    (it.fullOfficial ? '<span class="badge-ori">ORI</span>' : '') +
     '<span class="dur">' + fmt(it.duration) + '</span>' +
     '<span class="heart' + (isLiked(it) ? ' liked' : '') + '" data-heart="' + i + '">' + (isLiked(it) ? '♥' : '♡') + '</span>' +
     '<span class="eq"><i></i><i></i><i></i></span></button>';
@@ -319,6 +321,16 @@ function norm(s) {
     .replace(/\b(official video|official audio|official music video|music video|lyric video|lirik|lyrics|audio|video|official|remaster|remastered|acoustic|live|cover|128kbps|320kbps|feat|ft|hd|4k)\b/g, ' ')
     .replace(/\s+/g, ' ').trim();
 }
+/* apakah upload-er-nya akun si artis sendiri (bukan re-upload fans)?
+   bandingkan nama uploader (SoundCloud/Audius) dengan nama artis Deezer */
+function isOfficialUp(uploader, artist) {
+  const n = s => (s || '').toLowerCase().replace(/[^a-z0-9]/g, '');
+  const u = n(uploader), a = n(artist);
+  if (!u || !a || a.length < 3) return false;
+  if (u === a) return true;
+  if (u.replace(/(official|music|records|hq)$/, '') === a) return true;
+  return false;
+}
 /* cari trek full (SoundCloud / Audius) yang cocok buat satu hasil Deezer;
    null kalau nggak ada. bentuk item kedua sumber sama: title, artist,
    verified, duration (detik), stream. */
@@ -342,12 +354,16 @@ function matchFull(dzItem, fullItems) {
       (a.length >= 4 && xt.indexOf(a) !== -1);
     return artOk;
   });
-  /* urutan: akun terverifikasi dulu, lalu durasi paling dekat sama durasi
-     resmi Deezer (bootleg/slowed-reverb biasanya lebih panjang, jadi
-     jangan pilih yang paling panjang) */
-  cands.sort((p, q) => ((q.verified ? 1 : 0) - (p.verified ? 1 : 0)) ||
+  /* urutan: upload dari akun si artis sendiri dulu (ORI), lalu akun
+     terverifikasi, lalu durasi paling dekat sama durasi resmi Deezer
+     (bootleg/slowed-reverb biasanya lebih panjang, jadi jangan pilih
+     yang paling panjang) */
+  cands.sort((p, q) => ((isOfficialUp(q.artist, dzItem.artists) ? 1 : 0) - (isOfficialUp(p.artist, dzItem.artists) ? 1 : 0)) ||
+    ((q.verified ? 1 : 0) - (p.verified ? 1 : 0)) ||
     (Math.abs(p.duration - (dzItem.duration || 0)) - Math.abs(q.duration - (dzItem.duration || 0))));
-  return cands[0] || null;
+  const best = cands[0] || null;
+  if (best) dzItem.fullOfficial = isOfficialUp(best.artist, dzItem.artists);
+  return best;
 }
 async function doSearch(q) {
   q = (q || '').trim();
