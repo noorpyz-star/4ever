@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6449037107513086" crossorigin="anonymous"></script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Email Generator — 4ever.ai.id</title>
@@ -71,6 +72,38 @@
   .topbar nav a { color:#666; text-decoration:none; font-size:.83rem; font-weight:600; white-space:nowrap; }
   .topbar nav a:hover { color:#111; }
   .topbar nav a.on { color:#e53935; }
+
+  /* --- Generator Alias Gmail (di bawah) --- */
+  #aliasSection h2.sec-title { color:#1a1a1a; font-size:1.22rem; }
+  #aliasSection .sec-sub { color:#777; font-size:.92rem; line-height:1.6; margin:8px 4px 4px; }
+  #aliasSection .card {
+    margin: 26px 0; padding: 20px 16px 20px 22px; border: 1px solid #e0e0e0; border-radius: 16px;
+    background: #ffffff; text-align: left; box-shadow: 0 4px 16px rgba(0,0,0,.05);
+    position: relative; overflow: hidden;
+  }
+  #aliasSection .card::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 5px; background: linear-gradient(180deg, #e53935, #f9a825 50%, #43a047); }
+  #aliasSection .card.kuning { background: #fffde7; border-color: #f9a825; box-shadow: 0 4px 16px rgba(249,168,37,.18); }
+  #aliasSection .card h2 { color: #1a1a1a; font-size: 1.12rem; margin-bottom: 6px; }
+  #aliasSection .card .d { color: #666; font-size: .87rem; line-height: 1.55; margin-bottom: 12px; }
+  #aliasSection label { color: #555; font-size: .85rem; }
+  #aliasSection .field:focus { outline: none; border-color: #e53935; box-shadow: 0 0 0 3px rgba(229,57,53,.12); }
+  #aliasSection .btn { background: #e53935; }
+  #aliasSection .btn.ghost { background: transparent; border: 1px solid #e53935; color: #e53935; }
+  #aliasSection .chips { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+  #aliasSection .chip {
+    border: 1px solid #e0e0e0; background: #f5f5f5; color: #333; border-radius: 999px;
+    padding: 7px 13px; cursor: pointer; font-family: inherit; font-size: .85rem;
+  }
+  #aliasSection .chip.on { background: #e53935; border-color: #e53935; color: #fff; font-weight: bold; }
+  #aliasSection .row {
+    margin-top: 10px; padding: 12px 14px; border-radius: 10px; background: #fafafa; border: 1px solid #e0e0e0;
+    display: flex; align-items: center; gap: 10px;
+  }
+  #aliasSection .row .ft { flex: 1; font-size: .95rem; color: #222; word-break: break-all; }
+  #aliasSection .note { color: #666; font-size: .85rem; line-height: 1.6; margin-top: 12px; border: none; background: transparent; padding: 0; }
+  #aliasSection .note b { color: #d32f2f; }
+  #aliasSection #hasil { display: none; }
+  #aliasSection #hasil.show { display: block; }
 </style>
 </head>
 <body>
@@ -133,6 +166,46 @@
 
   <div class="note">
     ℹ️ <b style="color:#ddd">Catatan:</b> generator ini bikin <i>alamatnya</i>. Biar email yang masuk ke alamat-alamat itu beneran bisa kamu terima, domainnya perlu dipasang <b style="color:#ddd">email routing (catch-all)</b> — misalnya pakai Cloudflare Email Routing (gratis), nanti semua email ke *@netplix.my.id diteruskan ke email pribadi kamu.
+  </div>
+
+  <div id="aliasSection" style="margin-top:34px;border-top:1px solid #e0e0e0;padding-top:26px;">
+    <h2 class="sec-title">Generator Alias Gmail</h2>
+    <p class="sec-sub">Bikin alamat namamu+tag@gmail.com buat daftar di tiap situs — semua email tetap masuk ke inbox Gmail yang sama.</p>
+
+    <div class="card">
+      <h2>1. Nama Gmail-mu</h2>
+      <div class="d">Tulis nama sebelum @gmail.com. Kalau kepaste alamat lengkap pun tetap jalan, bagian @gmail.com-nya dibuang otomatis.</div>
+      <label for="nama">Nama Gmail</label>
+      <input class="field" id="nama" type="text" placeholder="misal: noorpyz" autocomplete="off" spellcheck="false">
+    </div>
+
+    <div class="card">
+      <h2>2. Pilih tag-nya</h2>
+      <div class="d">Ketuk tag buat milih / batalin. Tag sendiri bisa ditambah di bawah.</div>
+      <div class="chips" id="chips"></div>
+      <div style="display:flex; gap:10px; margin-top:12px;">
+        <input class="field" id="tagbaru" type="text" placeholder="tag sendiri, misal: tokped" style="margin-top:0;" autocomplete="off" spellcheck="false">
+        <button class="btn ghost" id="tambahtag" style="width:auto; margin-top:0; padding:12px 18px;">Tambah</button>
+      </div>
+      <button class="btn" id="buat">Buat Alamatnya</button>
+    </div>
+
+    <div class="card" id="hasil">
+      <h2>3. Alamat alias-mu</h2>
+      <div class="d">Semua alamat ini masuk ke inbox Gmail yang sama. Tinggal salin yang mau dipakai buat daftar.</div>
+      <div id="daftar"></div>
+      <button class="btn ghost" id="salinsemua">Salin Semua</button>
+      <div class="note" id="pesan"></div>
+    </div>
+
+    <div class="card kuning">
+      <h2>Jujur dulu biar nggak salah paham</h2>
+      <div class="note">
+        <b>Ini bukan akun Gmail baru.</b> Akun Gmail cuma bisa dibuat lewat Google sendiri, pakai verifikasi HP. Yang dibuat halaman ini adalah <b>alias</b>: alamat <i>namamu+tag@gmail.com</i> yang resmi dari Gmail, dan semua emailnya tetap masuk ke inbox-mu yang sama.<br><br>
+        Kebanyakan situs menganggap tiap alias sebagai email beda, jadi cocok buat misahin daftar per situs. Catatan jujurnya: <b>sebagian kecil situs menolak alamat ber-tanda +</b> — kalau ditolak, pakai alamat netplix.my.id-mu saja.<br><br>
+        Halaman ini jalan 100% di browser, tanpa server, dan tidak mengirim namamu ke mana-mana.
+      </div>
+    </div>
   </div>
 
   <a class="back" href="https://4ever.ai.id/">← kembali ke halaman utama</a>
@@ -291,6 +364,86 @@ const savedWatch = localStorage.getItem('netplix_watch') || '';
 if (savedWatch) document.getElementById('inFilter').value = savedWatch;
 loadInbox();
 setInterval(loadInbox, 30000);
+</script>
+
+<script>
+// ---------- Generator Alias Gmail ----------
+  var PRESET = ['shopee','tiktok','youtube','facebook','instagram','belanja','promo','daftar','kerja','game'];
+  var aktif = {};
+  PRESET.forEach(function(t){ aktif[t] = true; });
+
+  var chipsEl = document.getElementById('chips');
+  function gambarChips(){
+    chipsEl.innerHTML = '';
+    Object.keys(aktif).forEach(function(t){
+      var b = document.createElement('button');
+      b.className = 'chip' + (aktif[t] ? ' on' : '');
+      b.textContent = '+' + t;
+      b.onclick = function(){ aktif[t] = !aktif[t]; gambarChips(); };
+      chipsEl.appendChild(b);
+    });
+  }
+  gambarChips();
+
+  function bersihNama(v){
+    v = (v || '').trim().toLowerCase();
+    v = v.replace(/@gmail\.com$/i, '').replace(/@.*$/, '');
+    v = v.replace(/[^a-z0-9._]/g, '');
+    return v;
+  }
+  function bersihTag(v){
+    v = (v || '').trim().toLowerCase().replace(/^\+/, '');
+    v = v.replace(/[^a-z0-9._-]/g, '');
+    return v;
+  }
+
+  document.getElementById('tambahtag').onclick = function(){
+    var t = bersihTag(document.getElementById('tagbaru').value);
+    if (t && !(t in aktif)) { aktif[t] = true; }
+    document.getElementById('tagbaru').value = '';
+    gambarChips();
+  };
+  document.getElementById('tagbaru').addEventListener('keydown', function(e){
+    if (e.key === 'Enter') { e.preventDefault(); document.getElementById('tambahtag').click(); }
+  });
+
+  function salin(teks, tombol){
+    function ok(){ var lama = tombol.textContent; tombol.textContent = 'Tersalin!'; setTimeout(function(){ tombol.textContent = lama; }, 1500); }
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(teks).then(ok).catch(function(){ ok(); });
+    } else {
+      var ta = document.createElement('textarea');
+      ta.value = teks; document.body.appendChild(ta); ta.select();
+      try { document.execCommand('copy'); } catch (e) {}
+      document.body.removeChild(ta); ok();
+    }
+  }
+
+  var daftarEl = document.getElementById('daftar');
+  var alamatJadi = [];
+  document.getElementById('buat').onclick = function(){
+    var nama = bersihNama(document.getElementById('nama').value);
+    document.getElementById('nama').value = nama;
+    var tags = Object.keys(aktif).filter(function(t){ return aktif[t]; });
+    if (!nama) { alert('Isi dulu nama Gmail-mu.'); return; }
+    if (!tags.length) { alert('Pilih minimal satu tag.'); return; }
+    alamatJadi = tags.map(function(t){ return nama + '+' + t + '@gmail.com'; });
+    daftarEl.innerHTML = '';
+    alamatJadi.forEach(function(a){
+      var r = document.createElement('div');
+      r.className = 'row';
+      var s = document.createElement('span'); s.className = 'ft'; s.textContent = a;
+      var b = document.createElement('button'); b.className = 'mini-btn'; b.textContent = 'Salin';
+      b.onclick = function(){ salin(a, b); };
+      r.appendChild(s); r.appendChild(b); daftarEl.appendChild(r);
+    });
+    document.getElementById('pesan').textContent = alamatJadi.length + ' alamat dibuat dari ' + nama + '@gmail.com — semuanya masuk ke inbox yang sama.';
+    document.getElementById('hasil').className = 'card show';
+    document.getElementById('hasil').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  };
+  document.getElementById('salinsemua').onclick = function(){
+    if (alamatJadi.length) salin(alamatJadi.join('\n'), this);
+  };
 </script>
 </body>
 </html>
