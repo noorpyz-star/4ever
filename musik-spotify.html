@@ -351,7 +351,7 @@ async function doSearch(q) {
    baru Audius. hasilnya ditempel ke barisnya begitu ketemu, tanpa nunggu.
    Gagal = tetap preview, nggak ngerusak apa-apa. */
 async function topUpFull(items) {
-  const todo = items.filter(it => !hasFull(it)).slice(0, 8);
+  const todo = items.filter(it => !hasFull(it)).slice(0, 16);
   if (!todo.length) return;
   await Promise.all(todo.map(async it => {
     try {
