@@ -325,12 +325,12 @@ function norm(s) {
 function matchFull(dzItem, fullItems) {
   const t = norm(dzItem.title), a = norm(dzItem.artists);
   if (!t) return null;
-  /* versi instrumental/karaoke/cover/slowed/live jangan sampai ketukar
+  /* versi instrumental/karaoke/cover/slowed/remix/live jangan sampai ketukar
      sama versi studio asli */
   const hasMark = (s, w) => new RegExp('\\b' + w + '\\b').test((s || '').toLowerCase().replace(/[^a-z0-9 ]/g, ' '));
   const cands = fullItems.filter(x => {
     if (!x || x.duration < 60) return false;
-    if (['instrumental', 'karaoke', 'cover', 'slowed', 'sped up', 'live'].some(w => hasMark(dzItem.title, w) !== hasMark(x.title, w))) return false;
+    if (['instrumental', 'karaoke', 'cover', 'slowed', 'sped up', 'remix', 'live'].some(w => hasMark(dzItem.title, w) !== hasMark(x.title, w))) return false;
     const xt = norm(x.title), xa = norm(x.artist);
     if (!xt) return false;
     const titleOk = xt === t ||
@@ -364,7 +364,9 @@ async function doSearch(q) {
     const j = await getJSON(WORKER + '/?dz=' + encodeURIComponent(q) + '&limit=' + PAGE + '&index=0');
     const aj = await auP;
     const sj = await scP;
-    const items = j.items || [];
+    let items = j.items || [];
+    /* jangan masukin remix — kecuali user-nya sendiri yang nyari "remix" */
+    if (!/remix/i.test(q)) items = items.filter(it => !/\bremix\b/i.test(it.title || ''));
     const auItems = (aj && aj.items) || [];
     const scItems = (sj && sj.items) || [];
     items.forEach(it => {
@@ -454,7 +456,7 @@ async function loadHome() {
         getJSON(WORKER + '/?sc=' + encodeURIComponent(s.q)).catch(() => null),
         getJSON(WORKER + '/?au=' + encodeURIComponent(s.q)).catch(() => null),
       ]);
-      const items = (j.items || []).slice(0, 8);
+      const items = (j.items || []).slice(0, 8).filter(it => !/\bremix\b/i.test(it.title || ''));
       const scItems = (sj && sj.items) || [], auItems = (aj && aj.items) || [];
       items.forEach(it => {
         const msc = matchFull(it, scItems);
@@ -481,7 +483,8 @@ async function loadMore() {
       getJSON(WORKER + '/?sc=' + encodeURIComponent(lastQ)).catch(() => null),
       getJSON(WORKER + '/?au=' + encodeURIComponent(lastQ)).catch(() => null),
     ]);
-    const items = j.items || [];
+    let items = j.items || [];
+    if (!/remix/i.test(lastQ)) items = items.filter(it => !/\bremix\b/i.test(it.title || ''));
     const scItems = (sj && sj.items) || [], auItems = (aj && aj.items) || [];
     const seen = new Set(queue.map(keyOf));
     const fresh = items.filter(it => !seen.has(keyOf(it)));
