@@ -261,6 +261,7 @@
           <p class="card-desc" id="lp-product">Memuat postingan terakhir…</p>
           <div class="lp-time mono" id="lp-time"></div>
           <div class="lp-rows" id="lp-rows"></div>
+          <p class="card-desc" style="font-size:12px;margin-top:10px">Status diperbarui otomatis tiap 30 detik — tidak perlu refresh halaman.</p>
         </article>
       </section>
 
@@ -539,13 +540,17 @@
             });
             statusEl.textContent = allOk ? "✓ Semua terkirim" : "Sebagian gagal";
           }
-          fetch("last-post.json?v=" + Date.now())
-            .then(function (r) { return r.json(); })
-            .then(render)
-            .catch(function () {
-              prodEl.textContent = "Belum ada data postingan terakhir.";
-              statusEl.textContent = "Belum ada data";
-            });
+          function load() {
+            fetch("last-post.json?v=" + Date.now())
+              .then(function (r) { return r.json(); })
+              .then(render)
+              .catch(function () {
+                prodEl.textContent = "Belum ada data postingan terakhir.";
+                statusEl.textContent = "Belum ada data";
+              });
+          }
+          load();
+          setInterval(load, 30000);
         })();
       })();
     </script>
