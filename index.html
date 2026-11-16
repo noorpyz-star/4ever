@@ -53,10 +53,10 @@
   .sec-desc { color: #777; font-size: .85rem; line-height: 1.6; margin: 0 4px 6px; text-align: left; }
   a.link-btn {
     display: flex; align-items: center; gap: 14px; text-decoration: none;
-    background: #ffffff; border: 1px solid #ececec; color: #1a1a1a;
+    background: linear-gradient(180deg, #fff5f5, #ffffff); border: 1px solid #e53935; color: #1a1a1a;
     padding: 15px 18px 15px 22px; border-radius: 16px; margin: 10px 0; text-align: left;
     position: relative; overflow: hidden;
-    box-shadow: 0 2px 10px rgba(0,0,0,.05);
+    box-shadow: 0 6px 20px rgba(229,57,53,.12);
     transition: transform .12s ease, border-color .12s ease, box-shadow .12s ease;
   }
   a.link-btn::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 5px; background: linear-gradient(180deg, #e53935, #f9a825 50%, #43a047); }
@@ -65,8 +65,7 @@
   a.link-btn.featured { border-color: #e53935; background: linear-gradient(180deg, #fff5f5, #ffffff); box-shadow: 0 6px 20px rgba(229,57,53,.14); }
   a.link-btn.featured .ic { background: #e53935; color: #fff; }
   a.link-btn .ic { font-size: 1.5rem; }
-  .link-btn .ic { color: #2e7d32; background: #e8f5e9; width: 46px; height: 46px; flex: none; display: flex; align-items: center; justify-content: center; border-radius: 13px; }
-  #ditaLinks .link-btn .ic { background: #fdecea; color: #d32f2f; }
+  .link-btn .ic { color: #fff; background: #e53935; width: 46px; height: 46px; flex: none; display: flex; align-items: center; justify-content: center; border-radius: 13px; }
   .link-btn .ic svg { width: 26px; height: 26px; display: block; }
   a.link-btn .tt { font-weight: bold; font-size: 1rem; display: block; }
   a.link-btn .ds { color: #777; font-size: .8rem; display: block; margin-top: 2px; }
