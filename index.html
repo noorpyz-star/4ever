@@ -60,6 +60,7 @@
     transition: transform .12s ease, border-color .12s ease, box-shadow .12s ease;
   }
   a.link-btn::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 5px; background: linear-gradient(180deg, #e53935, #f9a825 50%, #43a047); }
+  a.link-btn:hover { transform: translateY(-2px); border-color: #f9a825; box-shadow: 0 8px 22px rgba(0,0,0,.10); }
   a.link-btn:active { transform: scale(.98); border-color: #43a047; }
   a.link-btn .ic { font-size: 1.5rem; }
   .link-btn .ic { color: #2e7d32; background: #e8f5e9; width: 46px; height: 46px; flex: none; display: flex; align-items: center; justify-content: center; border-radius: 13px; }
@@ -120,6 +121,17 @@
   <p class="tag">website resmi <b style="color:#e53935">4ever.ai.id</b> — rumah digital Afis. Di sini ada tools gratis buat bikin email, artikel, musik gratis tanpa iklan, live TV Indonesia, game yang bisa dimainkan bareng jarak jauh, plus halaman-halaman spesial buat Ibu Dita. Semuanya dalam satu tempat 💙</p>
 
   <div><span class="clock-pill" id="clockPill">…</span></div>
+
+  <a class="musik-cta" href="https://4ever.ai.id/katalog.html" style="background:linear-gradient(135deg,#e53935,#f9a825);">
+    <span class="ic">🛒</span>
+    <span><span class="tt2">Katalog Promo Shopee</span><span class="ds2">barang murah tiap hari — harga coret + link beli langsung</span></span>
+    <span class="arr">›</span>
+  </a>
+  <a class="link-btn" href="https://4ever.ai.id/jadwal-posting.html">
+    <span class="ic">🗓️</span>
+    <span><span class="tt">Jadwal Posting</span><span class="ds">jadwal posting promo ke Threads, Facebook &amp; channel WA — tiap 15 menit, barengan</span></span>
+    <span class="arr">›</span>
+  </a>
 
   <div id="loveWrap" style="display:none">
   <div class="love-card">
