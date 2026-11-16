@@ -35,6 +35,7 @@
   .chips { display:flex; gap:8px; margin-top:14px; overflow-x:auto; padding-bottom:4px; }
   .chip { flex:none; padding:8px 14px; border-radius:20px; border:none; background:var(--panel2); color:var(--txt); font-family:inherit; font-size:.85rem; font-weight:600; cursor:pointer; }
   .chip.on { background:#fff; color:#000; }
+  .morebtn { display:block; width:100%; margin:14px 0 4px; padding:12px; border:none; border-radius:22px; background:var(--panel2); color:#fff; font-weight:700; font-size:.95rem; cursor:pointer; font-family:inherit; }
   .sec-title { font-size:1.15rem; font-weight:800; margin:24px 0 6px; }
   .row { display:flex; align-items:center; gap:12px; width:100%; text-align:left; background:transparent; border:none; border-radius:9px; padding:8px; cursor:pointer; font-family:inherit; color:var(--txt); }
   .row:hover { background:var(--panel); }
@@ -112,16 +113,12 @@
   </div>
 
   <div class="chips" id="chips">
-    <button class="chip" data-q="top hits indonesia">🔥 Trending</button>
-    <button class="chip" data-q="lagu indonesia">🇮🇩 Lagu Indo</button>
-    <button class="chip" data-q="viral tiktok">📱 Viral TikTok</button>
-    <button class="chip" data-q="For Revenge">🎸 For Revenge</button>
-    <button class="chip" data-q="sholawat">🕌 Sholawat</button>
     <button class="chip" id="likesChip">❤️ Playlist Saya (0)</button>
   </div>
 
   <div class="sec-title" id="resTitle">Mau dengerin apa? 👇</div>
-  <div id="results"><p class="empty">Cari lagu favoritmu... 🎵<br>ketik di atas, atau pencet salah satu tombol cepatnya.</p></div>
+  <div id="results"><p class="empty">⏳ lagi nyiapin lagu buat kamu…</p></div>
+  <button id="moreBtn" class="morebtn" style="display:none">Muat lagi ⬇️</button>
 
   <a class="back" href="https://4ever.ai.id/">← kembali ke 4ever.ai.id</a>
   <footer>© 2026 4ever.ai.id — katalog lagu: Deezer • semua lagu di sini versi full dari SoundCloud &amp; Audius</footer>
@@ -263,16 +260,19 @@ const hasFull = it => !!(it && (it.fullUrl || it.scId));
 /* ---------- render hasil ---------- */
 /* hanya lagu FULL yang ditampilkan — tanpa versi full, barisnya
    tidak muncul sama sekali (data-i tetap indeks asli di queue) */
-function renderRows(items) {
-  resultsBox.innerHTML = items.map((it, i) => hasFull(it) ?
-    '<button class="row' + (curTrack && keyOf(curTrack) === keyOf(it) ? ' playing' : '') + '" data-i="' + i + '">' +
+function rowHtml(it, i) {
+  if (!hasFull(it)) return '';
+  return '<button class="row' + (curTrack && keyOf(curTrack) === keyOf(it) ? ' playing' : '') + '" data-i="' + i + '">' +
     '<img src="' + esc(it.cover) + '" alt="" loading="lazy">' +
     '<span class="meta"><span class="tt">' + esc(it.title) + '</span>' +
     '<span class="ar" style="display:block">' + esc(it.artists) + (it.album ? ' — ' + esc(it.album) : '') + '</span></span>' +
     '<span class="badge-full">FULL</span>' +
     '<span class="dur">' + fmt(it.duration) + '</span>' +
     '<span class="heart' + (isLiked(it) ? ' liked' : '') + '" data-heart="' + i + '">' + (isLiked(it) ? '♥' : '♡') + '</span>' +
-    '<span class="eq"><i></i><i></i><i></i></span></button>' : '').join('');
+    '<span class="eq"><i></i><i></i><i></i></span></button>';
+}
+function renderRows(items) {
+  resultsBox.innerHTML = items.map((it, i) => rowHtml(it, i)).join('');
 }
 function markPlaying() {
   document.querySelectorAll('.row').forEach(c => c.classList.toggle('playing', +c.getAttribute('data-i') === curIdx));
@@ -280,8 +280,8 @@ function markPlaying() {
 function renderLikes() {
   view = 'likes';
   const likes = loadLikes();
+  document.getElementById('moreBtn').style.display = 'none';
   document.getElementById('resTitle').textContent = 'Playlist Saya ❤️ (' + likes.length + ' lagu)';
-  document.querySelectorAll('[data-q]').forEach(c => c.classList.remove('on'));
   document.getElementById('likesChip').classList.add('on');
   if (!likes.length) {
     queue = []; curIdx = -1;
@@ -353,13 +353,14 @@ async function doSearch(q) {
   if (!q) return;
   view = 'search';
   document.getElementById('likesChip').classList.remove('on');
-  document.querySelectorAll('[data-q]').forEach(c => c.classList.toggle('on', c.getAttribute('data-q') === q));
   document.getElementById('resTitle').textContent = 'Hasil buat "' + q + '"';
+  document.getElementById('moreBtn').style.display = 'none';
   resultsBox.innerHTML = '<p class="empty">⏳ lagi nyari…</p>';
+  lastQ = q; lastIndex = 0;
   try {
     const auP = getJSON(WORKER + '/?au=' + encodeURIComponent(q)).catch(() => null);
     const scP = getJSON(WORKER + '/?sc=' + encodeURIComponent(q)).catch(() => null);
-    const j = await getJSON(WORKER + '/?dz=' + encodeURIComponent(q));
+    const j = await getJSON(WORKER + '/?dz=' + encodeURIComponent(q) + '&limit=' + PAGE + '&index=0');
     const aj = await auP;
     const sj = await scP;
     const items = j.items || [];
@@ -379,6 +380,8 @@ async function doSearch(q) {
       return;
     }
     lastResults = items; queue = items; curIdx = -1;
+    lastIndex = items.length;
+    document.getElementById('moreBtn').style.display = items.length === PAGE ? 'block' : 'none';
     if (items.some(hasFull)) renderRows(items);
     else resultsBox.innerHTML = '<p class="empty">⏳ lagi nyari versi full-nya…</p>';
     topUpFull(items);
@@ -391,9 +394,10 @@ async function doSearch(q) {
    baru Audius. hasilnya ditempel ke barisnya begitu ketemu, tanpa nunggu.
    Gagal = lagu itu tetap nggak muncul, nggak ngerusak apa-apa. */
 async function topUpFull(items) {
-  const todo = items.filter(it => !hasFull(it)).slice(0, 16);
+  const todo = items.filter(it => !hasFull(it) && !it._tried).slice(0, 16);
   if (!todo.length) return;
   await Promise.all(todo.map(async it => {
+    it._tried = true;
     try {
       const q1 = encodeURIComponent((it.title + ' ' + it.artists).slice(0, 120));
       const [sj, aj] = await Promise.all([
@@ -406,14 +410,98 @@ async function topUpFull(items) {
       if (mau) { it.fullUrl = mau.stream; it.fullSource = 'au'; }
     } catch (e) { /* abaikan, lagu itu tetap nggak muncul */ }
   }));
-  if (view === 'search' && queue === items) {
-    if (items.some(hasFull)) renderRows(items);
-    else resultsBox.innerHTML = '<p class="empty">Belum ada versi full untuk pencarian ini, coba judul lain 🎵</p>';
+  if (queue === items) {
+    if (view === 'search') {
+      if (items.some(hasFull)) renderRows(items);
+      else resultsBox.innerHTML = '<p class="empty">Belum ada versi full untuk pencarian ini, coba judul lain 🎵</p>';
+    } else if (view === 'home') renderHome();
+    if (items.some(it => !hasFull(it) && !it._tried)) topUpFull(items);
   }
 }
+/* ---------- beranda ala Spotify: lagu langsung tampil ---------- */
+let lastQ = '', lastIndex = 0, homeParts = [];
+const PAGE = 50;
+const HOME_SECTIONS = [
+  { title: '🔥 Bring Me The Horizon', q: 'bring me the horizon' },
+  { title: '🇮🇩 Juicy Luicy', q: 'juicy luicy' },
+  { title: '🎸 For Revenge', q: 'for revenge' },
+  { title: '🌙 Hindia', q: 'hindia' },
+  { title: '🎤 Tulus', q: 'tulus' },
+];
+function renderHome() {
+  view = 'home';
+  document.getElementById('resTitle').textContent = 'Buat kamu 🎵';
+  document.getElementById('moreBtn').style.display = 'none';
+  let html = '', gi = 0;
+  homeParts.forEach(p => {
+    if (!p.items.some(hasFull)) return;
+    html += '<div class="sec-title">' + esc(p.title) + '</div>';
+    p.items.forEach(it => { html += rowHtml(it, gi); gi++; });
+  });
+  resultsBox.innerHTML = html || '<p class="empty">Belum ada lagu full, coba cari di atas ya 🎵</p>';
+}
+async function loadHome() {
+  view = 'home';
+  document.getElementById('likesChip').classList.remove('on');
+  document.getElementById('resTitle').textContent = 'Buat kamu 🎵';
+  document.getElementById('moreBtn').style.display = 'none';
+  resultsBox.innerHTML = '<p class="empty">⏳ lagi nyiapin lagu buat kamu…</p>';
+  const parts = await Promise.all(HOME_SECTIONS.map(async s => {
+    try {
+      const [j, sj, aj] = await Promise.all([
+        getJSON(WORKER + '/?dz=' + encodeURIComponent(s.q) + '&limit=8'),
+        getJSON(WORKER + '/?sc=' + encodeURIComponent(s.q)).catch(() => null),
+        getJSON(WORKER + '/?au=' + encodeURIComponent(s.q)).catch(() => null),
+      ]);
+      const items = (j.items || []).slice(0, 8);
+      const scItems = (sj && sj.items) || [], auItems = (aj && aj.items) || [];
+      items.forEach(it => {
+        const msc = matchFull(it, scItems);
+        if (msc) { it.fullUrl = msc.stream; it.fullSource = 'sc'; it.scId = msc.id; return; }
+        const mau = matchFull(it, auItems);
+        if (mau) { it.fullUrl = mau.stream; it.fullSource = 'au'; }
+      });
+      return { title: s.title, items };
+    } catch (e) { return { title: s.title, items: [] }; }
+  }));
+  if (view !== 'home') return;
+  homeParts = parts;
+  queue = parts.flatMap(p => p.items);
+  curIdx = -1;
+  renderHome();
+  topUpFull(queue);
+}
+async function loadMore() {
+  const btn = document.getElementById('moreBtn');
+  btn.textContent = '⏳ lagi nyari…';
+  try {
+    const [j, sj, aj] = await Promise.all([
+      getJSON(WORKER + '/?dz=' + encodeURIComponent(lastQ) + '&limit=' + PAGE + '&index=' + lastIndex),
+      getJSON(WORKER + '/?sc=' + encodeURIComponent(lastQ)).catch(() => null),
+      getJSON(WORKER + '/?au=' + encodeURIComponent(lastQ)).catch(() => null),
+    ]);
+    const items = j.items || [];
+    const scItems = (sj && sj.items) || [], auItems = (aj && aj.items) || [];
+    const seen = new Set(queue.map(keyOf));
+    const fresh = items.filter(it => !seen.has(keyOf(it)));
+    fresh.forEach(it => {
+      const msc = matchFull(it, scItems);
+      if (msc) { it.fullUrl = msc.stream; it.fullSource = 'sc'; it.scId = msc.id; return; }
+      const mau = matchFull(it, auItems);
+      if (mau) { it.fullUrl = mau.stream; it.fullSource = 'au'; }
+    });
+    queue = queue.concat(fresh);
+    lastResults = queue;
+    lastIndex += items.length;
+    if (view === 'search') renderRows(queue);
+    btn.style.display = items.length === PAGE ? 'block' : 'none';
+    btn.textContent = 'Muat lagi ⬇️';
+    topUpFull(queue);
+  } catch (e) { btn.textContent = 'Muat lagi ⬇️'; }
+}
+document.getElementById('moreBtn').onclick = loadMore;
 document.getElementById('searchBtn').onclick = () => doSearch(document.getElementById('q').value);
 document.getElementById('q').addEventListener('keydown', e => { if (e.key === 'Enter') doSearch(e.target.value); });
-document.querySelectorAll('[data-q]').forEach(c => c.addEventListener('click', () => { document.getElementById('q').value = c.getAttribute('data-q'); doSearch(c.getAttribute('data-q')); }));
 document.getElementById('likesChip').onclick = renderLikes;
 
 /* ---------- pemutar (hanya lagu full) ---------- */
@@ -606,6 +694,7 @@ au.volume = volSlider.value / 100;
 volSlider.addEventListener('input', () => { au.volume = volSlider.value / 100; });
 
 updateLikeChip();
+loadHome();
 </script>
 </body>
 </html>
