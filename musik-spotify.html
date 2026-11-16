@@ -44,6 +44,8 @@
   .row .tt { font-weight:600; font-size:.94rem; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
   .row.playing .tt { color:var(--green); }
   .row .ar { color:var(--sub); font-size:.82rem; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; margin-top:2px; }
+  .row .badge-full { flex:none; font-size:.68rem; font-weight:800; color:#000; background:var(--green); border-radius:4px; padding:2px 6px; letter-spacing:.4px; }
+  .row .badge-pv { flex:none; font-size:.68rem; font-weight:700; color:var(--sub); background:#333; border-radius:4px; padding:2px 6px; }
   .row .dur { color:var(--sub); font-size:.8rem; flex:none; font-variant-numeric:tabular-nums; }
   .row .heart { flex:none; font-size:1.25rem; color:#777; padding:4px 2px; cursor:pointer; line-height:1; }
   .row .heart.liked { color:var(--green); }
@@ -69,6 +71,7 @@
   .prog input[type=range] { width:64px; accent-color:var(--green); }
   .pvnote { color:#777; font-size:.7rem; text-align:center; margin-top:6px; }
 </style>
+<script src="hls.min.js"></script>
 </head>
 <body>
 <div class="topbar"><div class="topbar-in">
@@ -86,7 +89,7 @@
 </div></div>
 <div class="wrap">
   <h1 class="greet" id="greet">Selamat malam</h1>
-  <p class="sub">cari lagu apa pun, pencet buat dengerin cuplikannya. hatiin lagu favoritmu biar kesimpen di Playlist Saya. 🟢</p>
+  <p class="sub">cari lagu apa pun — kalau ada versi full-nya, langsung diputar full; kalau nggak ada, tetap bisa dengerin cuplikan 30 detiknya. hatiin lagu favoritmu biar kesimpen di Playlist Saya. 🟢</p>
   <div><span class="dtpill">📅 <span id="tgl">…</span> &nbsp;•&nbsp; 🕐 <b id="jam">--:--:--</b> WIB</span></div>
 
   <div class="modes">
@@ -113,7 +116,7 @@
   <div id="results"><p class="empty">Cari lagu favoritmu... 🎵<br>ketik di atas, atau pencet salah satu tombol cepatnya.</p></div>
 
   <a class="back" href="https://4ever.ai.id/">← kembali ke 4ever.ai.id</a>
-  <footer>© 2026 4ever.ai.id — katalog lagu: Deezer • yang diputar di sini cuplikan 30 detik</footer>
+  <footer>© 2026 4ever.ai.id — katalog lagu: Deezer • lagu full dari SoundCloud &amp; Audius kalau ada, kalau nggak ada cuplikan 30 detik</footer>
 </div>
 
 <div class="player" id="playerBar" style="display:none">
@@ -207,12 +210,23 @@ function toggleLike(it, btnEl) {
   const likes = loadLikes();
   const k = keyOf(it);
   const i = likes.findIndex(x => keyOf(x) === k);
-  if (i >= 0) likes.splice(i, 1); else likes.push(it);
+  if (i >= 0) likes.splice(i, 1);
+  else {
+    /* simpan kopian TANPA url stream SoundCloud: url-nya bertanda tangan
+       dan kedaluwarsa ~2-3 jam, jadi pas diputar nanti di-resolve ulang
+       dari id lagunya. stream Audius (mp3 biasa) aman disimpan. */
+    const copy = Object.assign({}, it);
+    if (copy.fullSource === 'sc') delete copy.fullUrl;
+    likes.push(copy);
+  }
   saveLikes(likes);
   if (btnEl) { const liked = i < 0; btnEl.classList.toggle('liked', liked); btnEl.textContent = liked ? '♥' : '♡'; }
   updateLikeChip();
   if (view === 'likes') renderLikes();
 }
+/* lagu dianggap FULL kalau ada stream mp3 (Audius) atau id SoundCloud
+   (stream-nya di-resolve fresh pas diputar) */
+const hasFull = it => !!(it && (it.fullUrl || it.scId));
 
 /* ---------- render hasil ---------- */
 function renderRows(items) {
@@ -221,6 +235,7 @@ function renderRows(items) {
     '<img src="' + esc(it.cover) + '" alt="" loading="lazy">' +
     '<span class="meta"><span class="tt">' + esc(it.title) + '</span>' +
     '<span class="ar" style="display:block">' + esc(it.artists) + (it.album ? ' — ' + esc(it.album) : '') + '</span></span>' +
+    (hasFull(it) ? '<span class="badge-full">FULL</span>' : '<span class="badge-pv">30 dtk</span>') +
     '<span class="dur">' + fmt(it.duration) + '</span>' +
     '<span class="heart' + (isLiked(it) ? ' liked' : '') + '" data-heart="' + i + '">' + (isLiked(it) ? '♥' : '♡') + '</span>' +
     '<span class="eq"><i></i><i></i><i></i></span></button>').join('');
@@ -254,6 +269,46 @@ resultsBox.addEventListener('click', e => {
 });
 
 /* ---------- pencarian ---------- */
+/* normalisasi judul/artis buat nyocokin Deezer <-> Audius */
+function norm(s) {
+  return (s || '').toLowerCase()
+    .replace(/\([^)]*\)/g, ' ')
+    .replace(/\[[^\]]*\]/g, ' ')
+    .replace(/[-–—]/g, ' ')
+    .replace(/[^a-z0-9 ]/g, ' ')
+    .replace(/\b(official video|official audio|official music video|music video|lyric video|lirik|lyrics|audio|video|official|remaster|remastered|acoustic|live|cover|128kbps|320kbps|feat|ft|hd|4k)\b/g, ' ')
+    .replace(/\s+/g, ' ').trim();
+}
+/* cari trek full (SoundCloud / Audius) yang cocok buat satu hasil Deezer;
+   null kalau nggak ada. bentuk item kedua sumber sama: title, artist,
+   verified, duration (detik), stream. */
+function matchFull(dzItem, fullItems) {
+  const t = norm(dzItem.title), a = norm(dzItem.artists);
+  if (!t) return null;
+  /* versi instrumental/karaoke/cover/slowed/live jangan sampai ketukar
+     sama versi studio asli */
+  const hasMark = (s, w) => new RegExp('\\b' + w + '\\b').test((s || '').toLowerCase().replace(/[^a-z0-9 ]/g, ' '));
+  const cands = fullItems.filter(x => {
+    if (!x || x.duration < 60) return false;
+    if (['instrumental', 'karaoke', 'cover', 'slowed', 'sped up', 'live'].some(w => hasMark(dzItem.title, w) !== hasMark(x.title, w))) return false;
+    const xt = norm(x.title), xa = norm(x.artist);
+    if (!xt) return false;
+    const titleOk = xt === t ||
+      (t.length >= 6 && xt.indexOf(t) !== -1) ||
+      (xt.length >= 6 && t.indexOf(xt) !== -1);
+    if (!titleOk) return false;
+    const artOk = !a || !xa || xa === a ||
+      xa.indexOf(a) !== -1 || a.indexOf(xa) !== -1 ||
+      (a.length >= 4 && xt.indexOf(a) !== -1);
+    return artOk;
+  });
+  /* urutan: akun terverifikasi dulu, lalu durasi paling dekat sama durasi
+     resmi Deezer (bootleg/slowed-reverb biasanya lebih panjang, jadi
+     jangan pilih yang paling panjang) */
+  cands.sort((p, q) => ((q.verified ? 1 : 0) - (p.verified ? 1 : 0)) ||
+    (Math.abs(p.duration - (dzItem.duration || 0)) - Math.abs(q.duration - (dzItem.duration || 0))));
+  return cands[0] || null;
+}
 async function doSearch(q) {
   q = (q || '').trim();
   if (!q) return;
@@ -263,8 +318,22 @@ async function doSearch(q) {
   document.getElementById('resTitle').textContent = 'Hasil buat "' + q + '"';
   resultsBox.innerHTML = '<p class="empty">⏳ lagi nyari…</p>';
   try {
+    const auP = getJSON(WORKER + '/?au=' + encodeURIComponent(q)).catch(() => null);
+    const scP = getJSON(WORKER + '/?sc=' + encodeURIComponent(q)).catch(() => null);
     const j = await getJSON(WORKER + '/?dz=' + encodeURIComponent(q));
+    const aj = await auP;
+    const sj = await scP;
     const items = (j.items || []).filter(x => x.preview);
+    const auItems = (aj && aj.items) || [];
+    const scItems = (sj && sj.items) || [];
+    items.forEach(it => {
+      /* prioritas: SoundCloud full dulu (katalog paling lengkap),
+         baru Audius full, terakhir preview 30 detik */
+      const msc = matchFull(it, scItems);
+      if (msc) { it.fullUrl = msc.stream; it.fullSource = 'sc'; it.scId = msc.id; return; }
+      const mau = matchFull(it, auItems);
+      if (mau) { it.fullUrl = mau.stream; it.fullSource = 'au'; }
+    });
     if (!items.length) {
       lastResults = []; queue = []; curIdx = -1;
       resultsBox.innerHTML = '<p class="empty">nggak ketemu. coba kata kunci lain ya.</p>';
@@ -272,27 +341,94 @@ async function doSearch(q) {
     }
     lastResults = items; queue = items; curIdx = -1;
     renderRows(items);
+    topUpFull(items);
   } catch (err) {
     resultsBox.innerHTML = '<p class="empty">❌ nggak bisa terhubung, coba lagi.</p>';
   }
+}
+/* cari versi full per lagu (maks. 8 lagu pertama yang belum FULL):
+   satu ?sc= + satu ?au= per lagu ("judul + artis") — SoundCloud dulu,
+   baru Audius. hasilnya ditempel ke barisnya begitu ketemu, tanpa nunggu.
+   Gagal = tetap preview, nggak ngerusak apa-apa. */
+async function topUpFull(items) {
+  const todo = items.filter(it => !hasFull(it)).slice(0, 8);
+  if (!todo.length) return;
+  await Promise.all(todo.map(async it => {
+    try {
+      const q1 = encodeURIComponent((it.title + ' ' + it.artists).slice(0, 120));
+      const [sj, aj] = await Promise.all([
+        getJSON(WORKER + '/?sc=' + q1).catch(() => null),
+        getJSON(WORKER + '/?au=' + q1).catch(() => null),
+      ]);
+      const msc = matchFull(it, (sj && sj.items) || []);
+      if (msc) { it.fullUrl = msc.stream; it.fullSource = 'sc'; it.scId = msc.id; return; }
+      const mau = matchFull(it, (aj && aj.items) || []);
+      if (mau) { it.fullUrl = mau.stream; it.fullSource = 'au'; }
+    } catch (e) { /* abaikan, tetap preview */ }
+  }));
+  if (view === 'search' && queue === items && items.some(it => hasFull(it))) renderRows(items);
 }
 document.getElementById('searchBtn').onclick = () => doSearch(document.getElementById('q').value);
 document.getElementById('q').addEventListener('keydown', e => { if (e.key === 'Enter') doSearch(e.target.value); });
 document.querySelectorAll('[data-q]').forEach(c => c.addEventListener('click', () => { document.getElementById('q').value = c.getAttribute('data-q'); doSearch(c.getAttribute('data-q')); }));
 document.getElementById('likesChip').onclick = renderLikes;
 
-/* ---------- pemutar (cuplikan 30 detik) ---------- */
-function playIdx(i) {
+/* ---------- pemutar (lagu full kalau ada, kalau nggak preview 30 detik) ---------- */
+let hls = null; /* instance hls.js aktif (desktop non-Safari) */
+let scRetried = false;
+/* pasang sumber audio ke <audio>: HLS (SoundCloud) pakai hls.js kalau
+   browser tidak bisa native (Safari bisa native), mp3 langsung. */
+function attachSrc(url) {
+  if (hls) { try { hls.destroy(); } catch (e) {} hls = null; }
+  const isHls = /\.m3u8(\?|$)/i.test(url);
+  if (!isHls) { au.src = url; return 'mp3'; }
+  if (au.canPlayType('application/vnd.apple.mpegurl')) { au.src = url; return 'native'; }
+  if (window.Hls && Hls.isSupported()) {
+    hls = new Hls();
+    hls.loadSource(url);
+    hls.attachMedia(au);
+    return 'hls';
+  }
+  return null;
+}
+/* resolve ulang stream SoundCloud dari id lagu (url bertanda tangan
+   kedaluwarsa ~2-3 jam, jadi lagu yang disimpan di Playlist Saya
+   selalu di-resolve fresh pas mau diputar) */
+async function resolveSc(it) {
+  try {
+    const j = await getJSON(WORKER + '/?sc=' + encodeURIComponent((it.title + ' ' + it.artists).slice(0, 120)));
+    const items = (j && j.items) || [];
+    let m = it.scId ? items.find(x => x.id === it.scId) : null;
+    if (!m) m = matchFull(it, items);
+    return m ? m.stream : null;
+  } catch (e) { return null; }
+}
+async function playIdx(i) {
   if (i < 0 || i >= queue.length) return;
   curIdx = i; curTrack = queue[i];
-  au.src = curTrack.preview;
-  au.play().catch(() => {});
+  scRetried = false;
+  let url = null;
+  let isFull = hasFull(curTrack);
+  if (curTrack.fullSource === 'sc' && !curTrack.fullUrl) {
+    /* dari Playlist Saya: stream tidak disimpan, resolve fresh dulu */
+    url = await resolveSc(curTrack);
+    if (url) curTrack.fullUrl = url; /* cache di memori sesi ini saja */
+    else isFull = false;
+  }
+  if (!url) url = (isFull && curTrack.fullUrl) ? curTrack.fullUrl : curTrack.preview;
+  let how = attachSrc(url);
+  if (how === null) { /* browser tidak bisa HLS: jatuh ke preview */
+    url = curTrack.preview; isFull = false;
+    how = attachSrc(url);
+  }
+  if (how === 'hls' && hls) hls.on(Hls.Events.MANIFEST_PARSED, () => au.play().catch(() => {}));
+  else au.play().catch(() => {});
   document.getElementById('playerBar').style.display = 'block';
   document.getElementById('pArt').src = curTrack.cover || '';
   document.getElementById('pTitle').textContent = curTrack.title;
   document.getElementById('pArtist').textContent = curTrack.artists;
-  document.getElementById('tEnd').textContent = '0:30';
-  document.getElementById('previewNote').textContent = '🎧 Preview 30 detik';
+  document.getElementById('tEnd').textContent = isFull ? fmt(curTrack.duration) : '0:30';
+  document.getElementById('previewNote').textContent = isFull ? '✅ Lagu full' : '🎧 Preview 30 detik';
   setDynColor(curTrack.cover);
   markPlaying();
   if ('mediaSession' in navigator) {
@@ -306,6 +442,15 @@ function playIdx(i) {
 au.addEventListener('play', () => { playBtn.textContent = '⏸'; });
 au.addEventListener('pause', () => { playBtn.textContent = '▶'; });
 au.addEventListener('ended', () => { if (curIdx + 1 < queue.length) playIdx(curIdx + 1); else playBtn.textContent = '▶'; });
+/* stream SoundCloud kedaluwarsa di tengah sesi: resolve ulang sekali, lalu mainkan lagi */
+au.addEventListener('error', () => {
+  if (curTrack && curTrack.fullSource === 'sc' && !scRetried) {
+    scRetried = true;
+    resolveSc(curTrack).then(u => {
+      if (u) { curTrack.fullUrl = u; attachSrc(u); au.play().catch(() => {}); }
+    });
+  }
+});
 au.addEventListener('loadedmetadata', () => { if (au.duration && isFinite(au.duration)) document.getElementById('tEnd').textContent = fmt(au.duration); });
 au.addEventListener('timeupdate', () => {
   document.getElementById('tNow').textContent = fmt(au.currentTime);
