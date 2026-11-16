@@ -1,0 +1,483 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="color-scheme" content="light dark" />
+    <link rel="icon" href="data:," />
+    <title>Jadwal Posting Shopee Affiliate</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700;800&family=IBM+Plex+Mono:wght@500;600;700&display=swap" rel="stylesheet" />
+    <style>
+      button, [role="button"], select, summary, input:not([type="checkbox"], [type="radio"]) { min-height: 2rem; }
+
+      :root {
+        --bg: #f4f4f1;
+        --surface: #ffffff;
+        --surface-2: #ececea;
+        --ink: #1c1a17;
+        --ink-soft: #5c574f;
+        --line: #ddd9d2;
+        --accent: #ee4d2d;
+        --accent-ink: #c93a1e;
+        --accent-soft: #fdeee9;
+        --green: #1e7d46;
+        --green-soft: #e5f3ea;
+        --amber: #9a6a00;
+        --amber-soft: #fbf0d3;
+        --gray-soft: #efeeeb;
+        --shadow: 0 1px 2px rgba(28,26,23,.06), 0 8px 24px rgba(28,26,23,.06);
+      }
+      @media (prefers-color-scheme: dark) {
+        :root {
+          --bg: #131110;
+          --surface: #1d1a17;
+          --surface-2: #26221e;
+          --ink: #f2ede6;
+          --ink-soft: #b3aa9d;
+          --line: #3a352f;
+          --accent: #ff6a4d;
+          --accent-ink: #ff8a70;
+          --accent-soft: #3a2019;
+          --green: #4cc07c;
+          --green-soft: #173325;
+          --amber: #e0aa3e;
+          --amber-soft: #3a2d10;
+          --gray-soft: #26221e;
+          --shadow: 0 1px 2px rgba(0,0,0,.4), 0 8px 24px rgba(0,0,0,.35);
+        }
+      }
+
+      * { box-sizing: border-box; }
+      body {
+        margin: 0;
+        background: var(--bg);
+        color: var(--ink);
+        font-family: "Archivo", system-ui, sans-serif;
+        line-height: 1.5;
+        -webkit-font-smoothing: antialiased;
+      }
+      .mono { font-family: "IBM Plex Mono", ui-monospace, monospace; }
+
+      .wrap { max-width: 880px; margin: 0 auto; padding: 28px 18px 56px; }
+
+      /* ---------- Header / clock board ---------- */
+      .board {
+        background: var(--ink);
+        color: var(--bg);
+        border-radius: 14px;
+        padding: 26px 26px 22px;
+        box-shadow: var(--shadow);
+      }
+      @media (prefers-color-scheme: dark) {
+        .board { background: #241f1a; color: var(--ink); border: 1px solid var(--line); }
+      }
+      .board h1 {
+        margin: 0 0 4px;
+        font-size: clamp(26px, 5.4vw, 38px);
+        font-weight: 800;
+        letter-spacing: -0.02em;
+        line-height: 1.1;
+      }
+      .board .sub { margin: 0; color: inherit; opacity: .72; font-size: 15px; max-width: 52ch; }
+      .board-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 14px;
+        margin-top: 22px;
+      }
+      @media (max-width: 560px) { .board-grid { grid-template-columns: 1fr; } }
+      .board-cell {
+        border: 1px solid rgba(128,120,108,.45);
+        border-radius: 10px;
+        padding: 14px 16px;
+      }
+      .board-cell .label {
+        font-size: 11px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase; opacity: .65; margin: 0 0 4px;
+      }
+      .board-cell .big { font-size: clamp(26px, 6vw, 34px); font-weight: 700; line-height: 1.05; }
+      .board-cell .note { font-size: 13px; opacity: .72; margin-top: 4px; }
+      .live-dot {
+        display: inline-block; width: 8px; height: 8px; border-radius: 50%;
+        background: var(--accent); margin-right: 7px; vertical-align: 2px;
+        animation: pulse 1.6s ease-in-out infinite;
+      }
+      @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: .3; } }
+      @media (prefers-reduced-motion: reduce) { .live-dot { animation: none; } }
+
+      /* ---------- Sections ---------- */
+      section { margin-top: 34px; }
+      h2 {
+        font-size: 13px; font-weight: 700; letter-spacing: .14em; text-transform: uppercase;
+        color: var(--ink-soft); margin: 0 0 12px;
+        display: flex; align-items: center; gap: 10px;
+      }
+      h2::after { content: ""; flex: 1; height: 1px; background: var(--line); }
+
+      .card {
+        background: var(--surface);
+        border: 1px solid var(--line);
+        border-radius: 14px;
+        box-shadow: var(--shadow);
+        padding: 22px;
+      }
+      .card + .card { margin-top: 14px; }
+
+      .card-head { display: flex; flex-wrap: wrap; align-items: flex-start; gap: 10px 14px; }
+      .card-head h3 { margin: 0; font-size: 21px; font-weight: 800; letter-spacing: -0.01em; line-height: 1.2; }
+      .badge {
+        font-size: 12px; font-weight: 700; padding: 4px 10px; border-radius: 999px; white-space: nowrap;
+      }
+      .badge-on { background: var(--green-soft); color: var(--green); }
+      .badge-off { background: var(--gray-soft); color: var(--ink-soft); }
+      .badge-main { background: var(--accent-soft); color: var(--accent-ink); }
+      .card-desc { color: var(--ink-soft); font-size: 15px; margin: 8px 0 0; max-width: 62ch; }
+
+      /* Platform rows */
+      .platforms { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 18px; }
+      @media (max-width: 640px) { .platforms { grid-template-columns: 1fr; } }
+      .platform {
+        background: var(--surface-2);
+        border-radius: 10px;
+        padding: 13px 15px;
+      }
+      .platform .p-name { font-weight: 700; font-size: 15px; display: flex; align-items: center; gap: 8px; }
+      .platform .p-name svg { flex: none; }
+      .platform .p-handle { color: var(--ink-soft); font-size: 13px; margin-top: 2px; word-break: break-word; }
+
+      /* Slot chips */
+      .slots { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 18px; align-items: center; }
+      .slots .slots-label { font-size: 13px; font-weight: 600; color: var(--ink-soft); margin-right: 2px; }
+      .slot {
+        font-family: "IBM Plex Mono", monospace; font-weight: 600; font-size: 15px;
+        border: 1.5px solid var(--line); border-radius: 8px; padding: 7px 12px; background: var(--surface);
+      }
+      .slot.next { border-color: var(--accent); background: var(--accent-soft); color: var(--accent-ink); }
+      .slot .tag { font-family: "Archivo", sans-serif; font-size: 10px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase; margin-left: 6px; }
+
+      /* Checklist */
+      ul.checks { list-style: none; margin: 18px 0 0; padding: 0; display: grid; gap: 9px; }
+      ul.checks li { display: flex; gap: 10px; font-size: 15px; align-items: flex-start; }
+      ul.checks li svg { flex: none; margin-top: 3px; color: var(--green); }
+
+      /* One-hour pattern strip */
+      .hour-strip { margin-top: 20px; }
+      .hour-strip .hs-label { font-size: 13px; font-weight: 600; color: var(--ink-soft); margin: 0 0 8px; }
+      .hs-track {
+        position: relative; height: 44px; border-radius: 8px;
+        background: var(--surface-2);
+      }
+      .hs-mark { position: absolute; top: 0; bottom: 0; width: 0; }
+      .hs-mark::before {
+        content: ""; position: absolute; left: -1px; top: 8px; bottom: 8px; width: 2px; border-radius: 2px;
+      }
+      .hs-mark.post::before { background: var(--accent); }
+      .hs-mark.like::before { background: var(--ink-soft); opacity: .45; }
+      .hs-mark span {
+        position: absolute; top: -1px; transform: translateX(-50%);
+        font-family: "IBM Plex Mono", monospace; font-size: 10px; font-weight: 600; white-space: nowrap;
+      }
+      .hs-mark.post span { color: var(--accent-ink); }
+      .hs-mark.like span { color: var(--ink-soft); }
+      .hs-legend { display: flex; gap: 18px; margin-top: 8px; font-size: 12px; color: var(--ink-soft); flex-wrap: wrap; }
+      .hs-legend i { display: inline-block; width: 14px; height: 3px; border-radius: 2px; vertical-align: middle; margin-right: 6px; }
+      .hs-legend .lg-post { background: var(--accent); }
+      .hs-legend .lg-like { background: var(--ink-soft); opacity: .55; }
+
+      /* Daily table -> rows */
+      .rows { display: grid; gap: 0; }
+      .row {
+        display: grid; grid-template-columns: 92px 1fr auto; gap: 14px; align-items: center;
+        padding: 14px 2px; border-bottom: 1px solid var(--line);
+      }
+      .row:last-child { border-bottom: none; }
+      .row .time { font-family: "IBM Plex Mono", monospace; font-weight: 700; font-size: 17px; }
+      .row .what { font-weight: 600; font-size: 15px; }
+      .row .detail { color: var(--ink-soft); font-size: 13px; margin-top: 1px; }
+      .row .freq { font-size: 12px; font-weight: 700; color: var(--ink-soft); background: var(--gray-soft); padding: 4px 10px; border-radius: 999px; white-space: nowrap; }
+      @media (max-width: 480px) {
+        .row { grid-template-columns: 76px 1fr; }
+        .row .freq { display: none; }
+      }
+
+      .off-card { opacity: .85; }
+      .off-list { list-style: none; margin: 14px 0 0; padding: 0; display: grid; gap: 10px; }
+      .off-list li { display: flex; gap: 10px; align-items: flex-start; font-size: 15px; }
+      .off-list .x {
+        flex: none; width: 20px; height: 20px; border-radius: 50%; margin-top: 1px;
+        background: var(--gray-soft); color: var(--ink-soft);
+        display: grid; place-items: center; font-size: 12px; font-weight: 700;
+      }
+      .off-list .why { color: var(--ink-soft); font-size: 13px; display: block; }
+
+      footer { margin-top: 36px; color: var(--ink-soft); font-size: 13px; text-align: center; }
+    </style>
+  </head>
+  <body>
+    <nav style="background:#e53935;padding:10px 16px;display:flex;align-items:center;gap:16px;flex-wrap:wrap;font-family:Archivo,sans-serif">
+      <a href="/" style="color:#fff;font-weight:800;text-decoration:none;font-size:20px">4EVER <span style="color:#ff8a80">&#10084;</span></a>
+      <a href="/" style="color:#fff;text-decoration:none">Beranda</a>
+      <a href="/katalog.html" style="color:#fff;text-decoration:none">Katalog</a>
+      <span style="color:#ffcdd2;margin-left:auto;font-size:13px">Jadwal Posting</span>
+    </nav>
+    <div class="wrap">
+
+      <!-- ======= Header board ======= -->
+      <header class="board">
+        <h1>Jadwal Posting Shopee Affiliate</h1>
+        <p class="sub">Semua jadwal otomatis yang lagi jalan. Aturan utamanya satu: tiap jadwal posting, produk yang <strong>sama</strong> tayang barengan di semua media.</p>
+        <div class="board-grid">
+          <div class="board-cell">
+            <p class="label"><span class="live-dot"></span>Sekarang — WIB</p>
+            <div class="big mono" id="clock">--:--:--</div>
+            <div class="note" id="dateline">Memuat tanggal…</div>
+          </div>
+          <div class="board-cell">
+            <p class="label">Run posting berikutnya</p>
+            <div class="big mono" id="countdown">--:--</div>
+            <div class="note" id="nextnote">Menghitung run berikutnya…</div>
+          </div>
+        </div>
+      </header>
+
+      <!-- ======= Main schedule ======= -->
+      <section>
+        <h2>Jadwal utama</h2>
+
+        <article class="card">
+          <div class="card-head">
+            <h3>Posting Promo Shopee — Samaan</h3>
+            <span class="badge badge-main">Tiap 15 menit</span>
+            <span class="badge badge-on">Aktif</span>
+          </div>
+          <p class="card-desc">Satu run, satu produk yang sama, diposting barengan ke tiga media sekaligus. Ini job gabungan yang menggantikan cron Facebook dan WhatsApp yang dulu jalan sendiri-sendiri.</p>
+
+          <div class="platforms">
+            <div class="platform">
+              <div class="p-name">
+                <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M8.5 9.2c1.2-1 2.6-1.4 4-1.2 2 .3 3.4 1.7 3.6 3.6.2 2.2-1.2 4-3.3 4.4-1.9.4-3.8-.5-4.6-2.2"/></svg>
+                Threads
+              </div>
+              <div class="p-handle">@cariuang.918281</div>
+            </div>
+            <div class="platform">
+              <div class="p-name">
+                <svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor"><path d="M13.5 21v-7h2.4l.4-3h-2.8V9.1c0-.9.3-1.5 1.6-1.5h1.3V4.9c-.3 0-1.1-.1-2-.1-2 0-3.4 1.2-3.4 3.5V11H8.5v3H11v7h2.5z"/></svg>
+                Facebook
+              </div>
+              <div class="p-handle">@Apisuuuu</div>
+            </div>
+            <div class="platform">
+              <div class="p-name">
+                <svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor"><path d="M12 3a9 9 0 0 0-7.8 13.5L3 21l4.6-1.2A9 9 0 1 0 12 3zm0 16.4c-1.5 0-2.9-.4-4.1-1.2l-.3-.2-2.7.7.7-2.6-.2-.3A7.4 7.4 0 1 1 12 19.4zm4.1-5.4c-.2-.1-1.3-.7-1.5-.7-.2-.1-.4-.1-.6.1l-.8 1c-.1.2-.3.2-.5.1a6 6 0 0 1-3-2.6c-.2-.4.2-.4.6-1.3a.5.5 0 0 0 0-.5c-.1-.2-.6-1.4-.8-1.9-.2-.5-.4-.4-.6-.4h-.5c-.2 0-.5.1-.7.3-.2.3-.9.9-.9 2.2s.9 2.5 1.1 2.7c.1.2 1.9 2.9 4.6 4 .6.3 1.1.4 1.5.6.6.2 1.2.2 1.6.1.5-.1 1.3-.6 1.5-1.2.2-.6.2-1.1.1-1.2 0-.1-.2-.2-.4-.3z"/></svg>
+                Channel WhatsApp
+              </div>
+              <div class="p-handle">“Promo &amp; Diskon Shopee”</div>
+            </div>
+          </div>
+
+          <div class="slots" id="slots">
+            <span class="slots-label">Menit posting tiap jam:</span>
+            <span class="slot" data-min="4">:04</span>
+            <span class="slot" data-min="19">:19</span>
+            <span class="slot" data-min="34">:34</span>
+            <span class="slot" data-min="49">:49</span>
+          </div>
+
+          <ul class="checks">
+            <li>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+              <span><strong>1 produk yang sama</strong> ke Threads + Facebook + channel WA dalam satu run — tidak ada lagi media yang ketinggalan.</span>
+            </li>
+            <li>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+              <span>Di Threads, tiap run sekalian <strong>komen 1×</strong> dan <strong>like 5–10 postingan</strong>.</span>
+            </li>
+            <li>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"/></svg>
+              <span>Berarti <strong>4× posting per jam</strong> di tiap media, sepanjang hari.</span>
+            </li>
+          </ul>
+        </article>
+
+        <article class="card">
+          <div class="card-head">
+            <h3>Engagement Threads</h3>
+            <span class="badge badge-main">Tiap 10 menit</span>
+            <span class="badge badge-on">Aktif</span>
+          </div>
+          <p class="card-desc">Khusus like di Threads — tanpa posting, tanpa komen. Jalan terus di sela-sela jadwal posting utama biar akun tetap aktif.</p>
+
+          <div class="hour-strip">
+            <p class="hs-label">Pola dalam 1 jam (kedua jadwal jalan bersamaan):</p>
+            <div class="hs-track" id="hstrack"></div>
+            <div class="hs-legend">
+              <span><i class="lg-post"></i>Posting promo (Threads + FB + WA)</span>
+              <span><i class="lg-like"></i>Like Threads</span>
+            </div>
+          </div>
+        </article>
+      </section>
+
+      <!-- ======= Other schedules ======= -->
+      <section>
+        <h2>Jadwal lain yang jalan</h2>
+        <div class="card">
+          <div class="rows">
+            <div class="row">
+              <div class="time">04:00</div>
+              <div>
+                <div class="what">Alarm pagi via WhatsApp</div>
+                <div class="detail">“Bangun woiii, ada rezeki yang harus dijemput!” — dikirim 4× beruntun</div>
+              </div>
+              <span class="freq">Tiap hari</span>
+            </div>
+            <div class="row">
+              <div class="time">07:00</div>
+              <div>
+                <div class="what">Alarm pagi via WhatsApp</div>
+                <div class="detail">Pengingat kedua, pesan yang sama, 4× beruntun</div>
+              </div>
+              <span class="freq">Tiap hari</span>
+            </div>
+            <div class="row">
+              <div class="time">09:16</div>
+              <div>
+                <div class="what">Pantau hadiah + market Sidecoo</div>
+                <div class="detail">Cek hadiah dan pergerakan market Sidecoo</div>
+              </div>
+              <span class="freq">Tiap hari</span>
+            </div>
+            <div class="row">
+              <div class="time">10:16</div>
+              <div>
+                <div class="what">Agent Cards</div>
+                <div class="detail">Run harian Agent Cards</div>
+              </div>
+              <span class="freq">Tiap hari</span>
+            </div>
+            <div class="row">
+              <div class="time">:00</div>
+              <div>
+                <div class="what">Pantau BNBbaby</div>
+                <div class="detail">Pengecekan BNBbaby di awal tiap jam</div>
+              </div>
+              <span class="freq">Tiap jam</span>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- ======= Disabled ======= -->
+      <section>
+        <h2>Sudah dimatikan</h2>
+        <div class="card off-card">
+          <div class="card-head">
+            <h3>Cron lama yang pisah-pisah</h3>
+            <span class="badge badge-off">Nonaktif</span>
+          </div>
+          <ul class="off-list">
+            <li>
+              <span class="x">✕</span>
+              <span><strong>Cron posting Facebook sendiri</strong>
+              <span class="why">Dimatikan — sekarang ikut job gabungan “Posting Promo Shopee — Samaan”.</span></span>
+            </li>
+            <li>
+              <span class="x">✕</span>
+              <span><strong>Cron posting channel WA sendiri</strong>
+              <span class="why">Dimatikan — sekarang ikut job gabungan yang sama, biar postingnya selalu barengan.</span></span>
+            </li>
+          </ul>
+        </div>
+      </section>
+
+      <footer>Semua jam dalam WIB (Asia/Jakarta) · Senin, 16 November 2026</footer>
+    </div>
+
+    <script>
+      (function () {
+        var SLOT_MINUTES = [4, 19, 34, 49];
+
+        function jakartaNow() {
+          // Current time in Asia/Jakarta regardless of the viewer's timezone.
+          var now = new Date();
+          var parts = new Intl.DateTimeFormat("en-US", {
+            timeZone: "Asia/Jakarta",
+            hour: "2-digit", minute: "2-digit", second: "2-digit",
+            hourCycle: "h23"
+          }).formatToParts(now);
+          var h = 0, m = 0, s = 0;
+          parts.forEach(function (p) {
+            if (p.type === "hour") h = parseInt(p.value, 10) % 24;
+            if (p.type === "minute") m = parseInt(p.value, 10);
+            if (p.type === "second") s = parseInt(p.value, 10);
+          });
+          return { h: h, m: m, s: s };
+        }
+
+        function pad(n) { return (n < 10 ? "0" : "") + n; }
+
+        function nextSlot(t) {
+          for (var i = 0; i < SLOT_MINUTES.length; i++) {
+            if (t.m < SLOT_MINUTES[i]) {
+              return { min: SLOT_MINUTES[i], hour: t.h, secsLeft: (SLOT_MINUTES[i] - t.m) * 60 - t.s };
+            }
+          }
+          return { min: SLOT_MINUTES[0], hour: (t.h + 1) % 24, secsLeft: (60 - t.m + SLOT_MINUTES[0]) * 60 - t.s };
+        }
+
+        var clockEl = document.getElementById("clock");
+        var cdEl = document.getElementById("countdown");
+        var noteEl = document.getElementById("nextnote");
+        var dateEl = document.getElementById("dateline");
+        var slotEls = document.querySelectorAll("#slots .slot");
+
+        var dayFmt = new Intl.DateTimeFormat("id-ID", {
+          timeZone: "Asia/Jakarta", weekday: "long", day: "numeric", month: "long", year: "numeric"
+        });
+
+        function tick() {
+          var t = jakartaNow();
+          clockEl.textContent = pad(t.h) + ":" + pad(t.m) + ":" + pad(t.s);
+          dateEl.textContent = dayFmt.format(new Date());
+
+          var nx = nextSlot(t);
+          var mm = Math.floor(nx.secsLeft / 60), ss = nx.secsLeft % 60;
+          cdEl.textContent = pad(nx.hour) + ":" + pad(nx.min) + " WIB";
+          noteEl.textContent = "±" + mm + " menit " + ss + " detik lagi — Threads + Facebook + channel WA barengan";
+
+          slotEls.forEach(function (el) {
+            var isNext = parseInt(el.getAttribute("data-min"), 10) === nx.min;
+            el.classList.toggle("next", isNext);
+            var tag = el.querySelector(".tag");
+            if (isNext && !tag) {
+              tag = document.createElement("span");
+              tag.className = "tag";
+              tag.textContent = "berikutnya";
+              el.appendChild(tag);
+            } else if (!isNext && tag) {
+              tag.remove();
+            }
+          });
+        }
+        tick();
+        setInterval(tick, 1000);
+
+        // One-hour pattern strip: posting at :04/:19/:34/:49, likes every 10 min.
+        var track = document.getElementById("hstrack");
+        function addMark(min, cls, label) {
+          var d = document.createElement("div");
+          d.className = "hs-mark " + cls;
+          d.style.left = (min / 60 * 100) + "%";
+          var s = document.createElement("span");
+          s.textContent = label;
+          d.appendChild(s);
+          track.appendChild(d);
+        }
+        SLOT_MINUTES.forEach(function (min) { addMark(min, "post", ":" + pad(min)); });
+        [0, 10, 20, 30, 40, 50].forEach(function (min) { addMark(min, "like", ""); });
+      })();
+    </script>
+  </body>
+</html>
