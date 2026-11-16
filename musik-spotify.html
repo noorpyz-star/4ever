@@ -9,7 +9,7 @@
 <style>
   * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
   :root { --bg:#121212; --panel:#181818; --panel2:#282828; --txt:#fff; --sub:#b3b3b3; --green:#1ed760; --dynDark:#121212; }
-  body { font-family:-apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif; background:linear-gradient(180deg,var(--dynDark) 0%,var(--bg) 300px); color:var(--txt); min-height:100vh; padding:0 16px 170px; transition:background 1s ease; }
+  body { font-family:-apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif; background:linear-gradient(180deg,var(--dynDark) 0%,var(--bg) 62vh); color:var(--txt); min-height:100vh; padding:0 16px 170px; transition:background 1s ease; }
   .topbar { position:sticky; top:0; z-index:50; background:rgba(18,18,18,.92); backdrop-filter:blur(8px); -webkit-backdrop-filter:blur(8px); border-bottom:1px solid #2c2c2c; margin:0 -16px; }
   .topbar-in { max-width:620px; margin:0 auto; display:flex; align-items:center; gap:12px; padding:10px 16px; }
   .topbar nav { margin-left:auto; display:flex; gap:14px; overflow-x:auto; scrollbar-width:none; }
@@ -173,8 +173,15 @@ function tickJam() {
 }
 tickJam(); setInterval(tickJam, 1000);
 function applyDyn(rgb) {
-  if (!rgb) { document.documentElement.style.setProperty('--dynDark', '#121212'); return; }
-  document.documentElement.style.setProperty('--dynDark', 'rgb(' + Math.round(rgb[0] * .42) + ',' + Math.round(rgb[1] * .42) + ',' + Math.round(rgb[2] * .42) + ')');
+  const root = document.documentElement;
+  const bar = document.getElementById('playerBar');
+  const top = document.querySelector('.topbar');
+  if (!rgb) { root.style.setProperty('--dynDark', '#121212'); if (bar) bar.style.background = ''; if (top) top.style.background = ''; return; }
+  const dk = rgb.map(v => Math.round(v * .55));
+  const dk2 = rgb.map(v => Math.round(v * .32 + 18));
+  root.style.setProperty('--dynDark', 'rgb(' + dk.join(',') + ')');
+  if (bar) bar.style.background = 'rgb(' + dk2.join(',') + ')';
+  if (top) top.style.background = 'rgba(' + dk.join(',') + ',.88)';
 }
 function setDynColor(url) {
   if (!url) { applyDyn(null); return; }
@@ -185,9 +192,20 @@ function setDynColor(url) {
       const c = document.createElement('canvas'); const S = 24; c.width = S; c.height = S;
       const x = c.getContext('2d'); x.drawImage(img, 0, 0, S, S);
       const d = x.getImageData(0, 0, S, S).data;
-      let r = 0, g = 0, b = 0, n = 0;
-      for (let i = 0; i < d.length; i += 16) { r += d[i]; g += d[i + 1]; b += d[i + 2]; n++; }
-      applyDyn([Math.round(r / n), Math.round(g / n), Math.round(b / n)]);
+      let r = 0, g = 0, b = 0, w = 0, ar = 0, ag = 0, ab = 0, n = 0;
+      for (let i = 0; i < d.length; i += 16) {
+        const R = d[i], G = d[i + 1], B = d[i + 2];
+        const mx = Math.max(R, G, B), mn = Math.min(R, G, B);
+        const sat = mx ? (mx - mn) / mx : 0;
+        const wt = sat * sat + 0.15;
+        r += R * wt; g += G * wt; b += B * wt; w += wt;
+        ar += R; ag += G; ab += B; n++;
+      }
+      /* warna paling hidup (berbobot saturasi); kalau cover nyaris abu-abu, pakai rata-rata */
+      const vivid = [r / w, g / w, b / w];
+      const mx2 = Math.max(vivid[0], vivid[1], vivid[2]), mn2 = Math.min(vivid[0], vivid[1], vivid[2]);
+      const vsat = mx2 ? (mx2 - mn2) / mx2 : 0;
+      applyDyn(vsat > 0.18 ? vivid.map(v => Math.round(v)) : [Math.round(ar / n), Math.round(ag / n), Math.round(ab / n)]);
     } catch (e) { applyDyn(null); }
   };
   img.onerror = () => applyDyn(null);
@@ -501,6 +519,16 @@ function tickLyrics() {
 }
 document.getElementById('lyricsBtn').onclick = openLyrics;
 document.getElementById('lyrClose').onclick = () => { document.getElementById('lyrPanel').style.display = 'none'; };
+/* geser ke atas di player = buka lirik, geser ke bawah di panel lirik = tutup */
+(function () {
+  let sy = 0, sx = 0, onCtl = false;
+  const bar = document.getElementById('playerBar');
+  bar.addEventListener('touchstart', e => { const t = e.changedTouches[0]; sy = t.clientY; sx = t.clientX; onCtl = !!e.target.closest('button, input, .bar'); }, { passive: true });
+  bar.addEventListener('touchend', e => { if (onCtl) return; const t = e.changedTouches[0]; const dy = t.clientY - sy, dx = t.clientX - sx; if (dy < -50 && Math.abs(dx) < 80) openLyrics(); }, { passive: true });
+  const panel = document.getElementById('lyrPanel');
+  panel.addEventListener('touchstart', e => { const t = e.changedTouches[0]; sy = t.clientY; sx = t.clientX; }, { passive: true });
+  panel.addEventListener('touchend', e => { const t = e.changedTouches[0]; const dy = t.clientY - sy, dx = t.clientX - sx; if (dy > 50 && Math.abs(dx) < 80) panel.style.display = 'none'; }, { passive: true });
+})();
 async function playIdx(i) {
   /* lagu tanpa versi full dilewati — tidak pernah diputar */
   while (i >= 0 && i < queue.length && !hasFull(queue[i])) i++;
