@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>2048 — Game Afis &amp; Dita</title>
+<style>
+  * { box-sizing: border-box; }
+  body { font-family: -apple-system, "Segoe UI", Roboto, Arial, sans-serif; margin: 0; background: #ffffff; color: #222; padding-bottom: 40px; }
+  .topbar { position:sticky; top:0; z-index:50; background:rgba(255,255,255,.95); backdrop-filter:blur(8px); -webkit-backdrop-filter:blur(8px); border-bottom:1px solid #eee; box-shadow:0 2px 10px rgba(0,0,0,.05); }
+  .topbar-in { max-width:640px; margin:0 auto; display:flex; align-items:center; gap:12px; padding:10px 16px; }
+  .tb-logo { font-weight:900; font-size:1rem; letter-spacing:.02em; text-decoration:none; background-image:linear-gradient(90deg,#e53935,#f9a825,#43a047); -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent; color:transparent; flex:none; }
+  .topbar nav { margin-left:auto; display:flex; gap:14px; overflow-x:auto; scrollbar-width:none; }
+  .topbar nav::-webkit-scrollbar { display:none; }
+  .topbar nav a { color:#666; text-decoration:none; font-size:.83rem; font-weight:600; white-space:nowrap; }
+  .topbar nav a:hover { color:#111; }
+  .topbar nav a.on { color:#e53935; }
+  .wrap { max-width: 480px; margin: 0 auto; padding: 16px; text-align: center; }
+  .back { display: inline-block; margin: 4px 0 10px; color: #e53935; text-decoration: none; font-weight: 700; font-size: 14px; }
+  h1 { font-size: 22px; margin: 4px 0 2px; }
+  .sub { color: #666; font-size: 13px; margin-bottom: 14px; }
+  .stats { display: flex; justify-content: center; gap: 12px; margin-bottom: 12px; }
+  .stat { background: #fff8e1; border: 1px solid #ffe082; border-radius: 12px; padding: 8px 16px; font-size: 14px; }
+  .stat b { color: #e53935; font-size: 18px; }
+  #papan { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; background: #f9a825; border-radius: 14px; padding: 8px; max-width: 400px; margin: 0 auto; touch-action: none; }
+  .kotak { aspect-ratio: 1; border-radius: 10px; background: #fffde7; display: flex; align-items: center; justify-content: center; font-size: 26px; font-weight: 800; color: #5d4037; }
+  .kotak[data-n="2"] { background: #fff9c4; }
+  .kotak[data-n="4"] { background: #ffecb3; }
+  .kotak[data-n="8"] { background: #ffcc80; color: #fff; }
+  .kotak[data-n="16"] { background: #ffb74d; color: #fff; }
+  .kotak[data-n="32"] { background: #ffa726; color: #fff; }
+  .kotak[data-n="64"] { background: #fb8c00; color: #fff; }
+  .kotak[data-n="128"] { background: #f4511e; color: #fff; font-size: 22px; }
+  .kotak[data-n="256"] { background: #e53935; color: #fff; font-size: 22px; }
+  .kotak[data-n="512"] { background: #d81b60; color: #fff; font-size: 22px; }
+  .kotak[data-n="1024"] { background: #8e24aa; color: #fff; font-size: 18px; }
+  .kotak[data-n="2048"] { background: #43a047; color: #fff; font-size: 18px; }
+  .dpad { display: grid; grid-template-columns: repeat(3, 64px); grid-template-rows: repeat(2, 56px); gap: 6px; justify-content: center; margin: 16px auto 8px; }
+  .dpad button { font-size: 24px; background: #f5f5f5; border: 1px solid #ddd; border-radius: 12px; cursor: pointer; }
+  .dpad button:active { background: #ffe082; }
+  .btn { font-size: 15px; padding: 11px 20px; border: none; border-radius: 999px; cursor: pointer; font-weight: 700; background: #e53935; color: #fff; margin-top: 8px; }
+  #msg { font-size: 17px; font-weight: 700; margin: 12px 0 4px; min-height: 24px; }
+  .hint { font-size: 12.5px; color: #888; }
+</style>
+</head>
+<body>
+<div class="topbar"><div class="topbar-in">
+  <a class="tb-logo" href="https://4ever.ai.id/">4EVER</a>
+  <nav>
+    <a href="https://4ever.ai.id/">Beranda</a>
+    <a href="https://4ever.ai.id/profil.html">Profil</a>
+    <a href="https://4ever.ai.id/musik-yt.html">Musik</a>
+    <a href="https://4ever.ai.id/tools.html">Tools</a>
+    <a href="https://4ever.ai.id/artikel.html">Artikel</a>
+    <a href="https://4ever.ai.id/tv-gratis.html">TV</a>
+    <a href="https://4ever.ai.id/berita.html">Berita</a>
+    <a href="https://4ever.ai.id/game-hub-afis-dita.html" class="on">Game</a>
+  </nav>
+</div></div>
+
+<div class="wrap">
+  <a class="back" href="game-hub-afis-dita.html">⬅ Kembali ke Hub</a>
+  <h1>🔢 2048</h1>
+  <p class="sub">Geser kotaknya, gabungkan angka yang sama. Sampai ke 2048, kamu menang!</p>
+  <div class="stats">
+    <div class="stat">Skor<br><b id="skor">0</b></div>
+    <div class="stat">Terbaik<br><b id="terbaik">0</b></div>
+  </div>
+  <div id="papan"></div>
+  <div id="msg">Geser untuk mulai!</div>
+  <div class="dpad">
+    <span></span><button data-arah="atas" aria-label="Atas">⬆️</button><span></span>
+    <button data-arah="kiri" aria-label="Kiri">⬅️</button><button data-arah="bawah" aria-label="Bawah">⬇️</button><button data-arah="kanan" aria-label="Kanan">➡️</button>
+  </div>
+  <button class="btn" id="btnBaru">🔄 Permainan Baru</button>
+  <p class="hint">Keyboard: tombol panah / WASD. HP: geser papan atau pakai tombol arah.</p>
+</div>
+
+<script>
+let grid, skor = 0, selesai = false, menangTampil = false;
+let terbaik = 0;
+try { terbaik = parseInt(localStorage.getItem("2048-terbaik") || "0", 10) || 0; } catch (e) {}
+document.getElementById("terbaik").textContent = terbaik;
+
+function baru() {
+  grid = Array.from({ length: 4 }, () => [0, 0, 0, 0]);
+  skor = 0; selesai = false; menangTampil = false;
+  document.getElementById("skor").textContent = "0";
+  document.getElementById("msg").textContent = "Geser untuk mulai!";
+  tambahAcak(); tambahAcak();
+  render();
+}
+function kosong() {
+  const k = [];
+  for (let y = 0; y < 4; y++) for (let x = 0; x < 4; x++) if (grid[y][x] === 0) k.push([y, x]);
+  return k;
+}
+function tambahAcak() {
+  const k = kosong();
+  if (!k.length) return;
+  const [y, x] = k[Math.floor(Math.random() * k.length)];
+  grid[y][x] = Math.random() < 0.9 ? 2 : 4;
+}
+function geserBaris(baris) {
+  const padat = baris.filter(v => v !== 0);
+  const hasil = [];
+  for (let i = 0; i < padat.length; i++) {
+    if (i + 1 < padat.length && padat[i] === padat[i + 1]) {
+      const g = padat[i] * 2;
+      hasil.push(g); skor += g;
+      i++;
+    } else hasil.push(padat[i]);
+  }
+  while (hasil.length < 4) hasil.push(0);
+  return hasil;
+}
+function gerak(ar) {
+  if (selesai) return;
+  const sebelum = JSON.stringify(grid);
+  for (let i = 0; i < 4; i++) {
+    let baris;
+    if (ar === "kiri") baris = grid[i];
+    else if (ar === "kanan") baris = grid[i].slice().reverse();
+    else if (ar === "atas") baris = [grid[0][i], grid[1][i], grid[2][i], grid[3][i]];
+    else baris = [grid[3][i], grid[2][i], grid[1][i], grid[0][i]];
+    const hasil = geserBaris(baris);
+    for (let j = 0; j < 4; j++) {
+      if (ar === "kiri") grid[i][j] = hasil[j];
+      else if (ar === "kanan") grid[i][3 - j] = hasil[j];
+      else if (ar === "atas") grid[j][i] = hasil[j];
+      else grid[3 - j][i] = hasil[j];
+    }
+  }
+  if (JSON.stringify(grid) === sebelum) return;
+  tambahAcak();
+  render();
+  document.getElementById("skor").textContent = skor;
+  if (skor > terbaik) {
+    terbaik = skor;
+    document.getElementById("terbaik").textContent = terbaik;
+    try { localStorage.setItem("2048-terbaik", String(terbaik)); } catch (e) {}
+  }
+  if (!menangTampil && grid.flat().includes(2048)) {
+    menangTampil = true;
+    document.getElementById("msg").textContent = "🎉 Kamu sampai 2048, MENANG! Bisa lanjut main.";
+  } else if (bisaGerak() === false) {
+    selesai = true;
+    document.getElementById("msg").textContent = "😢 Tidak ada langkah lagi. Skor akhir: " + skor;
+  }
+}
+function bisaGerak() {
+  if (kosong().length) return true;
+  for (let y = 0; y < 4; y++) for (let x = 0; x < 4; x++) {
+    if (x < 3 && grid[y][x] === grid[y][x + 1]) return true;
+    if (y < 3 && grid[y][x] === grid[y + 1][x]) return true;
+  }
+  return false;
+}
+function render() {
+  const p = document.getElementById("papan");
+  p.innerHTML = "";
+  grid.flat().forEach(v => {
+    const d = document.createElement("div");
+    d.className = "kotak";
+    if (v) d.dataset.n = v;
+    d.textContent = v || "";
+    p.appendChild(d);
+  });
+}
+document.getElementById("btnBaru").onclick = baru;
+document.querySelectorAll(".dpad button").forEach(b => {
+  b.onclick = () => gerak(b.dataset.arah);
+});
+document.addEventListener("keydown", e => {
+  const m = { ArrowUp: "atas", ArrowDown: "bawah", ArrowLeft: "kiri", ArrowRight: "kanan", w: "atas", s: "bawah", a: "kiri", d: "kanan", W: "atas", S: "bawah", A: "kiri", D: "kanan" };
+  if (m[e.key]) { gerak(m[e.key]); e.preventDefault(); }
+});
+let sx = 0, sy = 0;
+const papan = document.getElementById("papan");
+papan.addEventListener("touchstart", e => { sx = e.touches[0].clientX; sy = e.touches[0].clientY; e.preventDefault(); }, { passive: false });
+papan.addEventListener("touchend", e => {
+  const dx = e.changedTouches[0].clientX - sx, dy = e.changedTouches[0].clientY - sy;
+  if (Math.max(Math.abs(dx), Math.abs(dy)) < 20) return;
+  if (Math.abs(dx) > Math.abs(dy)) gerak(dx > 0 ? "kanan" : "kiri"); else gerak(dy > 0 ? "bawah" : "atas");
+  e.preventDefault();
+}, { passive: false });
+baru();
+</script>
+</body>
+</html>

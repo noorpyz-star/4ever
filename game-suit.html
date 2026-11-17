@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Suit Batu Gunting Kertas — Game Afis &amp; Dita</title>
+<style>
+  * { box-sizing: border-box; }
+  body { font-family: -apple-system, "Segoe UI", Roboto, Arial, sans-serif; margin: 0; background: #ffffff; color: #222; padding-bottom: 40px; }
+  .topbar { position:sticky; top:0; z-index:50; background:rgba(255,255,255,.95); backdrop-filter:blur(8px); -webkit-backdrop-filter:blur(8px); border-bottom:1px solid #eee; box-shadow:0 2px 10px rgba(0,0,0,.05); }
+  .topbar-in { max-width:640px; margin:0 auto; display:flex; align-items:center; gap:12px; padding:10px 16px; }
+  .tb-logo { font-weight:900; font-size:1rem; letter-spacing:.02em; text-decoration:none; background-image:linear-gradient(90deg,#e53935,#f9a825,#43a047); -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent; color:transparent; flex:none; }
+  .topbar nav { margin-left:auto; display:flex; gap:14px; overflow-x:auto; scrollbar-width:none; }
+  .topbar nav::-webkit-scrollbar { display:none; }
+  .topbar nav a { color:#666; text-decoration:none; font-size:.83rem; font-weight:600; white-space:nowrap; }
+  .topbar nav a:hover { color:#111; }
+  .topbar nav a.on { color:#e53935; }
+  .wrap { max-width: 480px; margin: 0 auto; padding: 16px; text-align: center; }
+  .back { display: inline-block; margin: 4px 0 10px; color: #e53935; text-decoration: none; font-weight: 700; font-size: 14px; }
+  h1 { font-size: 22px; margin: 4px 0 2px; }
+  .sub { color: #666; font-size: 13px; margin-bottom: 14px; }
+  .mode { display: flex; justify-content: center; gap: 8px; margin-bottom: 14px; flex-wrap: wrap; }
+  .mode button { font-size: 14px; padding: 9px 16px; border-radius: 999px; border: 1px solid #ddd; background: #f5f5f5; cursor: pointer; font-weight: 700; }
+  .mode button.on { background: #e53935; color: #fff; border-color: #e53935; }
+  .arena { display: flex; justify-content: center; align-items: center; gap: 16px; margin: 10px 0; }
+  .pihak { text-align: center; }
+  .pihak .tangan { font-size: 64px; min-height: 80px; display: flex; align-items: center; justify-content: center; }
+  .pihak b { display: block; font-size: 14px; }
+  .pihak .skor { color: #e53935; font-weight: 700; font-size: 20px; }
+  .vs { font-size: 22px; font-weight: 900; color: #f9a825; }
+  .pilihan { display: flex; justify-content: center; gap: 10px; margin: 14px 0; flex-wrap: wrap; }
+  .pilihan button { font-size: 44px; width: 84px; height: 84px; border-radius: 16px; border: 2px solid #eee; background: #fff; cursor: pointer; }
+  .pilihan button:active { background: #fff8e1; border-color: #f9a825; }
+  .pilihan button:disabled { opacity: .4; cursor: default; }
+  .btn { font-size: 15px; padding: 11px 20px; border: none; border-radius: 999px; cursor: pointer; font-weight: 700; background: #e53935; color: #fff; margin-top: 8px; }
+  #msg { font-size: 18px; font-weight: 700; margin: 12px 0 4px; min-height: 26px; }
+  #riwayat { font-size: 13px; color: #666; margin-top: 10px; line-height: 1.8; }
+  .hint { font-size: 12.5px; color: #888; }
+</style>
+</head>
+<body>
+<div class="topbar"><div class="topbar-in">
+  <a class="tb-logo" href="https://4ever.ai.id/">4EVER</a>
+  <nav>
+    <a href="https://4ever.ai.id/">Beranda</a>
+    <a href="https://4ever.ai.id/profil.html">Profil</a>
+    <a href="https://4ever.ai.id/musik-yt.html">Musik</a>
+    <a href="https://4ever.ai.id/tools.html">Tools</a>
+    <a href="https://4ever.ai.id/artikel.html">Artikel</a>
+    <a href="https://4ever.ai.id/tv-gratis.html">TV</a>
+    <a href="https://4ever.ai.id/berita.html">Berita</a>
+    <a href="https://4ever.ai.id/game-hub-afis-dita.html" class="on">Game</a>
+  </nav>
+</div></div>
+
+<div class="wrap">
+  <a class="back" href="game-hub-afis-dita.html">⬅ Kembali ke Hub</a>
+  <h1>✊ Suit Batu Gunting Kertas</h1>
+  <p class="sub">Batu kalahkan gunting, gunting kalahkan kertas, kertas kalahkan batu. Siapa duluan sampai 5 menang!</p>
+  <div class="mode">
+    <button id="mKomputer" class="on">🤖 vs Komputer</button>
+    <button id="mBerdua">👫 Berdua (1 HP)</button>
+  </div>
+  <div class="arena">
+    <div class="pihak"><div class="tangan" id="tanganA">❓</div><b id="namaA">Kamu</b><span class="skor" id="skorA">0</span></div>
+    <div class="vs">VS</div>
+    <div class="pihak"><div class="tangan" id="tanganD">❓</div><b id="namaD">Komputer</b><span class="skor" id="skorD">0</span></div>
+  </div>
+  <div id="msg">Pilih tanganmu di bawah!</div>
+  <div class="pilihan" id="pilihan">
+    <button data-p="batu" aria-label="Batu">✊</button>
+    <button data-p="gunting" aria-label="Gunting">✌️</button>
+    <button data-p="kertas" aria-label="Kertas">✋</button>
+  </div>
+  <div id="riwayat"></div>
+  <button class="btn" id="btnReset">🔄 Mulai Ulang</button>
+  <p class="hint">Mode berdua: Afis pilih dulu (rahasia), lalu Dita pilih — baru dibuka bareng.</p>
+</div>
+
+<script>
+const EMOJI = { batu: "✊", gunting: "✌️", kertas: "✋" };
+const NAMA = { batu: "Batu", gunting: "Gunting", kertas: "Kertas" };
+const MENANG_ATAS = { batu: "gunting", gunting: "kertas", kertas: "batu" };
+let mode = "komputer", skorA = 0, skorD = 0, ronde = 0, pilihA = null, menungguD = false, selesai = false;
+
+function aturMode(m) {
+  mode = m;
+  document.getElementById("mKomputer").classList.toggle("on", m === "komputer");
+  document.getElementById("mBerdua").classList.toggle("on", m === "berdua");
+  document.getElementById("namaD").textContent = m === "komputer" ? "Komputer" : "Dita";
+  document.getElementById("namaA").textContent = m === "komputer" ? "Kamu" : "Afis";
+  reset();
+}
+function reset() {
+  skorA = 0; skorD = 0; ronde = 0; pilihA = null; menungguD = false; selesai = false;
+  document.getElementById("skorA").textContent = "0";
+  document.getElementById("skorD").textContent = "0";
+  document.getElementById("tanganA").textContent = "❓";
+  document.getElementById("tanganD").textContent = "❓";
+  document.getElementById("riwayat").innerHTML = "";
+  document.getElementById("msg").textContent = mode === "komputer" ? "Pilih tanganmu di bawah!" : "Afis pilih dulu (rahasia)!";
+  aktifkanPilihan(true);
+}
+function aktifkanPilihan(on) {
+  document.querySelectorAll("#pilihan button").forEach(b => b.disabled = !on);
+}
+function hasilRonde(a, d) {
+  ronde++;
+  document.getElementById("tanganA").textContent = EMOJI[a];
+  document.getElementById("tanganD").textContent = EMOJI[d];
+  let teks;
+  if (a === d) teks = "Seri! 🤝";
+  else if (MENANG_ATAS[a] === d) { skorA++; teks = "🎉 " + (mode === "komputer" ? "Kamu" : "Afis") + " menang ronde ini!"; }
+  else { skorD++; teks = "😢 " + (mode === "komputer" ? "Komputer" : "Dita") + " menang ronde ini!"; }
+  document.getElementById("skorA").textContent = skorA;
+  document.getElementById("skorD").textContent = skorD;
+  document.getElementById("riwayat").innerHTML =
+    "<div>Ronde " + ronde + ": " + NAMA[a] + " vs " + NAMA[d] + " — " + teks + "</div>" + document.getElementById("riwayat").innerHTML;
+  if (skorA >= 5 || skorD >= 5) {
+    selesai = true;
+    aktifkanPilihan(false);
+    const menang = skorA >= 5 ? (mode === "komputer" ? "Kamu" : "Afis") : (mode === "komputer" ? "Komputer" : "Dita");
+    document.getElementById("msg").textContent = "🏆 " + menang + " MENANG " + skorA + "–" + skorD + "!";
+  } else {
+    document.getElementById("msg").textContent = teks + (mode === "berdua" ? " Afis pilih lagi!" : " Pilih lagi!");
+    if (mode === "berdua") { pilihA = null; menungguD = false; }
+  }
+}
+document.querySelectorAll("#pilihan button").forEach(b => {
+  b.onclick = () => {
+    if (selesai) return;
+    const p = b.dataset.p;
+    if (mode === "komputer") {
+      const d = ["batu", "gunting", "kertas"][Math.floor(Math.random() * 3)];
+      hasilRonde(p, d);
+    } else {
+      if (!menungguD) {
+        pilihA = p;
+        menungguD = true;
+        document.getElementById("tanganA").textContent = "🤫";
+        document.getElementById("msg").textContent = "Afis sudah pilih (rahasia). Giliran Dita!";
+      } else {
+        hasilRonde(pilihA, p);
+      }
+    }
+  };
+});
+document.getElementById("mKomputer").onclick = () => aturMode("komputer");
+document.getElementById("mBerdua").onclick = () => aturMode("berdua");
+document.getElementById("btnReset").onclick = reset;
+reset();
+</script>
+</body>
+</html>

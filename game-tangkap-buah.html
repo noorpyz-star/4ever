@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Tangkap Buah — Game Afis &amp; Dita</title>
+<style>
+  * { box-sizing: border-box; }
+  body { font-family: -apple-system, "Segoe UI", Roboto, Arial, sans-serif; margin: 0; background: #ffffff; color: #222; padding-bottom: 40px; }
+  .topbar { position:sticky; top:0; z-index:50; background:rgba(255,255,255,.95); backdrop-filter:blur(8px); -webkit-backdrop-filter:blur(8px); border-bottom:1px solid #eee; box-shadow:0 2px 10px rgba(0,0,0,.05); }
+  .topbar-in { max-width:640px; margin:0 auto; display:flex; align-items:center; gap:12px; padding:10px 16px; }
+  .tb-logo { font-weight:900; font-size:1rem; letter-spacing:.02em; text-decoration:none; background-image:linear-gradient(90deg,#e53935,#f9a825,#43a047); -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent; color:transparent; flex:none; }
+  .topbar nav { margin-left:auto; display:flex; gap:14px; overflow-x:auto; scrollbar-width:none; }
+  .topbar nav::-webkit-scrollbar { display:none; }
+  .topbar nav a { color:#666; text-decoration:none; font-size:.83rem; font-weight:600; white-space:nowrap; }
+  .topbar nav a:hover { color:#111; }
+  .topbar nav a.on { color:#e53935; }
+  .wrap { max-width: 480px; margin: 0 auto; padding: 16px; text-align: center; }
+  .back { display: inline-block; margin: 4px 0 10px; color: #e53935; text-decoration: none; font-weight: 700; font-size: 14px; }
+  h1 { font-size: 22px; margin: 4px 0 2px; }
+  .sub { color: #666; font-size: 13px; margin-bottom: 14px; }
+  .stats { display: flex; justify-content: center; gap: 12px; margin-bottom: 12px; }
+  .stat { background: #fff8e1; border: 1px solid #ffe082; border-radius: 12px; padding: 8px 16px; font-size: 14px; }
+  .stat b { color: #e53935; font-size: 18px; }
+  canvas { background: linear-gradient(180deg, #e3f2fd, #f1f8e9); border: 2px solid #43a047; border-radius: 14px; width: 100%; max-width: 400px; height: auto; display: block; margin: 0 auto; touch-action: none; cursor: pointer; }
+  .btn { font-size: 15px; padding: 11px 20px; border: none; border-radius: 999px; cursor: pointer; font-weight: 700; background: #e53935; color: #fff; margin-top: 12px; }
+  #msg { font-size: 17px; font-weight: 700; margin: 12px 0 4px; min-height: 24px; }
+  .hint { font-size: 12.5px; color: #888; }
+</style>
+</head>
+<body>
+<div class="topbar"><div class="topbar-in">
+  <a class="tb-logo" href="https://4ever.ai.id/">4EVER</a>
+  <nav>
+    <a href="https://4ever.ai.id/">Beranda</a>
+    <a href="https://4ever.ai.id/profil.html">Profil</a>
+    <a href="https://4ever.ai.id/musik-yt.html">Musik</a>
+    <a href="https://4ever.ai.id/tools.html">Tools</a>
+    <a href="https://4ever.ai.id/artikel.html">Artikel</a>
+    <a href="https://4ever.ai.id/tv-gratis.html">TV</a>
+    <a href="https://4ever.ai.id/berita.html">Berita</a>
+    <a href="https://4ever.ai.id/game-hub-afis-dita.html" class="on">Game</a>
+  </nav>
+</div></div>
+
+<div class="wrap">
+  <a class="back" href="game-hub-afis-dita.html">⬅ Kembali ke Hub</a>
+  <h1>🍎 Tangkap Buah</h1>
+  <p class="sub">Geser keranjangnya, tangkap buah yang jatuh. Awas bom! 3 kali kena bom, permainan selesai.</p>
+  <div class="stats">
+    <div class="stat">Skor<br><b id="skor">0</b></div>
+    <div class="stat">Waktu<br><b id="waktu">60</b></div>
+    <div class="stat">Nyawa<br><b id="nyawa">❤️❤️❤️</b></div>
+  </div>
+  <canvas id="cv" width="400" height="500"></canvas>
+  <div id="msg">Tekan ▶ Mulai untuk main!</div>
+  <button class="btn" id="btnMulai">▶ Mulai</button>
+  <p class="hint">Geser mouse / jari, atau pakai tombol ← → di keyboard.</p>
+</div>
+
+<script>
+const cv = document.getElementById("cv");
+const ctx = cv.getContext("2d");
+const W = 400, H = 500;
+const BUAH = ["🍎", "🍊", "🍌", "🍇", "🍓", "🥭"];
+let keranjang, jatuh, skor, sisa, nyawa, jalan = false, raf = null, frame = 0, timerDetik = null;
+let terbaik = 0;
+try { terbaik = parseInt(localStorage.getItem("buah-terbaik") || "0", 10) || 0; } catch (e) {}
+if (!document.getElementById("terbaik")) {
+  const s = document.createElement("div");
+  s.className = "stat"; s.innerHTML = "Terbaik<br><b id=\"terbaik\">" + terbaik + "</b>";
+  document.querySelector(".stats").appendChild(s);
+}
+
+function reset() {
+  keranjang = { x: W / 2 - 40, y: H - 46, w: 80, h: 34 };
+  jatuh = [];
+  skor = 0; sisa = 60; nyawa = 3; frame = 0;
+  document.getElementById("skor").textContent = "0";
+  document.getElementById("waktu").textContent = "60";
+  document.getElementById("nyawa").textContent = "❤️❤️❤️";
+  gambar();
+}
+function gambar() {
+  ctx.fillStyle = "#e3f2fd"; ctx.fillRect(0, 0, W, H);
+  ctx.fillStyle = "#81c784"; ctx.fillRect(0, H - 12, W, 12);
+  jatuh.forEach(j => {
+    ctx.font = "30px serif";
+    ctx.textAlign = "center";
+    ctx.fillText(j.emoji, j.x, j.y);
+  });
+  ctx.font = "44px serif";
+  ctx.textAlign = "center";
+  ctx.fillText("🧺", keranjang.x + keranjang.w / 2, keranjang.y + 34);
+}
+function loop() {
+  if (!jalan) return;
+  frame++;
+  const cepat = 2 + (60 - sisa) * 0.05;
+  if (frame % Math.max(22, 48 - Math.floor((60 - sisa) / 2)) === 0) {
+    const bom = Math.random() < 0.18;
+    jatuh.push({
+      x: 20 + Math.random() * (W - 40),
+      y: -10,
+      v: cepat + Math.random() * 1.5,
+      emoji: bom ? "💣" : BUAH[Math.floor(Math.random() * BUAH.length)],
+      bom
+    });
+  }
+  jatuh.forEach(j => { j.y += j.v; });
+  jatuh = jatuh.filter(j => {
+    const kena = j.y > keranjang.y - 6 && j.y < keranjang.y + keranjang.h + 10 &&
+      j.x > keranjang.x - 8 && j.x < keranjang.x + keranjang.w + 8;
+    if (kena) {
+      if (j.bom) {
+        nyawa--;
+        document.getElementById("nyawa").textContent = "❤️".repeat(Math.max(0, nyawa)) + "🤍".repeat(Math.max(0, 3 - nyawa));
+        document.getElementById("msg").textContent = "💥 Kena bom! Nyawa sisa " + nyawa + ".";
+        if (nyawa <= 0) { selesai("💥 Kena bom 3 kali!"); return false; }
+      } else {
+        skor += 10;
+        document.getElementById("skor").textContent = skor;
+      }
+      return false;
+    }
+    if (j.y > H + 20) return false;
+    return true;
+  });
+  if (!jalan) return;
+  gambar();
+  raf = requestAnimationFrame(loop);
+}
+function mulai() {
+  cancelAnimationFrame(raf); clearInterval(timerDetik);
+  reset();
+  jalan = true;
+  document.getElementById("msg").textContent = "Tangkap buahnya! 🍎";
+  document.getElementById("btnMulai").textContent = "🔄 Main Lagi";
+  timerDetik = setInterval(() => {
+    sisa--;
+    document.getElementById("waktu").textContent = sisa;
+    if (sisa <= 0) selesai("⏰ Waktu habis!");
+  }, 1000);
+  raf = requestAnimationFrame(loop);
+}
+function selesai(alasan) {
+  jalan = false;
+  cancelAnimationFrame(raf); clearInterval(timerDetik);
+  if (skor > terbaik) {
+    terbaik = skor;
+    const el = document.getElementById("terbaik");
+    if (el) el.textContent = terbaik;
+    try { localStorage.setItem("buah-terbaik", String(terbaik)); } catch (e) {}
+    document.getElementById("msg").textContent = alasan + " Skor " + skor + " — Rekor baru! 🎉";
+  } else {
+    document.getElementById("msg").textContent = alasan + " Skor kamu " + skor + ".";
+  }
+  document.getElementById("btnMulai").textContent = "🔄 Main Lagi";
+}
+function gerakKeranjang(clientX) {
+  const r = cv.getBoundingClientRect();
+  const x = (clientX - r.left) * (W / r.width);
+  keranjang.x = Math.max(0, Math.min(W - keranjang.w, x - keranjang.w / 2));
+  if (!jalan) gambar();
+}
+cv.addEventListener("pointermove", e => gerakKeranjang(e.clientX));
+cv.addEventListener("pointerdown", e => gerakKeranjang(e.clientX));
+document.addEventListener("keydown", e => {
+  if (e.key === "ArrowLeft") { keranjang.x = Math.max(0, keranjang.x - 22); if (!jalan) gambar(); e.preventDefault(); }
+  if (e.key === "ArrowRight") { keranjang.x = Math.min(W - keranjang.w, keranjang.x + 22); if (!jalan) gambar(); e.preventDefault(); }
+});
+document.getElementById("btnMulai").onclick = mulai;
+reset();
+</script>
+</body>
+</html>

@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Whack-a-Mole — Game Afis &amp; Dita</title>
+<style>
+  * { box-sizing: border-box; }
+  body { font-family: -apple-system, "Segoe UI", Roboto, Arial, sans-serif; margin: 0; background: #ffffff; color: #222; padding-bottom: 40px; }
+  .topbar { position:sticky; top:0; z-index:50; background:rgba(255,255,255,.95); backdrop-filter:blur(8px); -webkit-backdrop-filter:blur(8px); border-bottom:1px solid #eee; box-shadow:0 2px 10px rgba(0,0,0,.05); }
+  .topbar-in { max-width:640px; margin:0 auto; display:flex; align-items:center; gap:12px; padding:10px 16px; }
+  .tb-logo { font-weight:900; font-size:1rem; letter-spacing:.02em; text-decoration:none; background-image:linear-gradient(90deg,#e53935,#f9a825,#43a047); -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent; color:transparent; flex:none; }
+  .topbar nav { margin-left:auto; display:flex; gap:14px; overflow-x:auto; scrollbar-width:none; }
+  .topbar nav::-webkit-scrollbar { display:none; }
+  .topbar nav a { color:#666; text-decoration:none; font-size:.83rem; font-weight:600; white-space:nowrap; }
+  .topbar nav a:hover { color:#111; }
+  .topbar nav a.on { color:#e53935; }
+  .wrap { max-width: 480px; margin: 0 auto; padding: 16px; text-align: center; }
+  .back { display: inline-block; margin: 4px 0 10px; color: #e53935; text-decoration: none; font-weight: 700; font-size: 14px; }
+  h1 { font-size: 22px; margin: 4px 0 2px; }
+  .sub { color: #666; font-size: 13px; margin-bottom: 14px; }
+  .stats { display: flex; justify-content: center; gap: 12px; margin-bottom: 12px; }
+  .stat { background: #fff8e1; border: 1px solid #ffe082; border-radius: 12px; padding: 8px 16px; font-size: 14px; }
+  .stat b { color: #e53935; font-size: 18px; }
+  #papan { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; max-width: 400px; margin: 0 auto; }
+  .lubang { aspect-ratio: 1; border-radius: 50%; background: #c8e6c9; border: 2px solid #81c784; display: flex; align-items: center; justify-content: center; font-size: 52px; cursor: pointer; user-select: none; }
+  .lubang.kena { background: #fff8e1; border-color: #f9a825; }
+  .btn { font-size: 15px; padding: 11px 20px; border: none; border-radius: 999px; cursor: pointer; font-weight: 700; background: #e53935; color: #fff; margin-top: 14px; }
+  #msg { font-size: 17px; font-weight: 700; margin: 12px 0 4px; min-height: 24px; }
+  .hint { font-size: 12.5px; color: #888; }
+</style>
+</head>
+<body>
+<div class="topbar"><div class="topbar-in">
+  <a class="tb-logo" href="https://4ever.ai.id/">4EVER</a>
+  <nav>
+    <a href="https://4ever.ai.id/">Beranda</a>
+    <a href="https://4ever.ai.id/profil.html">Profil</a>
+    <a href="https://4ever.ai.id/musik-yt.html">Musik</a>
+    <a href="https://4ever.ai.id/tools.html">Tools</a>
+    <a href="https://4ever.ai.id/artikel.html">Artikel</a>
+    <a href="https://4ever.ai.id/tv-gratis.html">TV</a>
+    <a href="https://4ever.ai.id/berita.html">Berita</a>
+    <a href="https://4ever.ai.id/game-hub-afis-dita.html" class="on">Game</a>
+  </nav>
+</div></div>
+
+<div class="wrap">
+  <a class="back" href="game-hub-afis-dita.html">⬅ Kembali ke Hub</a>
+  <h1>🔨 Whack-a-Mole</h1>
+  <p class="sub">Pukul tikus tanahnya secepat mungkin! Kamu punya 60 detik — jangan sampai ada yang lolos.</p>
+  <div class="stats">
+    <div class="stat">Skor<br><b id="skor">0</b></div>
+    <div class="stat">Waktu<br><b id="waktu">60</b></div>
+    <div class="stat">Terbaik<br><b id="terbaik">0</b></div>
+  </div>
+  <div id="papan"></div>
+  <div id="msg">Tekan ▶ Mulai untuk main!</div>
+  <button class="btn" id="btnMulai">▶ Mulai</button>
+  <p class="hint">Tikusnya cuma muncul sebentar — pukul secepatnya!</p>
+</div>
+
+<script>
+let skor = 0, sisa = 60, jalan = false, timerDetik = null, timerTikus = null, aktif = -1;
+let terbaik = 0;
+try { terbaik = parseInt(localStorage.getItem("whack-terbaik") || "0", 10) || 0; } catch (e) {}
+document.getElementById("terbaik").textContent = terbaik;
+
+const papan = document.getElementById("papan");
+for (let i = 0; i < 9; i++) {
+  const d = document.createElement("div");
+  d.className = "lubang";
+  d.dataset.i = i;
+  d.onclick = () => pukul(i);
+  papan.appendChild(d);
+}
+function lubang(i) { return papan.children[i]; }
+function muncul() {
+  if (!jalan) return;
+  if (aktif >= 0) { lubang(aktif).textContent = ""; lubang(aktif).classList.remove("kena"); aktif = -1; }
+  let i;
+  do { i = Math.floor(Math.random() * 9); } while (i === aktif);
+  aktif = i;
+  lubang(i).textContent = Math.random() < 0.15 ? "🐹" : "🐭";
+  const cepat = Math.max(450, 850 - (60 - sisa) * 6);
+  timerTikus = setTimeout(muncul, cepat + Math.random() * 300);
+}
+function pukul(i) {
+  if (!jalan || i !== aktif) return;
+  skor++;
+  document.getElementById("skor").textContent = skor;
+  const el = lubang(i);
+  el.textContent = "💥";
+  el.classList.add("kena");
+  aktif = -1;
+  clearTimeout(timerTikus);
+  setTimeout(() => { el.classList.remove("kena"); if (el.textContent === "💥") el.textContent = ""; }, 200);
+  timerTikus = setTimeout(muncul, 250);
+}
+function mulai() {
+  clearInterval(timerDetik); clearTimeout(timerTikus);
+  skor = 0; sisa = 60; jalan = true; aktif = -1;
+  document.getElementById("skor").textContent = "0";
+  document.getElementById("waktu").textContent = "60";
+  document.getElementById("msg").textContent = "Pukul! 🔨";
+  document.getElementById("btnMulai").textContent = "🔄 Main Lagi";
+  [...papan.children].forEach(c => { c.textContent = ""; c.classList.remove("kena"); });
+  timerDetik = setInterval(() => {
+    sisa--;
+    document.getElementById("waktu").textContent = sisa;
+    if (sisa <= 0) selesai();
+  }, 1000);
+  muncul();
+}
+function selesai() {
+  jalan = false;
+  clearInterval(timerDetik); clearTimeout(timerTikus);
+  if (aktif >= 0) { lubang(aktif).textContent = ""; aktif = -1; }
+  if (skor > terbaik) {
+    terbaik = skor;
+    document.getElementById("terbaik").textContent = terbaik;
+    try { localStorage.setItem("whack-terbaik", String(terbaik)); } catch (e) {}
+    document.getElementById("msg").textContent = "⏰ Waktu habis! Skor " + skor + " — Rekor baru! 🎉";
+  } else {
+    document.getElementById("msg").textContent = "⏰ Waktu habis! Skor kamu " + skor + ".";
+  }
+  document.getElementById("btnMulai").textContent = "🔄 Main Lagi";
+}
+document.getElementById("btnMulai").onclick = mulai;
+</script>
+</body>
+</html>

@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Tetris — Game Afis &amp; Dita</title>
+<style>
+  * { box-sizing: border-box; }
+  body { font-family: -apple-system, "Segoe UI", Roboto, Arial, sans-serif; margin: 0; background: #ffffff; color: #222; padding-bottom: 40px; }
+  .topbar { position:sticky; top:0; z-index:50; background:rgba(255,255,255,.95); backdrop-filter:blur(8px); -webkit-backdrop-filter:blur(8px); border-bottom:1px solid #eee; box-shadow:0 2px 10px rgba(0,0,0,.05); }
+  .topbar-in { max-width:640px; margin:0 auto; display:flex; align-items:center; gap:12px; padding:10px 16px; }
+  .tb-logo { font-weight:900; font-size:1rem; letter-spacing:.02em; text-decoration:none; background-image:linear-gradient(90deg,#e53935,#f9a825,#43a047); -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent; color:transparent; flex:none; }
+  .topbar nav { margin-left:auto; display:flex; gap:14px; overflow-x:auto; scrollbar-width:none; }
+  .topbar nav::-webkit-scrollbar { display:none; }
+  .topbar nav a { color:#666; text-decoration:none; font-size:.83rem; font-weight:600; white-space:nowrap; }
+  .topbar nav a:hover { color:#111; }
+  .topbar nav a.on { color:#e53935; }
+  .wrap { max-width: 480px; margin: 0 auto; padding: 16px; text-align: center; }
+  .back { display: inline-block; margin: 4px 0 10px; color: #e53935; text-decoration: none; font-weight: 700; font-size: 14px; }
+  h1 { font-size: 22px; margin: 4px 0 2px; }
+  .sub { color: #666; font-size: 13px; margin-bottom: 14px; }
+  .stats { display: flex; justify-content: center; gap: 12px; margin-bottom: 12px; }
+  .stat { background: #fff8e1; border: 1px solid #ffe082; border-radius: 12px; padding: 8px 16px; font-size: 14px; }
+  .stat b { color: #e53935; font-size: 18px; }
+  canvas { background: #f5f5f5; border: 2px solid #e53935; border-radius: 14px; width: 100%; max-width: 300px; height: auto; display: block; margin: 0 auto; touch-action: none; }
+  .kontrol { display: flex; justify-content: center; gap: 8px; margin-top: 12px; flex-wrap: wrap; }
+  .kontrol button { font-size: 22px; padding: 10px 16px; border-radius: 12px; border: 1px solid #ddd; background: #f5f5f5; cursor: pointer; }
+  .kontrol button:active { background: #ffe082; }
+  .btn { font-size: 15px; padding: 11px 20px; border: none; border-radius: 999px; cursor: pointer; font-weight: 700; background: #e53935; color: #fff; margin-top: 12px; }
+  .btn.ghost { background: #f5f5f5; color: #222; border: 1px solid #ddd; }
+  #msg { font-size: 17px; font-weight: 700; margin: 12px 0 4px; min-height: 24px; }
+  .hint { font-size: 12.5px; color: #888; }
+</style>
+</head>
+<body>
+<div class="topbar"><div class="topbar-in">
+  <a class="tb-logo" href="https://4ever.ai.id/">4EVER</a>
+  <nav>
+    <a href="https://4ever.ai.id/">Beranda</a>
+    <a href="https://4ever.ai.id/profil.html">Profil</a>
+    <a href="https://4ever.ai.id/musik-yt.html">Musik</a>
+    <a href="https://4ever.ai.id/tools.html">Tools</a>
+    <a href="https://4ever.ai.id/artikel.html">Artikel</a>
+    <a href="https://4ever.ai.id/tv-gratis.html">TV</a>
+    <a href="https://4ever.ai.id/berita.html">Berita</a>
+    <a href="https://4ever.ai.id/game-hub-afis-dita.html" class="on">Game</a>
+  </nav>
+</div></div>
+
+<div class="wrap">
+  <a class="back" href="game-hub-afis-dita.html">⬅ Kembali ke Hub</a>
+  <h1>🧩 Tetris</h1>
+  <p class="sub">Susun baloknya sampai satu baris penuh. Makin banyak baris, makin cepat jatuhnya!</p>
+  <div class="stats">
+    <div class="stat">Skor<br><b id="skor">0</b></div>
+    <div class="stat">Baris<br><b id="baris">0</b></div>
+    <div class="stat">Level<br><b id="level">1</b></div>
+  </div>
+  <canvas id="cv" width="300" height="600"></canvas>
+  <div class="kontrol">
+    <button id="kKiri" aria-label="Kiri">⬅️</button>
+    <button id="kKanan" aria-label="Kanan">➡️</button>
+    <button id="kPutar" aria-label="Putar">🔄</button>
+    <button id="kBawah" aria-label="Turun">⬇️</button>
+    <button id="kJatuh" aria-label="Jatuh cepat">⏬</button>
+  </div>
+  <div id="msg">Tekan ▶ Mulai untuk main!</div>
+  <button class="btn" id="btnMulai">▶ Mulai</button>
+  <button class="btn ghost" id="btnJeda">⏸ Jeda</button>
+  <p class="hint">Keyboard: ← → geser, ↑ / X putar, ↓ turun cepat, spasi jatuh langsung.</p>
+</div>
+
+<script>
+const cv = document.getElementById("cv");
+const ctx = cv.getContext("2d");
+const KOL = 10, BAR = 20, SEL = 30;
+const BENTUK = {
+  I: { m: [[1,1,1,1]], w: "#0288d1" },
+  O: { m: [[1,1],[1,1]], w: "#f9a825" },
+  T: { m: [[0,1,0],[1,1,1]], w: "#8e24aa" },
+  S: { m: [[0,1,1],[1,1,0]], w: "#43a047" },
+  Z: { m: [[1,1,0],[0,1,1]], w: "#e53935" },
+  J: { m: [[1,0,0],[1,1,1]], w: "#5e35b1" },
+  L: { m: [[0,0,1],[1,1,1]], w: "#fb8c00" }
+};
+let papan, aktif, skor, baris, level, jalan = false, jeda = false, timer = null;
+let terbaik = 0;
+try { terbaik = parseInt(localStorage.getItem("tetris-terbaik") || "0", 10) || 0; } catch (e) {}
+
+function baruPapan() { return Array.from({ length: BAR }, () => Array(KOL).fill("")); }
+function acakBentuk() {
+  const kunci = Object.keys(BENTUK);
+  const k = kunci[Math.floor(Math.random() * kunci.length)];
+  return { m: BENTUK[k].m.map(r => r.slice()), w: BENTUK[k].w, x: 3, y: 0 };
+}
+function tabrakan(m, x, y) {
+  for (let r = 0; r < m.length; r++) for (let c = 0; c < m[r].length; c++) {
+    if (!m[r][c]) continue;
+    const nx = x + c, ny = y + r;
+    if (nx < 0 || nx >= KOL || ny >= BAR) return true;
+    if (ny >= 0 && papan[ny][nx]) return true;
+  }
+  return false;
+}
+function kunciBalok() {
+  aktif.m.forEach((r, ri) => r.forEach((v, ci) => {
+    if (v && aktif.y + ri >= 0) papan[aktif.y + ri][aktif.x + ci] = aktif.w;
+  }));
+  let penuh = 0;
+  for (let y = BAR - 1; y >= 0; y--) {
+    if (papan[y].every(Boolean)) { papan.splice(y, 1); papan.unshift(Array(KOL).fill("")); penuh++; y++; }
+  }
+  if (penuh) {
+    baris += penuh;
+    skor += [0, 100, 300, 500, 800][penuh] * level;
+    level = Math.floor(baris / 10) + 1;
+    document.getElementById("skor").textContent = skor;
+    document.getElementById("baris").textContent = baris;
+    document.getElementById("level").textContent = level;
+  }
+  aktif = acakBentuk();
+  if (tabrakan(aktif.m, aktif.x, aktif.y)) { gameOver(); return; }
+  gambar();
+}
+function gambar() {
+  ctx.fillStyle = "#f5f5f5"; ctx.fillRect(0, 0, 300, 600);
+  for (let y = 0; y < BAR; y++) for (let x = 0; x < KOL; x++) {
+    if (papan[y][x]) { ctx.fillStyle = papan[y][x]; ctx.fillRect(x * SEL + 1, y * SEL + 1, SEL - 2, SEL - 2); }
+  }
+  if (aktif) aktif.m.forEach((r, ri) => r.forEach((v, ci) => {
+    if (v && aktif.y + ri >= 0) { ctx.fillStyle = aktif.w; ctx.fillRect((aktif.x + ci) * SEL + 1, (aktif.y + ri) * SEL + 1, SEL - 2, SEL - 2); }
+  }));
+}
+function tick() {
+  if (!jalan || jeda) return;
+  if (!tabrakan(aktif.m, aktif.x, aktif.y + 1)) aktif.y++;
+  else kunciBalok();
+  gambar();
+  timer = setTimeout(tick, Math.max(120, 700 - (level - 1) * 60));
+}
+function mulai() {
+  clearTimeout(timer);
+  papan = baruPapan(); skor = 0; baris = 0; level = 1; jeda = false;
+  document.getElementById("skor").textContent = "0";
+  document.getElementById("baris").textContent = "0";
+  document.getElementById("level").textContent = "1";
+  document.getElementById("btnJeda").textContent = "⏸ Jeda";
+  aktif = acakBentuk();
+  jalan = true;
+  document.getElementById("msg").textContent = "Susun baloknya! 🧩";
+  document.getElementById("btnMulai").textContent = "🔄 Main Lagi";
+  gambar();
+  timer = setTimeout(tick, 700);
+}
+function gameOver() {
+  jalan = false; clearTimeout(timer);
+  if (skor > terbaik) {
+    try { localStorage.setItem("tetris-terbaik", String(skor)); } catch (e) {}
+    terbaik = skor;
+    document.getElementById("msg").textContent = "💥 Papan penuh! Skor " + skor + " — Rekor baru! 🎉";
+  } else {
+    document.getElementById("msg").textContent = "💥 Papan penuh! Skor kamu " + skor + (terbaik ? " (terbaik " + terbaik + ")" : "") + ".";
+  }
+  document.getElementById("btnMulai").textContent = "🔄 Main Lagi";
+}
+function geser(dx) {
+  if (!jalan || jeda) return;
+  if (!tabrakan(aktif.m, aktif.x + dx, aktif.y)) { aktif.x += dx; gambar(); }
+}
+function putar() {
+  if (!jalan || jeda) return;
+  const m = aktif.m[0].map((_, i) => aktif.m.map(r => r[i]).reverse());
+  if (!tabrakan(m, aktif.x, aktif.y)) { aktif.m = m; gambar(); }
+}
+function turun() {
+  if (!jalan || jeda) return;
+  if (!tabrakan(aktif.m, aktif.x, aktif.y + 1)) { aktif.y++; gambar(); }
+}
+function jatuh() {
+  if (!jalan || jeda) return;
+  while (!tabrakan(aktif.m, aktif.x, aktif.y + 1)) aktif.y++;
+  kunciBalok();
+  gambar();
+}
+document.getElementById("btnMulai").onclick = mulai;
+document.getElementById("btnJeda").onclick = () => {
+  if (!jalan) return;
+  jeda = !jeda;
+  document.getElementById("btnJeda").textContent = jeda ? "▶ Lanjut" : "⏸ Jeda";
+  document.getElementById("msg").textContent = jeda ? "⏸ Dijeda." : "Susun baloknya! 🧩";
+  if (!jeda) { clearTimeout(timer); timer = setTimeout(tick, Math.max(120, 700 - (level - 1) * 60)); }
+};
+document.getElementById("kKiri").onclick = () => geser(-1);
+document.getElementById("kKanan").onclick = () => geser(1);
+document.getElementById("kPutar").onclick = putar;
+document.getElementById("kBawah").onclick = turun;
+document.getElementById("kJatuh").onclick = jatuh;
+document.addEventListener("keydown", e => {
+  if (e.key === "ArrowLeft") { geser(-1); e.preventDefault(); }
+  if (e.key === "ArrowRight") { geser(1); e.preventDefault(); }
+  if (e.key === "ArrowUp" || e.key === "x" || e.key === "X") { putar(); e.preventDefault(); }
+  if (e.key === "ArrowDown") { turun(); e.preventDefault(); }
+  if (e.code === "Space") { jatuh(); e.preventDefault(); }
+});
+papan = baruPapan();
+aktif = acakBentuk();
+gambar();
+</script>
+</body>
+</html>

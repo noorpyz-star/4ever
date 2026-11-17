@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Memory Match — Game Afis &amp; Dita</title>
+<style>
+  * { box-sizing: border-box; }
+  body { font-family: -apple-system, "Segoe UI", Roboto, Arial, sans-serif; margin: 0; background: #ffffff; color: #222; padding-bottom: 40px; }
+  .topbar { position:sticky; top:0; z-index:50; background:rgba(255,255,255,.95); backdrop-filter:blur(8px); -webkit-backdrop-filter:blur(8px); border-bottom:1px solid #eee; box-shadow:0 2px 10px rgba(0,0,0,.05); }
+  .topbar-in { max-width:640px; margin:0 auto; display:flex; align-items:center; gap:12px; padding:10px 16px; }
+  .tb-logo { font-weight:900; font-size:1rem; letter-spacing:.02em; text-decoration:none; background-image:linear-gradient(90deg,#e53935,#f9a825,#43a047); -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent; color:transparent; flex:none; }
+  .topbar nav { margin-left:auto; display:flex; gap:14px; overflow-x:auto; scrollbar-width:none; }
+  .topbar nav::-webkit-scrollbar { display:none; }
+  .topbar nav a { color:#666; text-decoration:none; font-size:.83rem; font-weight:600; white-space:nowrap; }
+  .topbar nav a:hover { color:#111; }
+  .topbar nav a.on { color:#e53935; }
+  .wrap { max-width: 480px; margin: 0 auto; padding: 16px; text-align: center; }
+  .back { display: inline-block; margin: 4px 0 10px; color: #e53935; text-decoration: none; font-weight: 700; font-size: 14px; }
+  h1 { font-size: 22px; margin: 4px 0 2px; }
+  .sub { color: #666; font-size: 13px; margin-bottom: 14px; }
+  .stats { display: flex; justify-content: center; gap: 12px; margin-bottom: 12px; }
+  .stat { background: #fff8e1; border: 1px solid #ffe082; border-radius: 12px; padding: 8px 16px; font-size: 14px; }
+  .stat b { color: #e53935; font-size: 18px; }
+  #papan { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; max-width: 400px; margin: 0 auto; }
+  .kartu { aspect-ratio: 1; border-radius: 12px; background: #e53935; color: #fff; display: flex; align-items: center; justify-content: center; font-size: 34px; cursor: pointer; user-select: none; border: 1px solid #c62828; }
+  .kartu.terbuka { background: #fffde7; border-color: #f9a825; }
+  .kartu.cocok { background: #e8f5e9; border-color: #43a047; }
+  .kartu:active { transform: scale(.96); }
+  .btn { font-size: 15px; padding: 11px 20px; border: none; border-radius: 999px; cursor: pointer; font-weight: 700; background: #e53935; color: #fff; margin-top: 14px; }
+  #msg { font-size: 17px; font-weight: 700; margin: 12px 0 4px; min-height: 24px; }
+  .hint { font-size: 12.5px; color: #888; }
+</style>
+</head>
+<body>
+<div class="topbar"><div class="topbar-in">
+  <a class="tb-logo" href="https://4ever.ai.id/">4EVER</a>
+  <nav>
+    <a href="https://4ever.ai.id/">Beranda</a>
+    <a href="https://4ever.ai.id/profil.html">Profil</a>
+    <a href="https://4ever.ai.id/musik-yt.html">Musik</a>
+    <a href="https://4ever.ai.id/tools.html">Tools</a>
+    <a href="https://4ever.ai.id/artikel.html">Artikel</a>
+    <a href="https://4ever.ai.id/tv-gratis.html">TV</a>
+    <a href="https://4ever.ai.id/berita.html">Berita</a>
+    <a href="https://4ever.ai.id/game-hub-afis-dita.html" class="on">Game</a>
+  </nav>
+</div></div>
+
+<div class="wrap">
+  <a class="back" href="game-hub-afis-dita.html">⬅ Kembali ke Hub</a>
+  <h1>🃏 Memory Match</h1>
+  <p class="sub">Balik kartunya, cari 8 pasangan yang sama. Makin sedikit langkah, makin hebat!</p>
+  <div class="stats">
+    <div class="stat">Langkah<br><b id="langkah">0</b></div>
+    <div class="stat">Pasangan<br><b id="pasangan">0/8</b></div>
+    <div class="stat">Waktu<br><b id="waktu">0 dtk</b></div>
+  </div>
+  <div id="papan"></div>
+  <div id="msg">Klik kartu untuk mulai!</div>
+  <button class="btn" id="btnBaru">🔄 Acak Ulang</button>
+  <p class="hint">Latih ingatanmu — cocokkan semua pasangan secepat mungkin.</p>
+</div>
+
+<script>
+const EMOJI = ["🐍", "💘", "🏍️", "🎲", "🍎", "🌹", "🎵", "🐤"];
+let deck, terbuka, kunci, langkah, cocok, detik, timer = null, mulai = false;
+
+function baru() {
+  deck = [...EMOJI, ...EMOJI].sort(() => Math.random() - 0.5);
+  terbuka = []; kunci = false; langkah = 0; cocok = 0; detik = 0; mulai = false;
+  clearInterval(timer); timer = null;
+  document.getElementById("langkah").textContent = "0";
+  document.getElementById("pasangan").textContent = "0/8";
+  document.getElementById("waktu").textContent = "0 dtk";
+  document.getElementById("msg").textContent = "Klik kartu untuk mulai!";
+  const p = document.getElementById("papan");
+  p.innerHTML = "";
+  deck.forEach((e, i) => {
+    const d = document.createElement("div");
+    d.className = "kartu";
+    d.textContent = "❓";
+    d.dataset.i = i;
+    d.onclick = () => klikKartu(d, i);
+    p.appendChild(d);
+  });
+}
+function klikKartu(el, i) {
+  if (kunci || el.classList.contains("terbuka") || el.classList.contains("cocok")) return;
+  if (!mulai) {
+    mulai = true;
+    timer = setInterval(() => {
+      detik++;
+      document.getElementById("waktu").textContent = detik + " dtk";
+    }, 1000);
+  }
+  el.classList.add("terbuka");
+  el.textContent = deck[i];
+  terbuka.push(el);
+  if (terbuka.length === 2) {
+    langkah++;
+    document.getElementById("langkah").textContent = langkah;
+    const [a, b] = terbuka;
+    if (a.textContent === b.textContent) {
+      a.classList.add("cocok"); b.classList.add("cocok");
+      terbuka = [];
+      cocok++;
+      document.getElementById("pasangan").textContent = cocok + "/8";
+      if (cocok === 8) {
+        clearInterval(timer);
+        document.getElementById("msg").textContent = "🎉 Semua cocok! " + langkah + " langkah dalam " + detik + " detik. Hebat!";
+      }
+    } else {
+      kunci = true;
+      setTimeout(() => {
+        a.classList.remove("terbuka"); b.classList.remove("terbuka");
+        a.textContent = "❓"; b.textContent = "❓";
+        terbuka = []; kunci = false;
+      }, 800);
+    }
+  }
+}
+document.getElementById("btnBaru").onclick = baru;
+baru();
+</script>
+</body>
+</html>

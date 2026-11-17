@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Simon Says — Game Afis &amp; Dita</title>
+<style>
+  * { box-sizing: border-box; }
+  body { font-family: -apple-system, "Segoe UI", Roboto, Arial, sans-serif; margin: 0; background: #ffffff; color: #222; padding-bottom: 40px; }
+  .topbar { position:sticky; top:0; z-index:50; background:rgba(255,255,255,.95); backdrop-filter:blur(8px); -webkit-backdrop-filter:blur(8px); border-bottom:1px solid #eee; box-shadow:0 2px 10px rgba(0,0,0,.05); }
+  .topbar-in { max-width:640px; margin:0 auto; display:flex; align-items:center; gap:12px; padding:10px 16px; }
+  .tb-logo { font-weight:900; font-size:1rem; letter-spacing:.02em; text-decoration:none; background-image:linear-gradient(90deg,#e53935,#f9a825,#43a047); -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent; color:transparent; flex:none; }
+  .topbar nav { margin-left:auto; display:flex; gap:14px; overflow-x:auto; scrollbar-width:none; }
+  .topbar nav::-webkit-scrollbar { display:none; }
+  .topbar nav a { color:#666; text-decoration:none; font-size:.83rem; font-weight:600; white-space:nowrap; }
+  .topbar nav a:hover { color:#111; }
+  .topbar nav a.on { color:#e53935; }
+  .wrap { max-width: 480px; margin: 0 auto; padding: 16px; text-align: center; }
+  .back { display: inline-block; margin: 4px 0 10px; color: #e53935; text-decoration: none; font-weight: 700; font-size: 14px; }
+  h1 { font-size: 22px; margin: 4px 0 2px; }
+  .sub { color: #666; font-size: 13px; margin-bottom: 14px; }
+  .stats { display: flex; justify-content: center; gap: 12px; margin-bottom: 12px; }
+  .stat { background: #fff8e1; border: 1px solid #ffe082; border-radius: 12px; padding: 8px 16px; font-size: 14px; }
+  .stat b { color: #e53935; font-size: 18px; }
+  #pad { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; max-width: 360px; margin: 0 auto; }
+  .tombol { aspect-ratio: 1; border: none; border-radius: 18px; cursor: pointer; font-size: 40px; opacity: .55; }
+  .tombol.nyala { opacity: 1; box-shadow: 0 0 24px rgba(0,0,0,.25); transform: scale(1.03); }
+  .tombol:active { transform: scale(.97); }
+  #t0 { background: #43a047; }
+  #t1 { background: #e53935; }
+  #t2 { background: #f9a825; }
+  #t3 { background: #0288d1; }
+  .btn { font-size: 15px; padding: 11px 20px; border: none; border-radius: 999px; cursor: pointer; font-weight: 700; background: #e53935; color: #fff; margin-top: 14px; }
+  #msg { font-size: 17px; font-weight: 700; margin: 12px 0 4px; min-height: 24px; }
+  .hint { font-size: 12.5px; color: #888; }
+</style>
+</head>
+<body>
+<div class="topbar"><div class="topbar-in">
+  <a class="tb-logo" href="https://4ever.ai.id/">4EVER</a>
+  <nav>
+    <a href="https://4ever.ai.id/">Beranda</a>
+    <a href="https://4ever.ai.id/profil.html">Profil</a>
+    <a href="https://4ever.ai.id/musik-yt.html">Musik</a>
+    <a href="https://4ever.ai.id/tools.html">Tools</a>
+    <a href="https://4ever.ai.id/artikel.html">Artikel</a>
+    <a href="https://4ever.ai.id/tv-gratis.html">TV</a>
+    <a href="https://4ever.ai.id/berita.html">Berita</a>
+    <a href="https://4ever.ai.id/game-hub-afis-dita.html" class="on">Game</a>
+  </nav>
+</div></div>
+
+<div class="wrap">
+  <a class="back" href="game-hub-afis-dita.html">⬅ Kembali ke Hub</a>
+  <h1>🎵 Simon Says</h1>
+  <p class="sub">Perhatikan urutan warna &amp; bunyinya, lalu ulangi dengan benar. Tiap ronde tambah 1 langkah!</p>
+  <div class="stats">
+    <div class="stat">Level<br><b id="level">0</b></div>
+    <div class="stat">Terbaik<br><b id="terbaik">0</b></div>
+  </div>
+  <div id="pad">
+    <button class="tombol" id="t0" aria-label="Hijau">🟢</button>
+    <button class="tombol" id="t1" aria-label="Merah">🔴</button>
+    <button class="tombol" id="t2" aria-label="Kuning">🟡</button>
+    <button class="tombol" id="t3" aria-label="Biru">🔵</button>
+  </div>
+  <div id="msg">Tekan ▶ Mulai untuk main!</div>
+  <button class="btn" id="btnMulai">▶ Mulai</button>
+  <p class="hint">Nyalakan suara HP-mu biar bunyinya kedengaran.</p>
+</div>
+
+<script>
+const FREQ = [329.63, 261.63, 392.00, 440.00];
+let ctxAudio = null;
+function bunyi(i) {
+  try {
+    if (!ctxAudio) ctxAudio = new (window.AudioContext || window.webkitAudioContext)();
+    const o = ctxAudio.createOscillator(), g = ctxAudio.createGain();
+    o.type = "sine"; o.frequency.value = FREQ[i];
+    g.gain.setValueAtTime(0.25, ctxAudio.currentTime);
+    g.gain.exponentialRampToValueAtTime(0.001, ctxAudio.currentTime + 0.4);
+    o.connect(g); g.connect(ctxAudio.destination);
+    o.start(); o.stop(ctxAudio.currentTime + 0.4);
+  } catch (e) {}
+}
+let urutan = [], idx = 0, level = 0, giliranMain = false, jalan = false;
+let terbaik = 0;
+try { terbaik = parseInt(localStorage.getItem("simon-terbaik") || "0", 10) || 0; } catch (e) {}
+document.getElementById("terbaik").textContent = terbaik;
+
+function nyala(i) {
+  const el = document.getElementById("t" + i);
+  el.classList.add("nyala");
+  bunyi(i);
+  setTimeout(() => el.classList.remove("nyala"), 350);
+}
+function mainkanUrutan() {
+  giliranMain = false;
+  document.getElementById("msg").textContent = "👀 Perhatikan…";
+  urutan.forEach((v, k) => setTimeout(() => nyala(v), 600 * k + 400));
+  setTimeout(() => {
+    idx = 0; giliranMain = true;
+    document.getElementById("msg").textContent = "✋ Giliranmu! Ulangi urutannya.";
+  }, 600 * urutan.length + 500);
+}
+function rondeBaru() {
+  level++;
+  document.getElementById("level").textContent = level;
+  urutan.push(Math.floor(Math.random() * 4));
+  mainkanUrutan();
+}
+function klikTombol(i) {
+  if (!jalan || !giliranMain) return;
+  nyala(i);
+  if (i !== urutan[idx]) { gameOver(); return; }
+  idx++;
+  if (idx === urutan.length) {
+    giliranMain = false;
+    document.getElementById("msg").textContent = "✅ Benar! Lanjut level " + (level + 1) + "…";
+    setTimeout(rondeBaru, 900);
+  }
+}
+function mulai() {
+  urutan = []; level = 0; jalan = true;
+  document.getElementById("level").textContent = "0";
+  document.getElementById("msg").textContent = "Siap-siap…";
+  document.getElementById("btnMulai").textContent = "🔄 Main Lagi";
+  try { if (!ctxAudio) ctxAudio = new (window.AudioContext || window.webkitAudioContext)(); if (ctxAudio.state === "suspended") ctxAudio.resume(); } catch (e) {}
+  setTimeout(rondeBaru, 600);
+}
+function gameOver() {
+  jalan = false; giliranMain = false;
+  const capai = level;
+  if (capai > terbaik) {
+    terbaik = capai;
+    document.getElementById("terbaik").textContent = terbaik;
+    try { localStorage.setItem("simon-terbaik", String(terbaik)); } catch (e) {}
+    document.getElementById("msg").textContent = "❌ Salah! Kamu sampai level " + capai + " — Rekor baru! 🎉";
+  } else {
+    document.getElementById("msg").textContent = "❌ Salah! Kamu sampai level " + capai + ".";
+  }
+  document.getElementById("btnMulai").textContent = "🔄 Main Lagi";
+}
+[0, 1, 2, 3].forEach(i => document.getElementById("t" + i).onclick = () => klikTombol(i));
+document.getElementById("btnMulai").onclick = mulai;
+</script>
+</body>
+</html>

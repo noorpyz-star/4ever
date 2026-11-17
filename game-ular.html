@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Ular — Game Afis &amp; Dita</title>
+<style>
+  * { box-sizing: border-box; }
+  body { font-family: -apple-system, "Segoe UI", Roboto, Arial, sans-serif; margin: 0; background: #ffffff; color: #222; padding-bottom: 40px; }
+  .topbar { position:sticky; top:0; z-index:50; background:rgba(255,255,255,.95); backdrop-filter:blur(8px); -webkit-backdrop-filter:blur(8px); border-bottom:1px solid #eee; box-shadow:0 2px 10px rgba(0,0,0,.05); }
+  .topbar-in { max-width:640px; margin:0 auto; display:flex; align-items:center; gap:12px; padding:10px 16px; }
+  .tb-logo { font-weight:900; font-size:1rem; letter-spacing:.02em; text-decoration:none; background-image:linear-gradient(90deg,#e53935,#f9a825,#43a047); -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent; color:transparent; flex:none; }
+  .topbar nav { margin-left:auto; display:flex; gap:14px; overflow-x:auto; scrollbar-width:none; }
+  .topbar nav::-webkit-scrollbar { display:none; }
+  .topbar nav a { color:#666; text-decoration:none; font-size:.83rem; font-weight:600; white-space:nowrap; }
+  .topbar nav a:hover { color:#111; }
+  .topbar nav a.on { color:#e53935; }
+  .wrap { max-width: 480px; margin: 0 auto; padding: 16px; text-align: center; }
+  .back { display: inline-block; margin: 4px 0 10px; color: #e53935; text-decoration: none; font-weight: 700; font-size: 14px; }
+  h1 { font-size: 22px; margin: 4px 0 2px; }
+  .sub { color: #666; font-size: 13px; margin-bottom: 14px; }
+  .stats { display: flex; justify-content: center; gap: 12px; margin-bottom: 12px; }
+  .stat { background: #fff8e1; border: 1px solid #ffe082; border-radius: 12px; padding: 8px 16px; font-size: 14px; }
+  .stat b { color: #e53935; font-size: 18px; }
+  canvas { background: #f1f8e9; border: 2px solid #43a047; border-radius: 14px; width: 100%; max-width: 400px; height: auto; display: block; margin: 0 auto; touch-action: none; }
+  .dpad { display: grid; grid-template-columns: repeat(3, 64px); grid-template-rows: repeat(2, 56px); gap: 6px; justify-content: center; margin: 16px auto 8px; }
+  .dpad button { font-size: 24px; background: #f5f5f5; border: 1px solid #ddd; border-radius: 12px; cursor: pointer; }
+  .dpad button:active { background: #ffe082; }
+  .btn { font-size: 15px; padding: 11px 20px; border: none; border-radius: 999px; cursor: pointer; font-weight: 700; background: #e53935; color: #fff; margin-top: 8px; }
+  .btn.ghost { background: #f5f5f5; color: #222; border: 1px solid #ddd; }
+  #msg { font-size: 17px; font-weight: 700; margin: 12px 0 4px; min-height: 24px; }
+  .hint { font-size: 12.5px; color: #888; }
+</style>
+</head>
+<body>
+<div class="topbar"><div class="topbar-in">
+  <a class="tb-logo" href="https://4ever.ai.id/">4EVER</a>
+  <nav>
+    <a href="https://4ever.ai.id/">Beranda</a>
+    <a href="https://4ever.ai.id/profil.html">Profil</a>
+    <a href="https://4ever.ai.id/musik-yt.html">Musik</a>
+    <a href="https://4ever.ai.id/tools.html">Tools</a>
+    <a href="https://4ever.ai.id/artikel.html">Artikel</a>
+    <a href="https://4ever.ai.id/tv-gratis.html">TV</a>
+    <a href="https://4ever.ai.id/berita.html">Berita</a>
+    <a href="https://4ever.ai.id/game-hub-afis-dita.html" class="on">Game</a>
+  </nav>
+</div></div>
+
+<div class="wrap">
+  <a class="back" href="game-hub-afis-dita.html">⬅ Kembali ke Hub</a>
+  <h1>🐍 Ular</h1>
+  <p class="sub">Makan apelnya, jangan nabrak dinding atau ekormu sendiri. Makin banyak makan, makin cepat!</p>
+  <div class="stats">
+    <div class="stat">Skor<br><b id="skor">0</b></div>
+    <div class="stat">Level<br><b id="level">1</b></div>
+    <div class="stat">Terbaik<br><b id="terbaik">0</b></div>
+  </div>
+  <canvas id="cv" width="400" height="400"></canvas>
+  <div id="msg">Tekan ▶ Mulai atau geser layarnya</div>
+  <div class="dpad">
+    <span></span><button data-arah="atas" aria-label="Atas">⬆️</button><span></span>
+    <button data-arah="kiri" aria-label="Kiri">⬅️</button><button data-arah="bawah" aria-label="Bawah">⬇️</button><button data-arah="kanan" aria-label="Kanan">➡️</button>
+  </div>
+  <button class="btn" id="btnMulai">▶ Mulai</button>
+  <button class="btn ghost" id="btnJeda">⏸ Jeda</button>
+  <p class="hint">Keyboard: tombol panah / WASD. HP: geser layar atau pakai tombol arah di atas.</p>
+</div>
+
+<script>
+const cv = document.getElementById("cv");
+const ctx = cv.getContext("2d");
+const SEL = 20, GRID = 20;
+let ular, arah, arahBerikut, makanan, skor, level, jalan, timer = null, jeda = false;
+let terbaik = 0;
+try { terbaik = parseInt(localStorage.getItem("ular-terbaik") || "0", 10) || 0; } catch (e) {}
+document.getElementById("terbaik").textContent = terbaik;
+
+function acakMakanan() {
+  while (true) {
+    const m = { x: Math.floor(Math.random() * GRID), y: Math.floor(Math.random() * GRID) };
+    if (!ular.some(s => s.x === m.x && s.y === m.y)) return m;
+  }
+}
+function reset() {
+  ular = [{ x: 10, y: 10 }, { x: 9, y: 10 }, { x: 8, y: 10 }];
+  arah = { x: 1, y: 0 }; arahBerikut = { x: 1, y: 0 };
+  makanan = acakMakanan();
+  skor = 0; level = 1; jalan = false; jeda = false;
+  document.getElementById("skor").textContent = "0";
+  document.getElementById("level").textContent = "1";
+  document.getElementById("btnJeda").textContent = "⏸ Jeda";
+  gambar();
+}
+function kecepatan() { return Math.max(70, 150 - (level - 1) * 12); }
+function langkah() {
+  if (!jalan || jeda) return;
+  arah = arahBerikut;
+  const kepala = { x: ular[0].x + arah.x, y: ular[0].y + arah.y };
+  if (kepala.x < 0 || kepala.y < 0 || kepala.x >= GRID || kepala.y >= GRID ||
+      ular.some(s => s.x === kepala.x && s.y === kepala.y)) { gameOver(); return; }
+  ular.unshift(kepala);
+  if (kepala.x === makanan.x && kepala.y === makanan.y) {
+    skor++;
+    const lv = Math.floor(skor / 5) + 1;
+    if (lv !== level) { level = lv; document.getElementById("level").textContent = level; }
+    document.getElementById("skor").textContent = skor;
+    makanan = acakMakanan();
+  } else {
+    ular.pop();
+  }
+  gambar();
+  timer = setTimeout(langkah, kecepatan());
+}
+function gambar() {
+  ctx.fillStyle = "#f1f8e9"; ctx.fillRect(0, 0, 400, 400);
+  ctx.fillStyle = "#e53935";
+  ctx.beginPath(); ctx.arc(makanan.x * SEL + SEL / 2, makanan.y * SEL + SEL / 2, SEL / 2 - 2, 0, Math.PI * 2); ctx.fill();
+  ular.forEach((s, i) => {
+    ctx.fillStyle = i === 0 ? "#2e7d32" : "#43a047";
+    ctx.beginPath(); ctx.roundRect(s.x * SEL + 1, s.y * SEL + 1, SEL - 2, SEL - 2, 6); ctx.fill();
+  });
+}
+function mulai() {
+  if (jalan) { reset(); }
+  reset();
+  jalan = true;
+  document.getElementById("msg").textContent = "Ayo makan! 🍎";
+  document.getElementById("btnMulai").textContent = "🔄 Mulai Ulang";
+  clearTimeout(timer);
+  timer = setTimeout(langkah, kecepatan());
+}
+function gameOver() {
+  jalan = false; clearTimeout(timer);
+  if (skor > terbaik) {
+    terbaik = skor;
+    document.getElementById("terbaik").textContent = terbaik;
+    try { localStorage.setItem("ular-terbaik", String(terbaik)); } catch (e) {}
+    document.getElementById("msg").textContent = "💥 Game Over! Skor " + skor + " — Rekor baru! 🎉";
+  } else {
+    document.getElementById("msg").textContent = "💥 Game Over! Skor kamu " + skor + ".";
+  }
+  document.getElementById("btnMulai").textContent = "🔄 Main Lagi";
+}
+function setArah(x, y) {
+  if (arah.x === -x && arah.y === -y) return; // tidak boleh balik arah
+  arahBerikut = { x, y };
+  if (!jalan) mulai();
+}
+document.getElementById("btnMulai").onclick = mulai;
+document.getElementById("btnJeda").onclick = () => {
+  if (!jalan) return;
+  jeda = !jeda;
+  document.getElementById("btnJeda").textContent = jeda ? "▶ Lanjut" : "⏸ Jeda";
+  document.getElementById("msg").textContent = jeda ? "⏸ Dijeda." : "Ayo makan! 🍎";
+  if (!jeda) { clearTimeout(timer); timer = setTimeout(langkah, kecepatan()); }
+};
+document.querySelectorAll(".dpad button").forEach(b => {
+  b.onclick = () => {
+    const a = b.dataset.arah;
+    if (a === "atas") setArah(0, -1);
+    if (a === "bawah") setArah(0, 1);
+    if (a === "kiri") setArah(-1, 0);
+    if (a === "kanan") setArah(1, 0);
+  };
+});
+document.addEventListener("keydown", e => {
+  if (e.key === "ArrowUp" || e.key === "w" || e.key === "W") { setArah(0, -1); e.preventDefault(); }
+  if (e.key === "ArrowDown" || e.key === "s" || e.key === "S") { setArah(0, 1); e.preventDefault(); }
+  if (e.key === "ArrowLeft" || e.key === "a" || e.key === "A") { setArah(-1, 0); e.preventDefault(); }
+  if (e.key === "ArrowRight" || e.key === "d" || e.key === "D") { setArah(1, 0); e.preventDefault(); }
+});
+let sx = 0, sy = 0;
+cv.addEventListener("touchstart", e => { sx = e.touches[0].clientX; sy = e.touches[0].clientY; e.preventDefault(); }, { passive: false });
+cv.addEventListener("touchend", e => {
+  const dx = e.changedTouches[0].clientX - sx, dy = e.changedTouches[0].clientY - sy;
+  if (Math.max(Math.abs(dx), Math.abs(dy)) < 20) return;
+  if (Math.abs(dx) > Math.abs(dy)) setArah(dx > 0 ? 1 : -1, 0); else setArah(0, dy > 0 ? 1 : -1);
+  e.preventDefault();
+}, { passive: false });
+reset();
+</script>
+</body>
+</html>
