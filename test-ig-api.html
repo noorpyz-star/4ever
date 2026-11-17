@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<link rel="icon" type="image/png" href="https://4ever.ai.id/favicon.png">
+<meta property="og:site_name" content="4ever.ai.id">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TES API IG — sementara</title>
+<style>body{background:#111;color:#eee;font-family:monospace;padding:20px;word-break:break-word}h1{font-size:1.1rem;color:#d4af37}pre{background:#000;padding:12px;border:1px solid #444;border-radius:8px;white-space:pre-wrap}</style>
+</head>
+<body>
+<h1>TES API IG (FastDl worker hub) — sementara, akan dihapus</h1>
+<div id="out">⏳ lagi ngetes…</div>
+<script>
+(async () => {
+  const out = document.getElementById('out');
+  const lines = [];
+  const log = (s) => { lines.push(s); out.innerHTML = '<pre>' + lines.join('\n') + '</pre>'; };
+  const testUrl = 'https://www.instagram.com/reel/CxYz123abc/';
+  try {
+    const ctrl = new AbortController();
+    const t = setTimeout(() => ctrl.abort(), 20000);
+    const res = await fetch('https://api-wh.fastdl.app/api/convert', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ target_url: testUrl }),
+      signal: ctrl.signal
+    });
+    clearTimeout(t);
+    log('HTTP STATUS: ' + res.status + ' ' + res.statusText);
+    log('CORS HEADER (access-control-allow-origin): ' + (res.headers.get('access-control-allow-origin') || '(tidak ada)'));
+    const txt = await res.text();
+    log('BODY (' + txt.length + ' karakter):');
+    log(txt.slice(0, 3000));
+  } catch (e) {
+    log('FETCH GAGAL: ' + e.name + ' — ' + e.message);
+    log('Artinya: kemungkinan CORS diblokir / Cloudflare / domain tidak bisa dijangkau dari browser ini.');
+  }
+})();
+</script>
+</body>
+</html>

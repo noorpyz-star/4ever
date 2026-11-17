@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<link rel="icon" type="image/png" href="https://4ever.ai.id/favicon.png">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="4ever.ai.id — rumah digital Muhammad Nur Afis Siswanto: tools gratis (download video TikTok/FB/IG, email generator, 13 tools), musik gratis, live TV Indonesia, game Afis & Dita, dan halaman spesial buat Ibu Dita.">
+<link rel="canonical" href="https://4ever.ai.id/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="4ever.ai.id">
+<meta property="og:title" content="4ever.ai.id — Afis">
+<meta property="og:description" content="Rumah digital Muhammad Nur Afis Siswanto: tools gratis, musik, live TV Indonesia, game Afis &amp; Dita, dan berita hari ini.">
+<meta property="og:url" content="https://4ever.ai.id/">
+<meta property="og:image" content="https://4ever.ai.id/foto-afis-dita.jpg">
+<meta name="twitter:card" content="summary">
+<title>4ever.ai.id — Preview Tema</title>
+<style>
+  /* ===== PREVIEW TEMA: variabel warna (default = Terang, sama seperti live) ===== */
+  :root {
+    --bg: linear-gradient(180deg, #fff3f3 0%, #ffffff 340px);
+    --text: #222; --text-strong: #1a1a1a; --muted: #777; --faint: #999;
+    --accent: #e53935; --accent2: #f9a825; --accent3: #43a047;
+    --card-bg: linear-gradient(180deg, #fff5f5, #ffffff);
+    --card-border: #e53935; --card-shadow: 0 6px 20px rgba(229,57,53,.12);
+    --card-shadow-hover: 0 8px 22px rgba(0,0,0,.10);
+    --bar-grad: linear-gradient(180deg, #e53935, #f9a825 50%, #43a047);
+    --logo-grad: linear-gradient(90deg, #e53935, #f9a825, #43a047, #e53935, #f9a825, #43a047);
+    --chip-bg: #e53935; --chip-color: #fff;
+    --pill-bg: #fffde7; --love-bg: #fdecea; --love-shadow: 0 4px 18px rgba(229,57,53,.12);
+    --info-bg: #fafafa; --card-border-soft: #e0e0e0;
+    --topbar-bg: rgba(255,255,255,.95); --topbar-border: #eee;
+  }
+  body.tema-sunset {
+    --bg: linear-gradient(180deg, #ffe8d6 0%, #ffd6e0 45%, #e8d5f2 100%);
+    --text: #3d2b2b; --text-strong: #2b1a1a; --muted: #7a5a5a; --faint: #a08a8a;
+    --accent: #ff6b35; --accent2: #f9a825; --accent3: #d6336c;
+    --card-bg: rgba(255,255,255,.85);
+    --card-border: #ff8c5a; --card-shadow: 0 6px 20px rgba(255,107,53,.16);
+    --card-shadow-hover: 0 8px 22px rgba(214,51,108,.18);
+    --bar-grad: linear-gradient(180deg, #ff6b35, #f9a825 50%, #d6336c);
+    --logo-grad: linear-gradient(90deg, #ff6b35, #e84393, #8e44ad, #ff6b35);
+    --chip-bg: #ff6b35; --chip-color: #fff;
+    --pill-bg: rgba(255,255,255,.7); --love-bg: rgba(255,214,224,.9); --love-shadow: 0 4px 18px rgba(255,107,53,.16);
+    --info-bg: rgba(255,255,255,.78); --card-border-soft: #f0d0c0;
+    --topbar-bg: rgba(255,240,230,.92); --topbar-border: #f5d5c5;
+  }
+  body.tema-minimal {
+    --bg: #ffffff;
+    --text: #333; --text-strong: #111; --muted: #888; --faint: #aaa;
+    --accent: #e53935; --accent2: #e53935; --accent3: #e53935;
+    --card-bg: #ffffff;
+    --card-border: #e5e5e5; --card-shadow: 0 1px 4px rgba(0,0,0,.06);
+    --card-shadow-hover: 0 4px 14px rgba(0,0,0,.08);
+    --bar-grad: linear-gradient(180deg, #e53935, #e53935);
+    --logo-grad: linear-gradient(90deg, #111, #111);
+    --chip-bg: #111; --chip-color: #fff;
+    --pill-bg: #f5f5f5; --love-bg: #fafafa; --love-shadow: 0 1px 4px rgba(0,0,0,.06);
+    --info-bg: #fafafa; --card-border-soft: #e5e5e5;
+    --topbar-bg: rgba(255,255,255,.97); --topbar-border: #eee;
+  }
+  body.tema-minimal .musik-cta { background: #111 !important; }
+  body.tema-kaca {
+    --bg: linear-gradient(135deg, #ff8a80 0%, #ffd54f 28%, #81c784 55%, #64b5f6 82%, #ba68c8 100%);
+    --text: #1c1c28; --text-strong: #111; --muted: #4a4a58; --faint: #6b6b7a;
+    --accent: #d32f2f; --accent2: #f57f17; --accent3: #2e7d32;
+    --card-bg: rgba(255,255,255,.45);
+    --card-border: rgba(255,255,255,.75); --card-shadow: 0 8px 24px rgba(0,0,0,.12);
+    --card-shadow-hover: 0 10px 28px rgba(0,0,0,.16);
+    --bar-grad: linear-gradient(180deg, #e53935, #f9a825 50%, #43a047);
+    --logo-grad: linear-gradient(90deg, #d32f2f, #f57f17, #2e7d32);
+    --chip-bg: rgba(211,47,47,.9); --chip-color: #fff;
+    --pill-bg: rgba(255,255,255,.55); --love-bg: rgba(255,255,255,.55); --love-shadow: 0 8px 24px rgba(0,0,0,.12);
+    --info-bg: rgba(255,255,255,.45); --card-border-soft: rgba(255,255,255,.6);
+    --topbar-bg: rgba(255,255,255,.65); --topbar-border: rgba(255,255,255,.5);
+  }
+  body.tema-kaca a.link-btn, body.tema-kaca .info-card, body.tema-kaca .love-card {
+    backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+  }
+  body.tema-pastel {
+    --bg: #fdeef4;
+    --text: #4a3a42; --text-strong: #33262c; --muted: #8a7580; --faint: #b39aa6;
+    --accent: #ec407a; --accent2: #ffb74d; --accent3: #66bb6a;
+    --card-bg: #ffffff;
+    --card-border: #f8bbd0; --card-shadow: 0 6px 18px rgba(236,64,122,.10);
+    --card-shadow-hover: 0 8px 22px rgba(236,64,122,.14);
+    --bar-grad: linear-gradient(180deg, #f48fb1, #aed581 50%, #81d4fa);
+    --logo-grad: linear-gradient(90deg, #ec407a, #ab47bc, #42a5f5, #66bb6a);
+    --chip-bg: #f48fb1; --chip-color: #fff;
+    --pill-bg: #fff8e1; --love-bg: #fce4ec; --love-shadow: 0 4px 18px rgba(236,64,122,.12);
+    --info-bg: #fff5f8; --card-border-soft: #f8bbd0;
+    --topbar-bg: rgba(253,238,244,.95); --topbar-border: #f8bbd0;
+  }
+  body.tema-pastel .musik-cta { background: linear-gradient(135deg, #f48fb1, #ce93d8) !important; }
+  body.tema-pastel #umumSections a.link-btn:nth-of-type(3n+1) { background: #fff0f5; }
+  body.tema-pastel #umumSections a.link-btn:nth-of-type(3n+2) { background: #eef6ff; }
+  body.tema-pastel #umumSections a.link-btn:nth-of-type(3n) { background: #eefaf0; }
+  /* ===== bar pemilih tema (preview only) ===== */
+  .theme-preview-label { text-align:center; font-size:.68rem; letter-spacing:3px; color:#fff; background:#111; padding:6px 10px; }
+  .theme-picker { position:sticky; top:0; z-index:60; display:flex; gap:8px; padding:7px 10px; background:#fff; border-bottom:1px solid #eee; overflow-x:auto; scrollbar-width:none; }
+  .theme-picker::-webkit-scrollbar { display:none; }
+  .theme-picker button { flex:1; white-space:nowrap; padding:7px 10px; border-radius:999px; border:1px solid #ddd; background:#f5f5f5; color:#333; font:inherit; font-size:.82rem; font-weight:700; cursor:pointer; }
+  .theme-picker button.on { background:#e53935; border-color:#e53935; color:#fff; }
+  .topbar { top:46px; }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  body {
+    font-family: 'Segoe UI', Arial, sans-serif;
+    background: var(--bg);
+    color: var(--text); min-height: 100vh; overflow-x: hidden; text-align: center;
+  }
+  .sparkle { position: fixed; top: -30px; pointer-events: none; z-index: 1; opacity: .85; color: var(--accent); animation: fall linear forwards; }
+  @keyframes fall { to { transform: translateY(110vh) rotate(300deg); } }
+  .wrap { position: relative; z-index: 2; max-width: 480px; margin: 0 auto; padding: 52px 20px 40px; }
+  .logo-wrap { position: relative; text-align: center; margin-bottom: 18px; font-size: clamp(3rem, 15vw, 4.2rem); line-height: 1.1; }
+  .logo-anim {
+    display: inline-block; font-weight: 900; letter-spacing: .02em;
+    font-family: 'Segoe UI', Arial, sans-serif;
+    background-image: var(--logo-grad);
+    background-size: 200% 100%;
+    -webkit-background-clip: text; background-clip: text;
+    -webkit-text-fill-color: transparent; color: transparent;
+    animation: warnaJalan 4s linear infinite;
+  }
+  @keyframes warnaJalan { from { background-position: 0% 0; } to { background-position: 100% 0; } }
+  .logo-heart {
+    position: absolute; left: 50%; bottom: 72%; font-size: .30em; line-height: 1;
+    color: var(--accent); animation: detak 1.2s ease-in-out infinite;
+  }
+  @keyframes detak { 0%, 100% { transform: translateX(-50%) scale(1); } 50% { transform: translateX(-50%) scale(1.3); } }
+  h1 { font-size: 1.45rem; color: var(--text-strong); }
+  .uname { color: var(--accent); letter-spacing: 2px; font-size: .85rem; margin-top: 6px; }
+  .tag { color: var(--muted); font-size: .92rem; line-height: 1.6; margin: 14px 6px 6px; }
+  .musik-cta { display:flex; align-items:center; gap:13px; margin-top:20px; padding:17px 18px; border-radius:16px;
+    background:var(--accent); color:#fff; text-decoration:none; text-align:left; border-radius:18px;
+    box-shadow:0 6px 24px rgba(229,57,53,.30); }
+  .musik-cta .ic { color:#fff; } .musik-cta .tt2 { font-weight:bold; font-size:1.08rem; display:block; }
+  .musik-cta .ds2 { font-size:.85rem; opacity:.75; display:block; margin-top:2px; }
+  .musik-cta .arr { margin-left:auto; font-size:1.5rem; font-weight:bold; }
+  .group-title { color: var(--faint); font-size: .75rem; letter-spacing: 4px; margin: 30px 0 12px; }
+  .sec-desc { color: var(--muted); font-size: .85rem; line-height: 1.6; margin: 0 4px 6px; text-align: left; }
+  a.link-btn {
+    display: flex; align-items: center; gap: 14px; text-decoration: none;
+    background: var(--card-bg); border: 1px solid var(--card-border); color: var(--text-strong);
+    padding: 15px 18px 15px 22px; border-radius: 16px; margin: 10px 0; text-align: left;
+    position: relative; overflow: hidden;
+    box-shadow: var(--card-shadow);
+    transition: transform .12s ease, border-color .12s ease, box-shadow .12s ease;
+  }
+  a.link-btn::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 5px; background: var(--bar-grad); }
+  a.link-btn:hover { transform: translateY(-2px); border-color: var(--accent2); box-shadow: var(--card-shadow-hover); }
+  a.link-btn:active { transform: scale(.98); border-color: var(--accent3); }
+  a.link-btn.featured { border-color: var(--card-border); background: var(--card-bg); box-shadow: var(--card-shadow); }
+  a.link-btn.featured .ic { background: var(--chip-bg); color: var(--chip-color); }
+  a.link-btn .ic { font-size: 1.5rem; }
+  .link-btn .ic { color: var(--chip-color); background: var(--chip-bg); width: 46px; height: 46px; flex: none; display: flex; align-items: center; justify-content: center; border-radius: 13px; }
+  .link-btn .ic svg { width: 26px; height: 26px; display: block; }
+  a.link-btn .tt { font-weight: bold; font-size: 1rem; display: block; }
+  a.link-btn .ds { color: var(--muted); font-size: .8rem; display: block; margin-top: 2px; }
+  a.link-btn .arr { margin-left: auto; color: var(--accent); font-size: 1.2rem; }
+  .clock-pill {
+    display: inline-block; margin-top: 14px; padding: 9px 18px; border-radius: 999px;
+    border: 1px solid var(--accent2); color: var(--text); background: var(--pill-bg);
+    font-size: .92rem; letter-spacing: 1px;
+  }
+  .love-card {
+    margin: 22px 0 4px; padding: 20px 16px; border-radius: 16px;
+    border: 1px solid var(--accent); background: var(--love-bg); box-shadow: var(--love-shadow);
+  }
+  .love-card .big { font-size: 2.2rem; color: var(--text-strong); font-weight: bold; }
+  .love-card .lbl { color: var(--accent); letter-spacing: 2px; font-size: .78rem; margin-top: 2px; }
+  .love-card .sub { color: var(--faint); font-size: .88rem; margin-top: 10px; line-height: 1.6; }
+  .info-card {
+    margin: 10px 0; padding: 18px; border-radius: 14px; text-align: left;
+    border: 1px solid var(--card-border-soft); background: var(--info-bg); color: var(--text); box-shadow: 0 2px 10px rgba(0,0,0,.04);
+    font-size: .92rem; line-height: 1.7;
+  }
+  footer { color: var(--faint); font-size: .78rem; padding: 26px 0 8px; }
+
+  .topbar { position:sticky; top:0; z-index:50; background:var(--topbar-bg); backdrop-filter:blur(8px); -webkit-backdrop-filter:blur(8px); border-bottom:1px solid var(--topbar-border); box-shadow:0 2px 10px rgba(0,0,0,.05); }
+  .topbar-in { max-width:640px; margin:0 auto; display:flex; align-items:center; gap:12px; padding:10px 16px; }
+  .tb-logo { font-weight:900; font-size:1rem; letter-spacing:.02em; text-decoration:none; background-image:linear-gradient(90deg,#e53935,#f9a825,#43a047); -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent; color:transparent; flex:none; }
+  .topbar nav { margin-left:auto; display:flex; gap:14px; overflow-x:auto; scrollbar-width:none; }
+  .topbar nav::-webkit-scrollbar { display:none; }
+  .topbar nav a { color:var(--muted); text-decoration:none; font-size:.83rem; font-weight:600; white-space:nowrap; }
+  .topbar nav a:hover { color:var(--text-strong); }
+  .topbar nav a.on { color:var(--accent); }
+</style>
+</head>
+<body>
+<script>try{document.body.className+=' tema-'+(localStorage.getItem('tema-4ever-preview')||'terang');}catch(e){document.body.className+=' tema-terang';}</script>
+<div class="theme-preview-label">PREVIEW TEMA &mdash; coba ganti tema di bawah, yang live tidak berubah</div>
+<div class="theme-picker" id="themePicker">
+  <button data-tema="terang" class="on">Terang</button>
+  <button data-tema="sunset">Sunset</button>
+  <button data-tema="minimal">Minimal</button>
+  <button data-tema="kaca">Kaca</button>
+  <button data-tema="pastel">Pastel</button>
+</div>
+
+<div class="topbar"><div class="topbar-in">
+  <a class="tb-logo" href="https://4ever.ai.id/">4EVER</a>
+  <nav>
+    <a href="https://4ever.ai.id/" class="on">Beranda</a>
+    <a href="https://4ever.ai.id/profil.html">Profil</a>
+    <a href="https://4ever.ai.id/musik-yt.html">Musik</a>
+    <a href="https://4ever.ai.id/tools.html">Tools</a>
+    <a href="https://4ever.ai.id/artikel.html">Artikel</a>
+    <a href="https://4ever.ai.id/tv-gratis.html">TV</a>
+    <a href="https://4ever.ai.id/berita.html">Berita</a>
+    <a href="https://4ever.ai.id/game-hub-afis-dita.html">Game</a>
+  </nav>
+</div></div>
+
+<div class="wrap">
+  <div class="logo-wrap"><div class="logo-anim">4EVER</div><span class="logo-heart">♥</span></div>
+  <h1>Muhammad Nur Afis Siswanto</h1>
+  <div class="uname">@4EVER.AI.ID</div>
+  <p class="tag">website resmi <b style="color:var(--accent)">4ever.ai.id</b> — rumah digital Afis. Di sini ada tools gratis buat bikin email, artikel, musik gratis tanpa iklan, live TV Indonesia, game yang bisa dimainkan bareng jarak jauh, plus halaman-halaman spesial buat Ibu Dita. Semuanya dalam satu tempat.</p>
+
+  <div><span class="clock-pill" id="clockPill">…</span></div>
+
+  <a class="musik-cta" href="https://4ever.ai.id/katalog.html" style="background:linear-gradient(135deg,#e53935,#f9a825);">
+    <span class="ic"><svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="20" r="1.6"/><circle cx="17" cy="20" r="1.6"/><path d="M3 3.5h2.2l2.4 11.4h9.9l2-8.4H6.2"/></svg></span>
+    <span><span class="tt2">Katalog Promo Shopee</span><span class="ds2">barang murah tiap hari — harga coret + link beli langsung</span></span>
+    <span class="arr">›</span>
+  </a>
+  <a class="link-btn" href="https://4ever.ai.id/jadwal-posting.html">
+    <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="5" width="17" height="15.5" rx="2"/><path d="M3.5 9.5h17M8 3v4M16 3v4"/></svg></span>
+    <span><span class="tt">Jadwal Posting</span><span class="ds">jadwal posting promo ke Threads, Facebook &amp; channel WA — tiap 15 menit, barengan</span></span>
+    <span class="arr">›</span>
+  </a>
+
+  <div id="loveWrap" style="display:none">
+  <div class="love-card">
+    <div class="big"><span style="color:var(--accent)">♥</span> hari ke-<span id="loveDays">–</span></div>
+    <div class="lbl">AFIS &amp; DITA BERSAMA</div>
+    <div class="sub">sejak 28 Maret 2026 — dan <b style="color:var(--text-strong)"><span id="loveLeft">–</span> hari lagi</b> menuju anniversary ke-1 (28 Maret 2027)</div>
+  </div>
+  </div>
+
+  <div class="group-title"><svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="color:#43a047;vertical-align:-4px;flex:none"><path d="M12 20.3C6.9 16.4 3.6 13.2 3.6 9.5c0-2.8 2.1-4.9 4.7-4.9 1.6 0 3.1.8 3.7 2 .6-1.2 2.1-2 3.7-2 2.6 0 4.7 2.1 4.7 4.9 0 3.7-3.3 6.9-8.4 10.8z"/></svg> BUAT IBU DITA</div>
+  <div class="love" id="ditaLock" style="text-align:center;">
+    <div><svg viewBox="0 0 24 24" width="46" height="46" fill="none" stroke="#e53935" stroke-width="1.7" stroke-linecap="round"><rect x="5.4" y="10.4" width="13.2" height="9.6" rx="2.2"/><path d="M8.4 10.4V7.8a3.6 3.6 0 0 1 7.2 0v2.6"/><circle cx="12" cy="14.6" r="1.3" fill="#e53935" stroke="none"/><path d="M12 15.6v1.8"/></svg></div>
+    <div style="color:var(--text-strong);font-weight:bold;margin-top:6px;font-size:1.05rem;">Area Khusus Ibu Dita</div>
+    <p style="color:#bbb;font-size:.87rem;line-height:1.6;margin-top:6px;">bagian ini dikunci.<br>masukkan <b style="color:var(--text-strong)">tanggal jadian</b> buat membuka isinya</p>
+    <input id="ditaPass" type="password" inputmode="numeric" maxlength="12" placeholder="••••••••" autocomplete="off"
+      style="width:100%;margin-top:12px;padding:13px;border-radius:11px;border:1px solid #ccc;background:#ffffff;color:var(--text-strong);font-size:1.1rem;text-align:center;letter-spacing:5px;font-family:inherit;">
+    <button id="ditaOpen" style="width:100%;margin-top:10px;padding:13px;border:none;border-radius:11px;background:#e53935;color:#fff;font-size:1rem;font-weight:bold;font-family:inherit;cursor:pointer;">♥ Buka</button>
+    <div id="ditaErr" style="color:#d32f2f;font-size:.86rem;margin-top:9px;min-height:1.1em;"></div>
+  </div>
+  <div id="ditaLinks" style="display:none">
+  <a class="link-btn" href="https://4ever.ai.id/kata-kata-hari-ini-dita.html">
+    <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20.3C6.9 16.4 3.6 13.2 3.6 9.5c0-2.8 2.1-4.9 4.7-4.9 1.6 0 3.1.8 3.7 2 .6-1.2 2.1-2 3.7-2 2.6 0 4.7 2.1 4.7 4.9 0 3.7-3.3 6.9-8.4 10.8z"/></svg></span>
+    <span><span class="tt">Kata Kata Hari Ini</span><span class="ds">kata romantis buat Ibu Dita, bisa diganti-ganti</span></span>
+    <span class="arr">›</span>
+  </a>
+  <a class="link-btn" href="https://4ever.ai.id/ultah-dita-permatasari.html">
+    <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 20.5h15"/><path d="M5.5 20.5v-5h13v5"/><path d="M5.5 17.8h13"/><path d="M8.2 15.5v-2.6h7.6v2.6"/><path d="M12 12.9v-2.2"/><circle cx="12" cy="9.2" r="1.05" fill="currentColor" stroke="none"/></svg></span>
+    <span><span class="tt">Kejutan Ulang Tahun Dita</span><span class="ds">page ultah hitam-pink, ada game + kupon cinta</span></span>
+    <span class="arr">›</span>
+  </a>
+  <a class="link-btn" href="https://4ever.ai.id/undangan-pernikahan-muhammad-dita.html">
+    <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="14.8" r="5.3"/><path d="M12 3.4l2.9 3.4-2.9 3.4-2.9-3.4z"/><path d="M9.1 6.8h5.8"/></svg></span>
+    <span><span class="tt">Undangan Pernikahan Online</span><span class="ds">undangan digital Afis &amp; Dita — hitam abu + pohon gold</span></span>
+    <span class="arr">›</span>
+  </a>
+    <button id="ditaBack" style="width:100%;margin-top:16px;padding:13px;border-radius:11px;border:1px solid #43a047;background:transparent;color:#2e7d32;font-size:.98rem;font-weight:bold;font-family:inherit;cursor:pointer;">← Kembali ke Halaman Awal</button>
+  </div>
+
+  <div id="umumSections">
+  <div class="group-title"><svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="color:#43a047;vertical-align:-4px;flex:none"><path d="M14.8 6.2a4.2 4.2 0 0 1 5.6-4L17.8 4.8l1.1 2 2 .9 2.7-2.4a4.2 4.2 0 0 1-5.7 5.5L7.5 19a1.9 1.9 0 0 1-2.7-2.7l10-10.1z"/></svg> TOOLS</div>
+  <p class="sec-desc">Kumpulan tools gratis buatan Afis — semuanya bisa dipakai langsung di browser, tanpa install dan tanpa daftar. Bikin alamat email sekali pakai, kompres foto, sampai 13 tools kecil lainnya dalam satu halaman.</p>
+  <a class="link-btn featured" href="https://4ever.ai.id/musik-clone.html">
+    <span class="ic"><svg viewBox="0 0 24 24" width="27" height="27" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9.6 18.1V6.2l9.9-2v11.6"/><circle cx="6.9" cy="18.1" r="2.7"/><circle cx="16.8" cy="15.8" r="2.7"/></svg></span>
+    <span><span class="tt">Musik Gratis — Tanpa Iklan</span><span class="ds">putar lagu full + bikin playlist, kayak spotify</span></span>
+    <span class="arr">›</span>
+  </a>
+  <a class="link-btn" href="https://4ever.ai.id/tools.html">
+    <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4.3" y="4.3" width="6.4" height="6.4" rx="1.8"/><rect x="13.3" y="4.3" width="6.4" height="6.4" rx="1.8"/><rect x="4.3" y="13.3" width="6.4" height="6.4" rx="1.8"/><rect x="13.3" y="13.3" width="6.4" height="6.4" rx="1.8"/></svg></span>
+    <span><span class="tt">Tools Lainnya — 13 Tools Gratis!</span><span class="ds">fancy text • caption &amp; hashtag • jadwal sholat • cuaca • kompres foto • QR code • kalkulator diskon &amp; komisi • password generator • hitung umur • konverter • kurs • undi giveaway — semuanya dalam SATU page</span></span>
+    <span class="arr">›</span>
+  </a>
+
+  <a class="link-btn" href="https://4ever.ai.id/email-generator.html">
+    <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3.6" y="5.8" width="16.8" height="12.4" rx="2"/><path d="M4.5 7.6L12 13l7.5-5.4"/></svg></span>
+    <span><span class="tt">Email Generator</span><span class="ds">bikin alamat email @netplix.my.id — nama acak / kata acak / custom, sekali klik copy</span></span>
+    <span class="arr">›</span>
+  </a>
+  <a class="link-btn" href="https://4ever.ai.id/tv-gratis.html">
+    <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2.6" y="7.4" width="18.8" height="13" rx="2"/><polyline points="17 2.6 12 7.4 7 2.6"/></svg></span>
+    <span><span class="tt">TV Gratis — Live TV Indonesia</span><span class="ds">nonton live tv resmi gratis: kompas, metro, tvone, indosiar (ada bola!), sctv, rcti+, trans7 — satu page</span></span>
+    <span class="arr">›</span>
+  </a>
+  <a class="link-btn" href="https://4ever.ai.id/game-hub-afis-dita.html">
+    <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9.5h12a4 4 0 0 1 4 4c0 1.7-1.2 2.9-2.8 2.9-.9 0-1.6-.4-2.2-1.2H7c-.6.8-1.3 1.2-2.2 1.2C3.2 16.4 2 15.2 2 13.5a4 4 0 0 1 4-4z"/><path d="M7.5 11.5v3M6 13h3"/><circle cx="16.8" cy="12.2" r=".6" fill="currentColor"/><circle cx="18.8" cy="13.8" r=".6" fill="currentColor"/></svg></span>
+    <span><span class="tt">Game Afis &amp; Dita</span><span class="ds">main bareng jarak jauh: ular tangga, tic tac toe, kuis pasangan, tebak kata — online tanpa gantian HP</span></span>
+    <span class="arr">›</span>
+  </a>
+
+  <div class="group-title"><svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="color:#43a047;vertical-align:-4px;flex:none"><path d="M4 5.5h16v13.5H4z"/><path d="M4 9h16"/><path d="M7 12.5h5M7 15.5h8"/></svg> BERITA</div>
+  <p class="sec-desc">Berita hari ini — kabar terbaru, dirangkum dari sumber terpercaya dan diperbarui berkala.</p>
+  <a class="link-btn" href="https://4ever.ai.id/berita.html">
+    <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5.5h16v13.5H4z"/><path d="M4 9h16"/><path d="M7 12.5h5M7 15.5h8"/></svg></span>
+    <span><span class="tt">Berita Hari Ini</span><span class="ds">kabar terbaru hari ini — dirangkum dari sumber terpercaya</span></span>
+    <span class="arr">›</span>
+  </a>
+
+  <div class="group-title"><svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="color:#43a047;vertical-align:-4px;flex:none"><path d="M4 5.5h16v13.5H4z"/><path d="M4 9h16"/><path d="M7 12.5h5M7 15.5h8"/></svg> ARTIKEL</div>
+  <p class="sec-desc">Artikel asli yang ditulis Afis — panduan praktis seputar uang, website, dan musik.</p>
+  <a class="link-btn" href="https://4ever.ai.id/artikel.html">
+    <span class="ic"><svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5.5h16v13.5H4z"/><path d="M4 9h16"/><path d="M7 12.5h5M7 15.5h8"/></svg></span>
+    <span><span class="tt">Artikel — Panduan Praktis</span><span class="ds">Shopee Affiliate • website gratis • BSU 2026 • musik gratis yang legal</span></span>
+    <span class="arr">›</span>
+  </a>
+
+  
+
+  <div class="group-title"><svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="color:#43a047;vertical-align:-4px;flex:none"><circle cx="12" cy="8" r="4"/><path d="M4.5 20.5c1.4-3.2 4.2-4.8 7.5-4.8s6.1 1.6 7.5 4.8"/></svg> PROFIL</div>
+  <p class="sec-desc">Kenalan sama Afis — kreator di balik 4ever.ai.id, dari Tegal, Jawa Tengah.</p>
+  <a class="link-btn" href="https://4ever.ai.id/profil.html">
+    <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="4"/><path d="M4.5 20.5c1.4-3.2 4.2-4.8 7.5-4.8"/></svg></span>
+    <span><span class="tt">Profil Afis</span><span class="ds">Muhammad Nur Afis Siswanto • TikTok, YouTube, Instagram &amp; Facebook</span></span>
+    <span class="arr">›</span>
+  </a>
+
+  <div class="group-title"><svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="color:#43a047;vertical-align:-4px;flex:none"><path d="M20 5.8A2.8 2.8 0 0 0 17.2 3H6.8A2.8 2.8 0 0 0 4 5.8v7.4A2.8 2.8 0 0 0 6.8 16h.7v4.2L11.3 16h5.9A2.8 2.8 0 0 0 20 13.2z"/></svg> KONTAK</div>
+  <p class="sec-desc">Punya pertanyaan atau saran tools baru? Chat langsung lewat WhatsApp di bawah ini.</p>
+  <a class="link-btn" href="https://wa.me/6283895952782">
+    <span class="ic"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 5.8A2.8 2.8 0 0 0 17.2 3H6.8A2.8 2.8 0 0 0 4 5.8v7.4A2.8 2.8 0 0 0 6.8 16h.7v4.2L11.3 16h5.9A2.8 2.8 0 0 0 20 13.2z"/><circle cx="8.4" cy="9.5" r="1.1" fill="currentColor" stroke="none"/><circle cx="12" cy="9.5" r="1.1" fill="currentColor" stroke="none"/><circle cx="15.6" cy="9.5" r="1.1" fill="currentColor" stroke="none"/></svg></span>
+    <span><span class="tt">WhatsApp Aku</span><span class="ds">chat langsung ke Afis</span></span>
+    <span class="arr">›</span>
+  </a>
+
+  <div class="group-title"><svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="color:#43a047;vertical-align:-4px;flex:none"><circle cx="12" cy="12" r="8.8"/><path d="M12 11.2V16"/><path d="M12 7.8h.01"/></svg> TENTANG</div>
+  <div class="info-card">
+    <b style="color:var(--text-strong)">4ever</b> dibaca <i>"forever"</i> — selamanya. Website ini rumah digitalnya <b style="color:var(--text-strong)">Muhammad Nur Afis Siswanto</b>: tempat ngumpulnya halaman-halaman spesial buat <b style="color:var(--text-strong)">Ibu Dita</b>, link sosial media, dan karya-karya Afis. Kayak namanya, semoga semuanya di sini buat selamanya 💙
+    <br><br>
+    Di 4ever.ai.id kamu bisa memakai berbagai tools gratis — generator email, 13 tools serbaguna, artikel panduan, musik gratis yang bisa diputar sambil bikin playlist, sampai live TV Indonesia dari saluran resmi. Ada juga game yang bisa dimainkan bareng dari jarak jauh, seperti ular tangga, tic tac toe, kuis pasangan, dan tebak kata.
+    <br><br>
+    Semua halaman di situs ini dibuat dan dirawat langsung oleh Afis dari Tegal, Jawa Tengah. Kalau ada saran, ide tools baru, atau sekadar mau menyapa, hubungi Afis lewat WhatsApp di atas. Terima kasih sudah mampir! 💙
+  </div>
+  </div>
+
+    <footer><a href="https://4ever.ai.id/profil.html" style="color:#888;text-decoration:none;">Profil</a> &nbsp;•&nbsp; <a href="https://4ever.ai.id/kebijakan-privasi.html" style="color:#888;text-decoration:none;">Kebijakan Privasi</a> &nbsp;•&nbsp; <a href="https://wa.me/6283895952782" style="color:#888;text-decoration:none;">Kontak</a><br>© 2026 4ever.ai.id — dibuat dengan 💙</footer>
+</div>
+
+<script>
+// tombol sosmed yang link-nya belum diisi: kasih tau dulu
+document.querySelectorAll('a.sosmed').forEach(a => {
+  a.addEventListener('click', e => {
+    if (a.getAttribute('href') === '#') { e.preventDefault(); alert('Link ' + a.dataset.net + '-nya menyusul ya 🙏'); }
+  });
+});
+// taburan gold
+const SYMS = ['✦','✧','💛','✨','⋆'];
+for (let i = 0; i < 20; i++) {
+  const sp = document.createElement('span');
+  sp.className = 'sparkle';
+  sp.textContent = SYMS[(Math.random() * SYMS.length) | 0];
+  sp.style.left = (Math.random() * 100) + 'vw';
+  sp.style.fontSize = (10 + Math.random() * 13) + 'px';
+  sp.style.animationDuration = (8 + Math.random() * 9) + 's';
+  sp.style.animationDelay = (Math.random() * 9) + 's';
+  sp.style.color = ['#e53935','#f9a825','#43a047'][(Math.random() * 3) | 0];
+  document.body.appendChild(sp);
+}
+
+// penghitung hari bersama Afis & Dita
+(function () {
+  const start = new Date('2026-03-28T00:00:00+07:00').getTime();
+  const anniv = new Date('2027-03-28T00:00:00+07:00').getTime();
+  const now = Date.now();
+  document.getElementById('loveDays').textContent = Math.max(1, Math.floor((now - start) / 86400000) + 1);
+  document.getElementById('loveLeft').textContent = Math.max(0, Math.ceil((anniv - now) / 86400000));
+})();
+
+// jam realtime WIB di hub
+(function () {
+  function tick() {
+    const now = new Date();
+    const tgl = now.toLocaleDateString('id-ID', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric', timeZone: 'Asia/Jakarta' });
+    const jam = now.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false, timeZone: 'Asia/Jakarta' }).replace(/\./g, ':');
+    document.getElementById('clockPill').textContent = tgl + ' • ' + jam + ' WIB';
+  }
+  tick(); setInterval(tick, 1000);
+})();
+
+// kunci area Ibu Dita (tanggal jadian) — pas kebuka, section umum ngumpet
+function ditaUnlock() {
+  document.getElementById('ditaLock').style.display = 'none';
+  document.getElementById('ditaLinks').style.display = 'block';
+  document.getElementById('loveWrap').style.display = 'block';
+  document.getElementById('umumSections').style.display = 'none';
+}
+function ditaBackHome() {
+  try { sessionStorage.removeItem('hub_dita'); } catch (e) {}
+  document.getElementById('ditaLock').style.display = '';
+  document.getElementById('ditaLinks').style.display = 'none';
+  document.getElementById('loveWrap').style.display = 'none';
+  document.getElementById('umumSections').style.display = '';
+  document.getElementById('ditaPass').value = '';
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+document.getElementById('ditaBack').onclick = ditaBackHome;
+function ditaTry() {
+  const v = document.getElementById('ditaPass').value.replace(/\D/g, '');
+  if (v === '28032026') {
+    try { sessionStorage.setItem('hub_dita', '1'); } catch (e) {}
+    ditaUnlock();
+  } else {
+    document.getElementById('ditaErr').textContent = 'salah 🥺 itu bukan tanggal jadian kita...';
+    document.getElementById('ditaPass').value = '';
+    document.getElementById('ditaPass').focus();
+  }
+}
+document.getElementById('ditaOpen').onclick = ditaTry;
+document.getElementById('ditaPass').addEventListener('keydown', e => { if (e.key === 'Enter') ditaTry(); });
+try { if (sessionStorage.getItem('hub_dita') === '1') ditaUnlock(); } catch (e) {}
+</script>
+
+<script>
+// pemilih tema (preview only) — simpan pilihan di localStorage
+(function () {
+  var KEY = 'tema-4ever-preview';
+  var THEMES = ['terang', 'sunset', 'minimal', 'kaca', 'pastel'];
+  var btns = document.querySelectorAll('#themePicker button');
+  function apply(t) {
+    THEMES.forEach(function (x) { document.body.classList.remove('tema-' + x); });
+    document.body.classList.add('tema-' + t);
+    btns.forEach(function (b) { b.classList.toggle('on', b.dataset.tema === t); });
+    try { localStorage.setItem(KEY, t); } catch (e) {}
+  }
+  var saved = 'terang';
+  try { saved = localStorage.getItem(KEY) || 'terang'; } catch (e) {}
+  if (THEMES.indexOf(saved) < 0) saved = 'terang';
+  apply(saved);
+  btns.forEach(function (b) { b.addEventListener('click', function () { apply(b.dataset.tema); }); });
+})();
+</script>
+</body>
+</html>
