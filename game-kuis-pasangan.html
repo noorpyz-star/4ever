@@ -67,8 +67,8 @@
 
 <div class="box hidden" id="buatBox">
   <p>Kamu main sebagai siapa?</p>
-  <button class="btn-gold" data-saya="Afis">Saya Afis</button>
-  <button class="btn-gelap" data-saya="Dita">Saya Dita</button>
+  <button class="btn-gold" data-saya="Pemain 1">Saya Pemain 1</button>
+  <button class="btn-gelap" data-saya="Pemain 2">Saya Pemain 2</button>
   <div id="buatHasil" class="hidden">
     <p>Kirim kode ini ke pasanganmu:</p>
     <div class="kode" id="kodeBuat"></div>
@@ -79,8 +79,8 @@
 <div class="box hidden" id="gabungBox">
   <p>Masukkan kode room, lalu pilih identitasmu:</p>
   <input id="inputKode" maxlength="4" placeholder="XXXX">
-  <button class="btn-gold" data-gabung="Afis">Gabung sebagai Afis</button>
-  <button class="btn-gelap" data-gabung="Dita">Gabung sebagai Dita</button>
+  <button class="btn-gold" data-gabung="Pemain 1">Gabung sebagai Pemain 1</button>
+  <button class="btn-gelap" data-gabung="Pemain 2">Gabung sebagai Pemain 2</button>
   <p id="gabungErr" style="color:#ff8080"></p>
 </div>
 
@@ -93,8 +93,8 @@
   <div class="soal-no" id="soalNo"></div>
   <div class="soal-teks" id="soalTeks"></div>
   <div class="opt">
-    <button data-jawab="Afis">Afis</button>
-    <button data-jawab="Dita">Dita</button>
+    <button data-jawab="Pemain 1">Pemain 1</button>
+    <button data-jawab="Pemain 2">Pemain 2</button>
     <button data-jawab="Sama-sama">Sama-sama</button>
   </div>
 </div>
@@ -130,7 +130,7 @@ const HURUF = "ABCDEFGHJKLMNPQRSTUVWXYZ";
 // Server sinyal gratis PeerJS + STUN cadangan (biar tembus NAT yang rewel)
 const PEER_CFG = { host: "0.peerjs.com", secure: true, port: 443, path: "/", config: { iceServers: [{ urls: "stun:stun.l.google.com:19302" }, { urls: "stun:stun1.l.google.com:19302" }, { urls: "stun:stun2.l.google.com:19302" }, { urls: "stun:global.stun.twilio.com:3478" }, { urls: "stun:stun.cloudflare.com:3478" }, { urls: "turn:openrelay.metered.ca:80", username: "openrelayproject", credential: "openrelayproject" }, { urls: "turn:openrelay.metered.ca:443", username: "openrelayproject", credential: "openrelayproject" }, { urls: "turn:openrelay.metered.ca:443?transport=tcp", username: "openrelayproject", credential: "openrelayproject" }, { urls: "turns:openrelay.metered.ca:443", username: "openrelayproject", credential: "openrelayproject" }] } };
 let mode = "online", saya = null, peer = null, conn = null;
-let idx = 0, jawab = {}, giliran1hp = "Afis";
+let idx = 0, jawab = {}, giliran1hp = "Pemain 1";
 
 function kodeAcak() {
   let k = "";
@@ -156,7 +156,7 @@ function mulaiJawabSiapa(nama) {
   $("btnMulaiJawab").onclick = tampilSoal;
 }
 function cekLengkap() {
-  return jawab.Afis && jawab.Dita && jawab.Afis.length === SOAL.length && jawab.Dita.length === SOAL.length;
+  return jawab["Pemain 1"] && jawab["Pemain 2"] && jawab["Pemain 1"].length === SOAL.length && jawab["Pemain 2"].length === SOAL.length;
 }
 function pasangConn(c) {
   conn = c;
@@ -184,7 +184,7 @@ async function kirimJawaban() {
     $("tungguBox").classList.remove("hidden");
     if (cekLengkap()) tampilHasil();
   } else {
-    if (giliran1hp === "Afis") { giliran1hp = "Dita"; mulaiJawabSiapa("Dita"); }
+    if (giliran1hp === "Pemain 1") { giliran1hp = "Pemain 2"; mulaiJawabSiapa("Pemain 2"); }
     else tampilHasil();
   }
 }
@@ -198,12 +198,12 @@ function vonis(n) {
 function tampilHasil() {
   let cocok = 0, html = "";
   SOAL.forEach((s, i) => {
-    const a = jawab.Afis ? jawab.Afis[i] : "-";
-    const d = jawab.Dita ? jawab.Dita[i] : "-";
+    const a = jawab["Pemain 1"] ? jawab["Pemain 1"][i] : "-";
+    const d = jawab["Pemain 2"] ? jawab["Pemain 2"][i] : "-";
     const ok = a === d;
     if (ok) cocok++;
     html += '<div class="hasil-item ' + (ok ? "cocok" : "beda") + '"><b>' + s + '</b><br>' +
-      "Afis: " + a + " • Dita: " + d + " " + (ok ? "✅ Cocok!" : "❌ Beda") + "</div>";
+      "Pemain 1: " + a + " • Pemain 2: " + d + " " + (ok ? "✅ Cocok!" : "❌ Beda") + "</div>";
   });
   semuaBox();
   $("hasilBox").classList.remove("hidden");
@@ -214,11 +214,11 @@ function tampilHasil() {
 function keMode() {
   if (peer) { try { peer.destroy(); } catch (e) {} }
   peer = null; conn = null;
-  mode = "online"; saya = null; idx = 0; jawab = {}; giliran1hp = "Afis";
+  mode = "online"; saya = null; idx = 0; jawab = {}; giliran1hp = "Pemain 1";
   semuaBox();
   $("modeBox").classList.remove("hidden");
 }
-$("btn1hp").onclick = () => { mode = "1hp"; jawab = {}; giliran1hp = "Afis"; mulaiJawabSiapa("Afis"); };
+$("btn1hp").onclick = () => { mode = "1hp"; jawab = {}; giliran1hp = "Pemain 1"; mulaiJawabSiapa("Pemain 1"); };
 $("btnBuat").onclick = () => { semuaBox(); $("buatBox").classList.remove("hidden"); };
 $("btnGabungShow").onclick = () => { semuaBox(); $("gabungBox").classList.remove("hidden"); };
 let retryBuat = 0;

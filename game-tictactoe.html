@@ -14,7 +14,8 @@
   .players { display: flex; justify-content: center; gap: 24px; margin-bottom: 14px; }
   .pl { text-align: center; font-size: 13px; }
   .pl img { width: 56px; height: 56px; border-radius: 50%; object-fit: cover; border: 3px solid #444; display: block; margin: 0 auto 4px; }
-  .pl.aktif img { border-color: #e53935; box-shadow: 0 0 14px rgba(229,57,53,.35); }
+  .pl .avatar { width: 56px; height: 56px; border-radius: 50%; border: 3px solid #444; display: flex; align-items: center; justify-content: center; font-size: 30px; margin: 0 auto 4px; background: #f5f5f5; }
+  .pl.aktif img, .pl.aktif .avatar { border-color: #e53935; box-shadow: 0 0 14px rgba(229,57,53,.35); }
   .pl b { display: block; }
   .pl .skor { color: #e53935; font-weight: 700; }
   .board { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; max-width: 330px; margin: 0 auto; }
@@ -60,11 +61,11 @@
 
 <p><a href="game-hub-afis-dita.html">← Kembali ke Menu Game</a></p>
 <h1>❌⭕ Tic Tac Toe</h1>
-<p class="sub">Afis (X) vs Dita (O) — 3 sejajar menang! Main jarak jauh, tanpa gantian HP.</p>
+<p class="sub">Pemain 1 (X) vs Pemain 2 (O) — 3 sejajar menang! Main jarak jauh, tanpa gantian HP.</p>
 
 <div class="players">
-  <div class="pl" id="plX"><img src="foto-afis.jpg" alt="Afis"><b>Afis ❌</b><span class="skor" id="skorX">0</span></div>
-  <div class="pl" id="plO"><img src="foto-dita.jpg" alt="Dita"><b>Dita ⭕</b><span class="skor" id="skorO">0</span></div>
+  <div class="pl" id="plX"><span class="avatar">❌</span><b>Pemain 1 ❌</b><span class="skor" id="skorX">0</span></div>
+  <div class="pl" id="plO"><span class="avatar">⭕</span><b>Pemain 2 ⭕</b><span class="skor" id="skorO">0</span></div>
 </div>
 
 <!-- MODE -->
@@ -78,8 +79,8 @@
 <!-- BUAT ROOM -->
 <div class="box hidden" id="buatBox">
   <p>Kamu main sebagai siapa?</p>
-  <button class="btn-gold" data-saya="X">Saya Afis ❌</button>
-  <button class="btn-gelap" data-saya="O">Saya Dita ⭕</button>
+  <button class="btn-gold" data-saya="X">Saya Pemain 1 ❌</button>
+  <button class="btn-gelap" data-saya="O">Saya Pemain 2 ⭕</button>
   <div id="buatHasil" class="hidden">
     <p>Kirim kode ini ke pasanganmu:</p>
     <div class="kode" id="kodeBuat"></div>
@@ -91,8 +92,8 @@
 <div class="box hidden" id="gabungBox">
   <p>Masukkan kode room, lalu pilih identitasmu:</p>
   <input id="inputKode" maxlength="4" placeholder="XXXX">
-  <button class="btn-gold" data-gabung="X">Gabung sebagai Afis ❌</button>
-  <button class="btn-gelap" data-gabung="O">Gabung sebagai Dita ⭕</button>
+  <button class="btn-gold" data-gabung="X">Gabung sebagai Pemain 1 ❌</button>
+  <button class="btn-gelap" data-gabung="O">Gabung sebagai Pemain 2 ⭕</button>
   <p id="gabungErr" style="color:#ff8080"></p>
 </div>
 
@@ -147,9 +148,9 @@ function render() {
     bd.appendChild(d);
   });
   if (S.winner === "seri") $("status").textContent = "Seri! Nggak ada yang menang 🤝";
-  else if (S.winner) $("status").textContent = (S.winner === "X" ? "Afis" : "Dita") + " MENANG! 🎉";
+  else if (S.winner) $("status").textContent = (S.winner === "X" ? "Pemain 1" : "Pemain 2") + " MENANG! 🎉";
   else {
-    const giliran = S.turn === "X" ? "Afis ❌" : "Dita ⭕";
+    const giliran = S.turn === "X" ? "Pemain 1 ❌" : "Pemain 2 ⭕";
     $("status").textContent = mode === "online" && saya
       ? (S.turn === saya ? "Giliranmu! (" + giliran + ")" : "Menunggu " + giliran + "…")
       : "Giliran " + giliran;

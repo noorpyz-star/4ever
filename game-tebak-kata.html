@@ -22,7 +22,8 @@
   .players { display: flex; justify-content: center; gap: 24px; margin-bottom: 14px; }
   .pl { text-align: center; font-size: 13px; }
   .pl img { width: 52px; height: 52px; border-radius: 50%; object-fit: cover; border: 3px solid #444; display: block; margin: 0 auto 4px; }
-  .pl.aktif img { border-color: #e53935; box-shadow: 0 0 14px rgba(229,57,53,.35); }
+  .pl .avatar { width: 52px; height: 52px; border-radius: 50%; border: 3px solid #444; display: flex; align-items: center; justify-content: center; font-size: 30px; margin: 0 auto 4px; background: #f5f5f5; }
+  .pl.aktif img, .pl.aktif .avatar { border-color: #e53935; box-shadow: 0 0 14px rgba(229,57,53,.35); }
   .board { max-width: 300px; margin: 0 auto; display: flex; flex-direction: column; gap: 6px; }
   .row { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; }
   .tile { aspect-ratio: 1; background: #ffffff; border: 1px solid #e0e0e0; border-radius: 8px; font-size: 26px; font-weight: 800; display: flex; align-items: center; justify-content: center; }
@@ -71,8 +72,8 @@
 
 <div class="box hidden" id="buatBox">
   <p>Kamu main sebagai siapa?</p>
-  <button class="btn-gold" data-saya="Afis">Saya Afis</button>
-  <button class="btn-gelap" data-saya="Dita">Saya Dita</button>
+  <button class="btn-gold" data-saya="Pemain 1">Saya Pemain 1</button>
+  <button class="btn-gelap" data-saya="Pemain 2">Saya Pemain 2</button>
   <div id="buatHasil" class="hidden">
     <p>Kirim kode ini ke pasanganmu:</p>
     <div class="kode" id="kodeBuat"></div>
@@ -83,16 +84,16 @@
 <div class="box hidden" id="gabungBox">
   <p>Masukkan kode room, lalu pilih identitasmu:</p>
   <input id="inputKode" maxlength="4" placeholder="XXXX" style="text-transform:uppercase">
-  <button class="btn-gold" data-gabung="Afis">Gabung sebagai Afis</button>
-  <button class="btn-gelap" data-gabung="Dita">Gabung sebagai Dita</button>
+  <button class="btn-gold" data-gabung="Pemain 1">Gabung sebagai Pemain 1</button>
+  <button class="btn-gelap" data-gabung="Pemain 2">Gabung sebagai Pemain 2</button>
   <p id="gabungErr" style="color:#ff8080"></p>
 </div>
 
 <div id="gameArea" class="hidden">
   <p class="konek hidden" id="konekInfo">✅ Terhubung — main dari HP masing-masing!</p>
   <div class="players">
-    <div class="pl" id="plAfis"><img src="foto-afis.jpg" alt="Afis"><b>Afis</b></div>
-    <div class="pl" id="plDita"><img src="foto-dita.jpg" alt="Dita"><b>Dita</b></div>
+    <div class="pl" id="plP1"><span class="avatar">🔵</span><b>Pemain 1</b></div>
+    <div class="pl" id="plP2"><span class="avatar">🟠</span><b>Pemain 2</b></div>
   </div>
   <div class="board" id="board"></div>
   <div id="status"></div>
@@ -137,8 +138,8 @@ function warna(guess, word) {
   return res;
 }
 function render() {
-  $("plAfis").classList.toggle("aktif", !S.winner && S.turn === "Afis");
-  $("plDita").classList.toggle("aktif", !S.winner && S.turn === "Dita");
+  $("plP1").classList.toggle("aktif", !S.winner && S.turn === "Pemain 1");
+  $("plP2").classList.toggle("aktif", !S.winner && S.turn === "Pemain 2");
   const bd = $("board");
   bd.innerHTML = "";
   S.guesses.forEach(g => {
@@ -198,7 +199,7 @@ function tebak() {
   S.guesses.push({ player: pemain, guess: v, colors });
   if (v === S.word) S.winner = pemain;
   else if (S.guesses.length >= MAX) S.winner = "seri";
-  else S.turn = S.turn === "Afis" ? "Dita" : "Afis";
+  else S.turn = S.turn === "Pemain 1" ? "Pemain 2" : "Pemain 1";
   $("inputKata").value = "";
   render();
   kirimState();
@@ -233,7 +234,7 @@ function keMode() {
 }
 $("btn1hp").onclick = () => {
   mode = "1hp"; saya = null;
-  S = { word: acakKata(), guesses: [], turn: "Afis", winner: null };
+  S = { word: acakKata(), guesses: [], turn: "Pemain 1", winner: null };
   ["modeBox","buatBox","gabungBox"].forEach(id => $(id).classList.add("hidden"));
   $("gameArea").classList.remove("hidden");
   render();
@@ -265,7 +266,7 @@ function buatRoomKata() {
 document.querySelectorAll("[data-saya]").forEach(b => b.onclick = () => {
   saya = b.dataset.saya;
   mode = "online";
-  S = { word: acakKata(), guesses: [], turn: "Afis", winner: null };
+  S = { word: acakKata(), guesses: [], turn: "Pemain 1", winner: null };
   retryBuat = 0;
   buatRoomKata();
 });
@@ -306,14 +307,14 @@ document.querySelectorAll("[data-gabung]").forEach(b => b.onclick = () => {
   if (k.length !== 4) { $("gabungErr").textContent = "Kode harus 4 huruf."; return; }
   saya = b.dataset.gabung;
   mode = "online";
-  S = { word: acakKata(), guesses: [], turn: "Afis", winner: null };
+  S = { word: acakKata(), guesses: [], turn: "Pemain 1", winner: null };
   retryGabung = 0;
   gabungRoomKata(k);
 });
 $("btnTebak").onclick = tebak;
 $("inputKata").addEventListener("keydown", e => { if (e.key === "Enter") tebak(); });
 $("btnLagi").onclick = () => {
-  S = { word: acakKata(), guesses: [], turn: "Afis", winner: null };
+  S = { word: acakKata(), guesses: [], turn: "Pemain 1", winner: null };
   render();
   kirimState();
 };

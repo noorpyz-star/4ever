@@ -14,6 +14,7 @@
   .players { display: flex; justify-content: center; gap: 24px; margin-bottom: 14px; }
   .pl { text-align: center; font-size: 13px; }
   .pl img { width: 56px; height: 56px; border-radius: 50%; object-fit: cover; border: 3px solid #444; display: block; margin: 0 auto 4px; }
+  .pl .avatar { width: 56px; height: 56px; border-radius: 50%; border: 3px solid #444; display: flex; align-items: center; justify-content: center; font-size: 30px; margin: 0 auto 4px; background: #f5f5f5; }
   .pl b { display: block; }
   .box { max-width: 360px; margin: 0 auto 12px; background: #ffffff; border: 1px solid #e0e0e0; box-shadow: 0 2px 10px rgba(0,0,0,.05); border-radius: 14px; padding: 14px; text-align: center; }
   .box p { font-size: 13.5px; color: #666; line-height: 1.6; margin: 0 0 10px; }
@@ -69,11 +70,11 @@
 
 <p><a href="game-hub-afis-dita.html">← Kembali ke Menu Game</a></p>
 <h1>🏍️ Balapan Motor</h1>
-<p class="sub">Afis vs Dita — balapan 1500 m! Pilih motor &amp; tempat, awas nabrak = CRASH!</p>
+<p class="sub">Pemain 1 vs Pemain 2 — balapan 1500 m! Pilih motor &amp; tempat, awas nabrak = CRASH!</p>
 
 <div class="players">
-  <div class="pl"><img src="foto-afis.jpg" alt="Afis"><b>Afis 🏍️</b></div>
-  <div class="pl"><img src="foto-dita.jpg" alt="Dita"><b>Dita 🏍️</b></div>
+  <div class="pl"><span class="avatar">🔵</span><b>Pemain 1 🏍️</b></div>
+  <div class="pl"><span class="avatar">🟠</span><b>Pemain 2 🏍️</b></div>
 </div>
 
 <!-- MODE -->
@@ -92,8 +93,8 @@
   <div class="pilih" id="pilihTrackBuat"></div>
   <p><b>Kamu main sebagai siapa?</b></p>
   <div class="pilih" id="pilihHost">
-    <button data-host="Afis">Saya Afis 🏍️</button>
-    <button data-host="Dita">Saya Dita 🏍️</button>
+    <button data-host="Pemain 1">Saya Pemain 1 🏍️</button>
+    <button data-host="Pemain 2">Saya Pemain 2 🏍️</button>
   </div>
   <p id="hostErr" style="color:#ff8080"></p>
   <button class="btn-gold" id="btnBuatRoom">Buat Room &amp; Kirim Kode</button>
@@ -111,8 +112,8 @@
   <p>Masukkan kode room, lalu pilih motor &amp; identitasmu:</p>
   <input id="inputKode" maxlength="4" placeholder="XXXX">
   <div class="pilih" id="pilihMotorGabung"></div>
-  <button class="btn-gold" data-gabung="Afis">Gabung sebagai Afis 🏍️</button>
-  <button class="btn-gelap" data-gabung="Dita">Gabung sebagai Dita 🏍️</button>
+  <button class="btn-gold" data-gabung="Pemain 1">Gabung sebagai Pemain 1 🏍️</button>
+  <button class="btn-gelap" data-gabung="Pemain 2">Gabung sebagai Pemain 2 🏍️</button>
   <p id="gabungErr" style="color:#ff8080"></p>
 </div>
 
@@ -509,7 +510,7 @@ document.querySelectorAll("[data-host]").forEach(b => b.onclick = () => {
 $("btnBuat").onclick = () => { $("modeBox").classList.add("hidden"); $("buatBox").classList.remove("hidden"); };
 $("btnGabungShow").onclick = () => { $("modeBox").classList.add("hidden"); $("gabungBox").classList.remove("hidden"); };
 $("btnBuatRoom").onclick = () => {
-  if (!saya) { $("hostErr").textContent = "Pilih dulu: kamu Afis atau Dita."; return; }
+  if (!saya) { $("hostErr").textContent = "Pilih dulu: kamu Pemain 1 atau Pemain 2."; return; }
   hostMode = true; buatRoom();
 };
 $("btnMulai").onclick = () => {

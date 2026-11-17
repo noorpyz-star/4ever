@@ -74,7 +74,7 @@
   </div>
   <div id="riwayat"></div>
   <button class="btn" id="btnReset">🔄 Mulai Ulang</button>
-  <p class="hint">Mode berdua: Afis pilih dulu (rahasia), lalu Dita pilih — baru dibuka bareng.</p>
+  <p class="hint">Mode berdua: Pemain 1 pilih dulu (rahasia), lalu Pemain 2 pilih — baru dibuka bareng.</p>
 </div>
 
 <script>
@@ -87,8 +87,8 @@ function aturMode(m) {
   mode = m;
   document.getElementById("mKomputer").classList.toggle("on", m === "komputer");
   document.getElementById("mBerdua").classList.toggle("on", m === "berdua");
-  document.getElementById("namaD").textContent = m === "komputer" ? "Komputer" : "Dita";
-  document.getElementById("namaA").textContent = m === "komputer" ? "Kamu" : "Afis";
+  document.getElementById("namaD").textContent = m === "komputer" ? "Komputer" : "Pemain 2";
+  document.getElementById("namaA").textContent = m === "komputer" ? "Kamu" : "Pemain 1";
   reset();
 }
 function reset() {
@@ -98,7 +98,7 @@ function reset() {
   document.getElementById("tanganA").textContent = "❓";
   document.getElementById("tanganD").textContent = "❓";
   document.getElementById("riwayat").innerHTML = "";
-  document.getElementById("msg").textContent = mode === "komputer" ? "Pilih tanganmu di bawah!" : "Afis pilih dulu (rahasia)!";
+  document.getElementById("msg").textContent = mode === "komputer" ? "Pilih tanganmu di bawah!" : "Pemain 1 pilih dulu (rahasia)!";
   aktifkanPilihan(true);
 }
 function aktifkanPilihan(on) {
@@ -110,8 +110,8 @@ function hasilRonde(a, d) {
   document.getElementById("tanganD").textContent = EMOJI[d];
   let teks;
   if (a === d) teks = "Seri! 🤝";
-  else if (MENANG_ATAS[a] === d) { skorA++; teks = "🎉 " + (mode === "komputer" ? "Kamu" : "Afis") + " menang ronde ini!"; }
-  else { skorD++; teks = "😢 " + (mode === "komputer" ? "Komputer" : "Dita") + " menang ronde ini!"; }
+  else if (MENANG_ATAS[a] === d) { skorA++; teks = "🎉 " + (mode === "komputer" ? "Kamu" : "Pemain 1") + " menang ronde ini!"; }
+  else { skorD++; teks = "😢 " + (mode === "komputer" ? "Komputer" : "Pemain 2") + " menang ronde ini!"; }
   document.getElementById("skorA").textContent = skorA;
   document.getElementById("skorD").textContent = skorD;
   document.getElementById("riwayat").innerHTML =
@@ -119,10 +119,10 @@ function hasilRonde(a, d) {
   if (skorA >= 5 || skorD >= 5) {
     selesai = true;
     aktifkanPilihan(false);
-    const menang = skorA >= 5 ? (mode === "komputer" ? "Kamu" : "Afis") : (mode === "komputer" ? "Komputer" : "Dita");
+    const menang = skorA >= 5 ? (mode === "komputer" ? "Kamu" : "Pemain 1") : (mode === "komputer" ? "Komputer" : "Pemain 2");
     document.getElementById("msg").textContent = "🏆 " + menang + " MENANG " + skorA + "–" + skorD + "!";
   } else {
-    document.getElementById("msg").textContent = teks + (mode === "berdua" ? " Afis pilih lagi!" : " Pilih lagi!");
+    document.getElementById("msg").textContent = teks + (mode === "berdua" ? " Pemain 1 pilih lagi!" : " Pilih lagi!");
     if (mode === "berdua") { pilihA = null; menungguD = false; }
   }
 }
@@ -138,7 +138,7 @@ document.querySelectorAll("#pilihan button").forEach(b => {
         pilihA = p;
         menungguD = true;
         document.getElementById("tanganA").textContent = "🤫";
-        document.getElementById("msg").textContent = "Afis sudah pilih (rahasia). Giliran Dita!";
+        document.getElementById("msg").textContent = "Pemain 1 sudah pilih (rahasia). Giliran Pemain 2!";
       } else {
         hasilRonde(pilihA, p);
       }

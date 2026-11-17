@@ -52,13 +52,13 @@
 <div class="wrap">
   <a class="back" href="game-hub-afis-dita.html">⬅ Kembali ke Hub</a>
   <h1>🔴🟡 Connect Four</h1>
-  <p class="sub">Afis 🔴 vs Dita 🟡 — gantian jatuhkan koin, 4 sejajar menang! Main berdua di satu HP.</p>
+  <p class="sub">Pemain 1 🔴 vs Pemain 2 🟡 — gantian jatuhkan koin, 4 sejajar menang! Main berdua di satu HP.</p>
   <div class="players">
-    <div class="pl aktif" id="plA"><b>🔴 Afis</b><span class="skor" id="skorA">0</span></div>
-    <div class="pl" id="plD"><b>🟡 Dita</b><span class="skor" id="skorD">0</span></div>
+    <div class="pl aktif" id="plA"><b>🔴 Pemain 1</b><span class="skor" id="skorA">0</span></div>
+    <div class="pl" id="plD"><b>🟡 Pemain 2</b><span class="skor" id="skorD">0</span></div>
   </div>
   <div id="papan"></div>
-  <div id="msg">Giliran Afis 🔴 — klik kolom untuk menjatuhkan koin!</div>
+  <div id="msg">Giliran Pemain 1 🔴 — klik kolom untuk menjatuhkan koin!</div>
   <button class="btn" id="btnBaru">🔄 Ronde Baru</button>
   <p class="hint">Menang 4 sejajar: mendatar, tegak, atau miring.</p>
 </div>
@@ -70,7 +70,7 @@ let grid, giliran, selesai, skorA = 0, skorD = 0;
 function baru() {
   grid = Array.from({ length: BAR }, () => Array(KOL).fill(""));
   giliran = "A"; selesai = false;
-  document.getElementById("msg").textContent = "Giliran Afis 🔴 — klik kolom untuk menjatuhkan koin!";
+  document.getElementById("msg").textContent = "Giliran Pemain 1 🔴 — klik kolom untuk menjatuhkan koin!";
   render();
 }
 function render() {
@@ -105,7 +105,7 @@ function jatuh(x) {
     });
     document.getElementById("skorA").textContent = skorA;
     document.getElementById("skorD").textContent = skorD;
-    document.getElementById("msg").textContent = "🎉 " + (giliran === "A" ? "Afis 🔴" : "Dita 🟡") + " MENANG! 4 sejajar!";
+    document.getElementById("msg").textContent = "🎉 " + (giliran === "A" ? "Pemain 1 🔴" : "Pemain 2 🟡") + " MENANG! 4 sejajar!";
     return;
   }
   if (grid.flat().every(Boolean)) {
@@ -115,7 +115,7 @@ function jatuh(x) {
     return;
   }
   giliran = giliran === "A" ? "D" : "A";
-  document.getElementById("msg").textContent = "Giliran " + (giliran === "A" ? "Afis 🔴" : "Dita 🟡") + " — klik kolom!";
+  document.getElementById("msg").textContent = "Giliran " + (giliran === "A" ? "Pemain 1 🔴" : "Pemain 2 🟡") + " — klik kolom!";
   render();
 }
 function cekMenang(x, y) {
