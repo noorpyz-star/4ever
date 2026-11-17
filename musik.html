@@ -1,0 +1,1044 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6449037107513086" crossorigin="anonymous"></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#ffffff">
+<title>4ever Musik — Mode Musik</title>
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+  :root { --bg:#ffffff; --panel:#f5f5f5; --panel2:#eeeeee; --txt:#111111; --sub:#666666; --green:#43a047; --red:#e53935; --yellow:#f9a825; --dyn:#ffffff; }
+  body { font-family:-apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif; background:linear-gradient(180deg,var(--dyn) 0%,var(--bg) 62vh); color:var(--txt); min-height:100vh; padding:0 16px 170px; transition:background 1s ease; }
+  body.open-full { overflow:hidden; }
+  /* ---- topbar ala 4ever ---- */
+  .topbar { position:sticky; top:0; z-index:50; background:rgba(255,255,255,.92); backdrop-filter:blur(8px); -webkit-backdrop-filter:blur(8px); border-bottom:1px solid #e8e8e8; margin:0 -16px; }
+  .topbar-in { max-width:620px; margin:0 auto; display:flex; align-items:center; gap:12px; padding:10px 16px; }
+  .topbar nav { margin-left:auto; display:flex; gap:14px; overflow-x:auto; scrollbar-width:none; }
+  .topbar nav::-webkit-scrollbar { display:none; }
+  .topbar nav a { color:#666; text-decoration:none; font-size:.83rem; font-weight:600; white-space:nowrap; }
+  .topbar nav a:hover { color:#111; }
+  .topbar nav a.on { color:var(--red); }
+  .wrap { max-width:620px; margin:0 auto; }
+  .brand { display:flex; align-items:center; gap:9px; font-weight:800; font-size:1.05rem; }
+  .brand .dot { width:30px; height:30px; border-radius:50%; background:var(--red); color:#fff; display:flex; align-items:center; justify-content:center; font-size:1rem; }
+  .brand small { color:var(--red); }
+  h1.greet { font-size:1.55rem; font-weight:800; margin-top:20px; letter-spacing:-.3px; }
+  .sub { color:var(--sub); font-size:.86rem; margin-top:5px; line-height:1.55; }
+  .dtpill { display:inline-block; margin-top:14px; background:var(--panel2); border-radius:16px; padding:7px 14px; font-size:.83rem; font-weight:600; }
+  .dtpill b { color:var(--red); font-variant-numeric:tabular-nums; }
+  .modes { display:flex; gap:9px; margin-top:18px; }
+  .modepill { flex:1; text-align:center; padding:11px 6px; border-radius:22px; background:#eeeeee; color:#111; font-weight:700; font-size:.92rem; text-decoration:none; }
+  .modepill.on { background:var(--red); color:#fff; font-weight:800; }
+  .search { display:flex; align-items:center; gap:9px; background:#fff; border:1px solid #e0e0e0; box-shadow:0 2px 8px rgba(0,0,0,.06); border-radius:26px; padding:0 8px 0 16px; margin-top:20px; }
+  .search span { color:#555; }
+  .search input { flex:1; border:none; outline:none; padding:13px 0; font-size:.98rem; color:#111; font-family:inherit; background:transparent; min-width:0; }
+  .search button { border:none; background:var(--red); color:#fff; font-weight:700; border-radius:20px; padding:9px 16px; font-size:.9rem; cursor:pointer; font-family:inherit; }
+  /* ---- kartu pustaka ala clone (listsSection) ---- */
+  .listsSection { display:flex; gap:10px; margin-top:18px; overflow-x:auto; padding-bottom:4px; scrollbar-width:none; }
+  .listsSection::-webkit-scrollbar { display:none; }
+  .list { flex:none; width:150px; background:#fff; border:1px solid #eee; border-radius:14px; padding:14px 12px; cursor:pointer; box-shadow:0 2px 8px rgba(0,0,0,.05); }
+  .list .listIcon { font-size:1.6rem; }
+  .list .listName { font-weight:800; font-size:.92rem; margin-top:8px; }
+  .list .listSub { color:var(--sub); font-size:.75rem; margin-top:2px; }
+  .list.on { border-color:var(--red); box-shadow:0 2px 10px rgba(229,57,53,.18); }
+  .sec-title { font-size:1.15rem; font-weight:800; margin:24px 0 6px; }
+  .morebtn { display:block; width:100%; margin:14px 0 4px; padding:12px; border:none; border-radius:22px; background:var(--panel2); color:#111; font-weight:700; font-size:.95rem; cursor:pointer; font-family:inherit; }
+  /* ---- baris lagu ---- */
+  .row { display:flex; align-items:center; gap:12px; width:100%; text-align:left; background:transparent; border:none; border-radius:9px; padding:8px; cursor:pointer; font-family:inherit; color:var(--txt); }
+  .row:hover { background:var(--panel); }
+  .row.playing { background:#fdecea; }
+  .row img { width:54px; height:54px; border-radius:6px; object-fit:cover; flex:none; background:#eee; }
+  .row .meta { flex:1; min-width:0; }
+  .row .tt { display:block; font-weight:600; font-size:.94rem; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .row.playing .tt { color:var(--red); }
+  .row .ar { color:var(--sub); font-size:.82rem; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; margin-top:2px; }
+  .row .badge-full { flex:none; font-size:.68rem; font-weight:800; color:#fff; background:var(--green); border-radius:4px; padding:2px 6px; letter-spacing:.4px; }
+  .row .badge-ori { flex:none; font-size:.68rem; font-weight:800; color:#fff; background:var(--red); border-radius:4px; padding:2px 6px; letter-spacing:.4px; }
+  .row .dur { color:var(--sub); font-size:.8rem; flex:none; font-variant-numeric:tabular-nums; }
+  .row .heart { flex:none; font-size:1.25rem; color:#aaa; padding:4px 2px; cursor:pointer; line-height:1; }
+  .row .heart.liked { color:var(--red); }
+  .row .eq { flex:none; display:none; gap:2.5px; align-items:flex-end; height:16px; }
+  .row.playing .eq { display:flex; }
+  .row .eq i { width:3.5px; background:var(--red); border-radius:2px; animation:eq 0.9s ease-in-out infinite; }
+  .row .eq i:nth-child(2) { animation-delay:.25s; } .row .eq i:nth-child(3) { animation-delay:.5s; }
+  @keyframes eq { 0%,100% { height:6px; } 50% { height:16px; } }
+  .empty { color:var(--sub); margin-top:22px; line-height:1.7; font-size:.92rem; text-align:center; }
+  .back { display:inline-block; margin-top:28px; color:var(--sub); text-decoration:none; font-size:.88rem; }
+  footer { color:#6a6a6a; font-size:.75rem; padding:18px 0 4px; }
+  /* ---- mini player ala clone (currentPlayerCnt) ---- */
+  .currentPlayerCnt { position:fixed; left:8px; right:8px; bottom:calc(64px + env(safe-area-inset-bottom)); background:#fff; border:1px solid #eee; border-radius:12px; padding:9px 11px; z-index:50; box-shadow:0 10px 30px rgba(0,0,0,.18); display:none; align-items:center; gap:11px; }
+  .currentPlayerCnt.active { display:flex; }
+  .currentPlayerCnt .songImgCnt { flex:none; }
+  .currentPlayerCnt img { width:44px; height:44px; border-radius:6px; object-fit:cover; background:#eee; display:block; }
+  .currentPlayerCnt .songInfoCnt { flex:1; min-width:0; }
+  .currentPlayerCnt .songTitle { font-weight:700; font-size:.9rem; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .currentPlayerCnt .singerTitle { color:var(--sub); font-size:.78rem; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .likeAndPlayPauseBtnCnt { display:flex; align-items:center; gap:6px; }
+  .likeSongButton { font-size:1.3rem; color:#aaa; cursor:pointer; padding:4px; line-height:1; }
+  .likeSongButton.liked { color:var(--red); }
+  .playPauseBtn { width:44px; height:44px; border-radius:50%; border:none; background:var(--red); color:#fff; font-size:1.1rem; cursor:pointer; display:flex; align-items:center; justify-content:center; flex:none; }
+  /* ---- footer nav ala clone ---- */
+  #fixedFooter { position:fixed; left:0; right:0; bottom:0; z-index:55; background:#fff; border-top:1px solid #eee; padding-bottom:env(safe-area-inset-bottom); }
+  .footerIconsCnt { max-width:620px; margin:0 auto; display:flex; }
+  .footerIcon { flex:1; text-align:center; padding:9px 0 8px; cursor:pointer; color:#888; font-size:.7rem; font-weight:700; }
+  .footerIcon .fic { font-size:1.25rem; display:block; line-height:1.2; }
+  .footerIcon.on { color:var(--red); }
+  /* ---- full player ala clone (currPlayerDisplaySection) ---- */
+  #currPlayerDisplaySection { position:fixed; inset:0; z-index:100; background:linear-gradient(180deg,var(--dyn) 0%,#fff 70%); overflow-y:auto; transform:translateY(102%); transition:transform .35s ease; }
+  #currPlayerDisplaySection.active { transform:translateY(0); }
+  .currPlayerInner { max-width:620px; margin:0 auto; padding:14px 20px 40px; }
+  .currPlayerHeader { display:flex; align-items:center; gap:10px; }
+  .currPlayerDropDownCnt, .currPlayerMenuCnt { width:40px; height:40px; display:flex; align-items:center; justify-content:center; font-size:1.3rem; cursor:pointer; color:#333; flex:none; }
+  .currPlayerMiddleCnt { flex:1; text-align:center; font-weight:700; font-size:.85rem; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; color:#555; }
+  .currPlayerSongCoverCnt { margin-top:18px; text-align:center; }
+  .currPlayerSongCoverCnt img { width:min(78vw,320px); height:min(78vw,320px); object-fit:cover; border-radius:14px; box-shadow:0 18px 40px rgba(0,0,0,.28); background:#eee; }
+  .currPlayerControlsCnt { margin-top:22px; }
+  .controlsSongDetailsCnt { display:flex; align-items:center; gap:10px; }
+  .controlsSongDetailsCnt .cdMeta { flex:1; min-width:0; }
+  .cdSongName { font-weight:800; font-size:1.2rem; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .cdSingerName { color:#555; font-size:.92rem; margin-top:3px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .cdSongLikedIcon { font-size:1.6rem; color:#aaa; cursor:pointer; flex:none; padding:4px; }
+  .cdSongLikedIcon.liked { color:var(--red); }
+  .songRangeCnt { margin-top:16px; }
+  .songRangeCnt input[type=range] { width:100%; accent-color:var(--red); }
+  .songTimeCnt { display:flex; justify-content:space-between; color:#666; font-size:.75rem; margin-top:4px; font-variant-numeric:tabular-nums; }
+  .audioPlayPauseControlsCnt { display:flex; align-items:center; justify-content:space-between; margin-top:14px; }
+  .audioControlIcon { font-size:1.35rem; cursor:pointer; color:#222; padding:6px; }
+  .audioControlIcon.on { color:var(--red); }
+  .cdPlayPauseBtn { width:64px; height:64px; border-radius:50%; border:none; background:var(--red); color:#fff; font-size:1.5rem; cursor:pointer; display:flex; align-items:center; justify-content:center; box-shadow:0 8px 20px rgba(229,57,53,.4); }
+  .volRow { display:flex; align-items:center; gap:10px; margin-top:18px; color:#666; font-size:.85rem; }
+  .volRow input[type=range] { flex:1; accent-color:var(--red); }
+  /* ---- kartu lirik ala clone (currPlayerLyricsCnt) ---- */
+  .currPlayerLyricsCnt { margin-top:24px; background:#fff; border:1px solid #eee; border-radius:14px; padding:16px 16px 12px; box-shadow:0 4px 14px rgba(0,0,0,.06); }
+  .currPlayerLyricsCnt h3 { font-size:1.05rem; font-weight:800; }
+  .lyricsCnt { max-height:190px; overflow-y:auto; margin-top:10px; line-height:1.9; font-size:.95rem; color:#444; -webkit-mask-image:linear-gradient(to bottom,#000 78%,transparent 100%); mask-image:linear-gradient(to bottom,#000 78%,transparent 100%); }
+  .lyr-line { text-align:center; }
+  .lyr-line.on { color:var(--red); font-weight:800; }
+  .lyr-line.on::before { content:'♪ '; }
+  .lyr-msg { color:var(--sub); text-align:center; line-height:1.7; font-size:.92rem; padding:14px 0; }
+  .fullScreenLyricsBtn { margin-top:12px; text-align:center; background:#111; color:#fff; border-radius:20px; padding:10px; font-weight:700; font-size:.9rem; cursor:pointer; }
+  /* ---- lirik fullscreen ---- */
+  #lyrFull { position:fixed; inset:0; z-index:200; background:#fff; display:none; flex-direction:column; }
+  #lyrFull.active { display:flex; }
+  .lyrFullHead { display:flex; align-items:center; gap:10px; padding:14px 16px; border-bottom:1px solid #eee; }
+  .lyrFullHead span { flex:1; font-weight:800; font-size:.95rem; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  .lyrFullHead button { border:none; background:transparent; font-size:1.2rem; cursor:pointer; padding:4px 10px; color:#666; }
+  #lyrFullBody { flex:1; overflow-y:auto; padding:18px 22px 40px; }
+  #lyrFullBody .lyricsCnt { max-height:none; overflow:visible; -webkit-mask-image:none; mask-image:none; margin-top:0; }
+  #lyrFullBody .lyr-line { font-size:1.15rem; line-height:2.3; }
+.ic{width:1em;height:1em;vertical-align:-.12em;flex:none}
+</style>
+<script src="hls.min.js"></script>
+</head>
+<body>
+<div class="topbar"><div class="topbar-in">
+  <div class="brand"><span class="dot">♥</span><span>4ever <small>Musik</small></span></div>
+  <nav>
+    <a href="https://4ever.ai.id/">Beranda</a>
+    <a href="https://4ever.ai.id/profil.html">Profil</a>
+    <a href="https://4ever.ai.id/musik.html" class="on">Musik</a>
+    <a href="https://4ever.ai.id/tools.html">Tools</a>
+    <a href="https://4ever.ai.id/artikel.html">Artikel</a>
+    <a href="https://4ever.ai.id/tv-gratis.html">TV</a>
+    <a href="https://4ever.ai.id/berita.html">Berita</a>
+    <a href="https://4ever.ai.id/game-hub-afis-dita.html">Game</a>
+  </nav>
+</div></div>
+<div class="wrap">
+  <h1 class="greet" id="greet">Selamat malam</h1>
+  <p class="sub">cari lagu apa pun — yang muncul di sini cuma rekaman original (diutamakan dari akun resmi si artis, ada badge ORI). bukan cover, bukan remix. hatiin lagu favoritmu biar kesimpen di Playlist Saya. ♥</p>
+  <div><span class="dtpill"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="5" width="18" height="16" rx="2"/><line x1="3" y1="10" x2="21" y2="10"/><line x1="8" y1="3" x2="8" y2="7"/><line x1="16" y1="3" x2="16" y2="7"/></svg> <span id="tgl">…</span> &nbsp;•&nbsp; <svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg> <b id="jam">--:--:--</b> WIB</span></div>
+  <div class="modes">
+    <a class="modepill" href="https://4ever.ai.id/musik-yt.html">▶ Mode YouTube</a>
+    <span class="modepill on">♪ Mode Musik</span>
+  </div>
+  <div class="search">
+    <span><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><line x1="16.5" y1="16.5" x2="21" y2="21"/></svg></span>
+    <input id="q" type="search" placeholder="Cari lagu atau artis..." enterkeyhint="search">
+    <button id="searchBtn">Cari</button>
+  </div>
+  <div class="listsSection" id="listsSection">
+    <div class="list" id="cardLikes"><div class="listIcon">♥</div><div class="listName">Playlist Saya</div><div class="listSub" id="likesCount">0 lagu</div></div>
+    <div class="list" id="cardHome"><div class="listIcon">♪</div><div class="listName">Buat kamu</div><div class="listSub">BMTH • Juicy • For Revenge</div></div>
+    <div class="list" id="cardDJ"><div class="listIcon">♪</div><div class="listName">DJ</div><div class="listSub">DJ Indo • Remix Luar</div></div>
+  </div>
+  <div class="sec-title" id="resTitle">Buat kamu ♪</div>
+  <div id="results"><p class="empty">lagi nyiapin lagu original buat kamu…</p></div>
+  <button id="moreBtn" class="morebtn" style="display:none">Muat lagi ↓</button>
+  <a class="back" href="https://4ever.ai.id/">← kembali ke 4ever.ai.id</a>
+  <footer>© 2026 4ever.ai.id — katalog lagu: Deezer • semua lagu di sini rekaman original dari SoundCloud &amp; Audius (official diutamakan, bukan cover/remix)</footer>
+</div>
+
+<!-- mini player ala clone -->
+<div class="currentPlayerCnt" id="playerBar">
+  <div class="songImgCnt" id="miniCoverWrap"><img id="pArt" alt=""></div>
+  <div class="songInfoCnt" id="miniInfo"><div class="songTitle" id="pTitle">—</div><div class="singerTitle" id="pArtist">—</div></div>
+  <div class="likeAndPlayPauseBtnCnt">
+    <div class="likeSongButton" id="likeMini">♡</div>
+    <button class="playPauseBtn" id="playBtn">▶</button>
+  </div>
+</div>
+
+<!-- full player ala clone -->
+<section id="currPlayerDisplaySection">
+  <div class="currPlayerInner">
+    <div class="currPlayerHeader">
+      <div class="currPlayerDropDownCnt" id="cdClose">⌄</div>
+      <div class="currPlayerMiddleCnt" id="cdHeaderTitle">—</div>
+      <div class="currPlayerMenuCnt" id="cdLyricsBtn"><svg class="ic" viewBox="0 0 24 24" fill="currentColor"><path d="M12 14a3 3 0 0 0 3-3V6a3 3 0 1 0-6 0v5a3 3 0 0 0 3 3zm5-3a5 5 0 0 1-10 0H5a7 7 0 0 0 6 6.9V21h2v-3.1A7 7 0 0 0 19 11h-2z"/></svg></div>
+    </div>
+    <div class="currPlayerSongCoverCnt"><img class="nowPlayingSongCover" id="cdCover" src="" alt="Cover lagu yang sedang diputar"></div>
+    <div class="currPlayerControlsCnt">
+      <div class="controlsSongDetailsCnt">
+        <div class="cdMeta"><div class="cdSongName" id="cdSongName">—</div><div class="cdSingerName" id="cdSingerName">—</div></div>
+        <div class="cdSongLikedIcon" id="cdLike">♡</div>
+      </div>
+      <div class="songRangeCnt">
+        <input type="range" value="0" class="songProgressBar" id="seekBar" min="0" max="100" step="0.1">
+        <div class="songTimeCnt"><div class="currTime" id="tNow">0:00</div><div class="totalTime" id="tEnd">0:00</div></div>
+      </div>
+      <div class="audioPlayPauseControlsCnt">
+        <div class="audioControlIcon" id="shuffleBtn" title="Acak">⇄</div>
+        <div class="audioControlIcon" id="prevBtn" title="Sebelumnya">⏮</div>
+        <button class="cdPlayPauseBtn playPauseBtn" id="cdPlayBtn">▶</button>
+        <div class="audioControlIcon" id="nextBtn" title="Berikutnya">⏭</div>
+        <div class="audioControlIcon" id="repeatBtn" title="Ulangi">↻</div>
+      </div>
+      <div class="volRow"><span><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 5L6 9H2v6h4l5 4V5z" fill="currentColor" stroke="none"/><path d="M15.5 8.5a5 5 0 0 1 0 7"/><path d="M18.5 5.5a9 9 0 0 1 0 13"/></svg></span><input type="range" id="volSlider" min="0" max="100" value="80" aria-label="Volume"></div>
+      <div class="currPlayerLyricsCnt" id="lyrCard">
+        <h3>Lirik</h3>
+        <div class="lyricsCnt" id="lyrBody"><p class="lyr-msg">Lirik belum tersedia untuk lagu ini</p></div>
+        <div class="fullScreenLyricsBtn" id="lyrFullBtn">Tampilkan Lirik</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- lirik fullscreen -->
+<div id="lyrFull">
+  <div class="lyrFullHead"><span id="lyrFullTitle">Lirik</span><button id="lyrFullClose" aria-label="Tutup lirik">✕</button></div>
+  <div id="lyrFullBody"></div>
+</div>
+
+<!-- footer nav ala clone -->
+<section id="fixedFooter" role="group">
+  <div class="footerIconsCnt" role="navigation" aria-label="Navigasi bawah">
+    <div class="footerIcon on" id="home-footer-icon"><span class="fic"><svg class="ic" viewBox="0 0 24 24" fill="currentColor"><path d="M12 3l9 8h-3v9h-5v-6h-2v6H6v-9H3z"/></svg></span><span>Beranda</span></div>
+    <div class="footerIcon" id="search-footer-icon"><span class="fic"><svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><line x1="16.5" y1="16.5" x2="21" y2="21"/></svg></span><span>Cari</span></div>
+    <div class="footerIcon" id="library-footer-icon"><span class="fic">♥</span><span>Pustaka</span></div>
+  </div>
+</section>
+
+<audio id="au" preload="metadata"></audio>
+<script>
+/* salam + jam (WIB) + warna dinamis dari cover */
+(function () {
+  const h = new Date().getHours();
+  document.getElementById('greet').textContent = h < 11 ? 'Selamat pagi ☀' : h < 15 ? 'Selamat siang ☁' : h < 19 ? 'Selamat sore ◐' : 'Selamat malam ☾';
+})();
+function bagianJakarta() {
+  const parts = new Intl.DateTimeFormat('id-ID', { timeZone: 'Asia/Jakarta', weekday: 'long', day: 'numeric', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false }).formatToParts(new Date());
+  const o = {}; parts.forEach(x => o[x.type] = x.value);
+  return o;
+}
+function tickJam() {
+  const o = bagianJakarta();
+  document.getElementById('tgl').textContent = o.weekday + ', ' + o.day + ' ' + o.month + ' ' + o.year;
+  document.getElementById('jam').textContent = o.hour + ':' + o.minute + ':' + o.second;
+}
+tickJam(); setInterval(tickJam, 1000);
+/* warna dinamis dari cover — tema terang: warna cover dicampur putih */
+function applyDyn(rgb) {
+  const root = document.documentElement;
+  const bar = document.getElementById('playerBar');
+  const full = document.getElementById('currPlayerDisplaySection');
+  if (!rgb) { root.style.setProperty('--dyn', '#ffffff'); if (bar) bar.style.background = ''; if (full) full.style.background = ''; return; }
+  const dk = rgb.map(v => Math.round(v * .35 + 165));
+  const dk2 = rgb.map(v => Math.round(v * .45 + 140));
+  root.style.setProperty('--dyn', 'rgb(' + dk.join(',') + ')');
+  if (bar) bar.style.background = 'rgb(' + dk2.join(',') + ')';
+  if (full) full.style.background = 'linear-gradient(180deg, rgb(' + dk.join(',') + ') 0%, #fff 70%)';
+}
+function setDynColor(url) {
+  if (!url) { applyDyn(null); return; }
+  const img = new Image();
+  img.crossOrigin = 'anonymous';
+  img.onload = () => {
+    try {
+      const c = document.createElement('canvas'); const S = 24; c.width = S; c.height = S;
+      const x = c.getContext('2d'); x.drawImage(img, 0, 0, S, S);
+      const d = x.getImageData(0, 0, S, S).data;
+      let r = 0, g = 0, b = 0, w = 0, ar = 0, ag = 0, ab = 0, n = 0;
+      for (let i = 0; i < d.length; i += 16) {
+        const R = d[i], G = d[i + 1], B = d[i + 2];
+        const mx = Math.max(R, G, B), mn = Math.min(R, G, B);
+        const sat = mx ? (mx - mn) / mx : 0;
+        const wt = sat * sat + 0.15;
+        r += R * wt; g += G * wt; b += B * wt; w += wt;
+        ar += R; ag += G; ab += B; n++;
+      }
+      /* warna paling hidup (berbobot saturasi); kalau cover nyaris abu-abu, pakai rata-rata */
+      const vivid = [r / w, g / w, b / w];
+      const mx2 = Math.max(vivid[0], vivid[1], vivid[2]), mn2 = Math.min(vivid[0], vivid[1], vivid[2]);
+      const vsat = mx2 ? (mx2 - mn2) / mx2 : 0;
+      applyDyn(vsat > 0.18 ? vivid.map(v => Math.round(v)) : [Math.round(ar / n), Math.round(ag / n), Math.round(ab / n)]);
+    } catch (e) { applyDyn(null); }
+  };
+  img.onerror = () => applyDyn(null);
+  img.src = url;
+}
+</script>
+
+<script>
+const WORKER = 'https://musik-yt.instayul01.workers.dev';
+const LIKE_KEY = 'spotify-likes';
+const au = document.getElementById('au');
+const resultsBox = document.getElementById('results');
+const playBtn = document.getElementById('playBtn');
+const cdPlayBtn = document.getElementById('cdPlayBtn');
+let queue = [];
+let curIdx = -1;
+let curTrack = null;
+let view = 'home'; /* 'home' | 'search' | 'likes' */
+let lastResults = [];
+let shuffleOn = false;
+let repeatMode = 0; /* 0 mati, 1 semua, 2 satu lagu */
+
+const fmt = s => { s = Math.max(0, Math.floor(s || 0)); return Math.floor(s / 60) + ':' + String(s % 60).padStart(2, '0'); };
+const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const keyOf = it => (it.title || '') + '|' + (it.artists || '');
+async function getJSON(url) { const r = await fetch(url); if (!r.ok) throw new Error('http ' + r.status); return r.json(); }
+
+/* ---------- Playlist Saya (localStorage, sama kuncinya dgn Mode Spotify) ---------- */
+function loadLikes() { try { return JSON.parse(localStorage.getItem(LIKE_KEY)) || []; } catch (e) { return []; } }
+function saveLikes(l) { try { localStorage.setItem(LIKE_KEY, JSON.stringify(l)); } catch (e) {} }
+function isLiked(it) { return loadLikes().some(x => keyOf(x) === keyOf(it)); }
+function updateLikeChip() {
+  const n = loadLikes().length;
+  document.getElementById('likesCount').textContent = n + ' lagu';
+}
+function toggleLike(it, btnEl) {
+  const likes = loadLikes();
+  const k = keyOf(it);
+  const i = likes.findIndex(x => keyOf(x) === k);
+  if (i >= 0) likes.splice(i, 1);
+  else {
+    /* simpan kopian TANPA url stream SoundCloud: url-nya bertanda tangan
+       dan kedaluwarsa ~2-3 jam, jadi pas diputar nanti di-resolve ulang
+       dari id lagunya. stream Audius (mp3 biasa) aman disimpan. */
+    const copy = Object.assign({}, it);
+    if (copy.fullSource === 'sc') delete copy.fullUrl;
+    likes.push(copy);
+  }
+  saveLikes(likes);
+  updateLikeChip();
+  syncLikeButtons();
+  if (view === 'likes') renderLikes();
+}
+function syncLikeButtons() {
+  const liked = curTrack ? isLiked(curTrack) : false;
+  const lm = document.getElementById('likeMini');
+  const cd = document.getElementById('cdLike');
+  lm.textContent = liked ? '♥' : '♡'; lm.classList.toggle('liked', liked);
+  cd.textContent = liked ? '♥' : '♡'; cd.classList.toggle('liked', liked);
+}
+/* lagu dianggap FULL kalau ada stream mp3 (Audius) atau id SoundCloud
+   (stream-nya di-resolve fresh pas diputar) */
+const hasFull = it => !!(it && (it.fullUrl || it.scId));
+
+/* ---------- render hasil ---------- */
+/* hanya lagu ORIGINAL (full) yang ditampilkan — tanpa versi original,
+   barisnya tidak muncul sama sekali (data-i tetap indeks asli di queue) */
+function rowHtml(it, i) {
+  if (!hasFull(it)) return '';
+  return '<button class="row' + (curTrack && keyOf(curTrack) === keyOf(it) ? ' playing' : '') + '" data-i="' + i + '">' +
+    '<img src="' + esc(it.cover) + '" alt="" loading="lazy">' +
+    '<span class="meta"><span class="tt">' + esc(it.title) + '</span>' +
+    '<span class="ar" style="display:block">' + esc(it.artists) + (it.album ? ' — ' + esc(it.album) : '') + '</span></span>' +
+    '<span class="badge-full">FULL</span>' +
+    (it.fullOfficial ? '<span class="badge-ori">ORI</span>' : '') +
+    '<span class="dur">' + fmt(it.duration) + '</span>' +
+    '<span class="heart' + (isLiked(it) ? ' liked' : '') + '" data-heart="' + i + '">' + (isLiked(it) ? '♥' : '♡') + '</span>' +
+    '<span class="eq"><i></i><i></i><i></i></span></button>';
+}
+function renderRows(items) {
+  resultsBox.innerHTML = items.map((it, i) => rowHtml(it, i)).join('');
+}
+function markPlaying() {
+  document.querySelectorAll('.row').forEach(c => c.classList.toggle('playing', +c.getAttribute('data-i') === curIdx));
+}
+function setFooterTab(id) {
+  document.querySelectorAll('.footerIcon').forEach(el => el.classList.toggle('on', el.id === id));
+}
+/* Playlist Saya: lagu yang tersimpan dicek ulang — yang sudah pasti official
+   (badge ORI) langsung tampil; yang lain dicari ulang versi original-nya
+   (official dulu, lalu fan-original); yang ternyata cover/remix / tidak ada
+   versi original-nya DIHAPUS dari playlist. Gagal jaringan = dibiarkan. */
+async function renderLikes() {
+  view = 'likes';
+  setFooterTab('library-footer-icon');
+  document.getElementById('cardLikes').classList.add('on');
+  document.getElementById('cardHome').classList.remove('on');
+  document.getElementById('cardDJ').classList.remove('on');
+  let likes = loadLikes();
+  document.getElementById('moreBtn').style.display = 'none';
+  document.getElementById('resTitle').textContent = 'Playlist Saya ♥ (' + likes.length + ' lagu)';
+  if (!likes.length) {
+    queue = []; curIdx = -1;
+    resultsBox.innerHTML = '<p class="empty">belum ada lagu yang kamu suka.<br>pencet tombol ♥ di lagu mana pun buat nyimpen ke sini.</p>';
+    return;
+  }
+  const needCheck = likes.filter(it => !it.fullOfficial);
+  if (needCheck.length) {
+    resultsBox.innerHTML = '<p class="empty">lagi ngecek playlist kamu…</p>';
+    await Promise.all(needCheck.map(async it => {
+      try {
+        const q1 = encodeURIComponent((it.title + ' ' + it.artists).slice(0, 120));
+        const [sj, aj] = await Promise.all([
+          getJSON(WORKER + '/?sc=' + q1).catch(() => null),
+          getJSON(WORKER + '/?au=' + q1).catch(() => null),
+        ]);
+        it.fullUrl = undefined; it.scId = undefined; it.auId = undefined;
+        attachFull(it, (sj && sj.items) || [], (aj && aj.items) || []);
+        if (!hasFull(it)) { it._drop = true; return; }
+        /* stream SoundCloud tidak disimpan (kedaluwarsa); Audius boleh */
+        if (it.fullSource === 'sc') delete it.fullUrl;
+      } catch (e) { /* gagal jaringan: biarkan lagunya apa adanya */ }
+    }));
+    const before = likes.length;
+    likes = likes.filter(it => !it._drop);
+    if (likes.length !== before) saveLikes(likes);
+    document.getElementById('resTitle').textContent = 'Playlist Saya ♥ (' + likes.length + ' lagu)';
+    if (!likes.length) {
+      queue = []; curIdx = -1;
+      resultsBox.innerHTML = '<p class="empty">playlist kamu kosong — lagu yang tersimpan ternyata bukan versi original.<br>cari lagu lain yang ada versi original-nya ya.</p>';
+      return;
+    }
+  }
+  if (!likes.some(hasFull)) {
+    queue = likes; curIdx = -1;
+    resultsBox.innerHTML = '<p class="empty">lagu di Playlist Saya belum ada versi original-nya.<br>cari lagu lain yang ada versi original-nya ya.</p>';
+    return;
+  }
+  queue = likes;
+  renderRows(likes);
+}
+resultsBox.addEventListener('click', e => {
+  const heartEl = e.target.closest('[data-heart]');
+  if (heartEl) {
+    const it = queue[+heartEl.getAttribute('data-heart')];
+    if (it) toggleLike(it, heartEl);
+    return;
+  }
+  const row = e.target.closest('.row');
+  if (row) playIdx(+row.getAttribute('data-i'));
+});
+
+/* ---------- pencarian ---------- */
+/* normalisasi judul/artis buat nyocokin Deezer <-> Audius */
+function norm(s) {
+  return (s || '').toLowerCase()
+    .replace(/\([^)]*\)/g, ' ')
+    .replace(/\[[^\]]*\]/g, ' ')
+    .replace(/[-–—]/g, ' ')
+    .replace(/[^a-z0-9 ]/g, ' ')
+    .replace(/\b(official video|official audio|official music video|music video|lyric video|lirik|lyrics|audio|video|official|remaster|remastered|acoustic|live|cover|128kbps|320kbps|feat|ft|hd|4k)\b/g, ' ')
+    .replace(/\s+/g, ' ').trim();
+}
+/* apakah upload-er-nya akun si artis sendiri (bukan re-upload fans)?
+   bandingkan nama uploader (SoundCloud/Audius) dengan nama artis Deezer */
+function isOfficialUp(uploader, artist) {
+  const n = s => (s || '').toLowerCase().replace(/[^a-z0-9]/g, '');
+  const u = n(uploader), a = n(artist);
+  if (!u || !a || a.length < 3) return false;
+  if (u === a) return true;
+  if (u.replace(/(official|music|records|hq)$/, '') === a) return true;
+  return false;
+}
+/* penanda versi — judul lagu yang BUKAN rekaman original (cover, remix,
+   nightcore, edit, 8d, acoustic, demo, lofi, ...). "(Taylor's Version)"
+   dikecualikan — itu rekaman ulang si artis sendiri. Dipakai di matchFull
+   (sisi SC/Audius + sisi Deezer) dan di filter hasil Deezer doSearch/loadMore.
+   DIPERLUAS 21:33: "sped-up"/"speed-up" dgn tanda hubung sebelumnya lolos
+   karena \s* tak cocok "-"; nightcore/edit/8d/dll. belum ada sama sekali. */
+const VER_RE = /\b(cover|version|rendition|tribute|instrumental|karaoke|live|slowed|sped[\s-]*up|speed[\s-]*up|remix|mix|edit|nightcore|daycore|rework|bootleg|flip|mashup|pitched|chipmunk|vip|refix|acoustic|unplugged|demo|lofi|reverb|extended|8d)\b/i;
+function isVersionTitle(t) { return VER_RE.test((t || '').replace(/taylor'?s version/gi, '')); }
+/* cari trek ORIGINAL (rekaman sama seperti official, BUKAN cover) yang cocok
+   buat satu hasil Deezer; null kalau nggak ada. bentuk item kedua sumber
+   sama: title, artist, verified, duration (detik), stream.
+   Aturan (revisi 20:50): official tetap diutamakan, tapi fan re-upload BOLEH
+   asal audionya rekaman original yang sama — durasi dekat durasi Deezer
+   (±10 dtk; official dgn judul+uploader PERSIS boleh ≤60 dtk, master beda
+   panjang). DITOLAK mentah-mentah: cover, remix, instrumental, karaoke,
+   live, slowed/sped-up, version, rendition, tribute, edit, nightcore, 8d,
+   acoustic, demo, lofi, reverb, extended, dll. "lyrics"/"lirik" TIDAK
+   ditolak — sering cuma re-upload lagu asli, durasi yang menilai. */
+function matchFull(dzItem, fullItems) {
+  const t = norm(dzItem.title), a = norm(dzItem.artists);
+  if (!t) return null;
+  /* judul Deezer-nya sendiri sudah penanda versi (mis. "(KLYMVX Remix)")
+     -> bukan lagu original, jangan ditampilkan */
+  if (isVersionTitle(dzItem.title)) return null;
+  /* artis utama (tanpa feat./kolaborator) — upload official biasanya atas
+     nama artis utama, bukan "Artis feat. X" */
+  const primary = (dzItem.artists || '').split(/feat\.|ft\.|,|&|;/i)[0].trim();
+  const pa = norm(primary) || a;
+  const nUp = s => (s || '').toLowerCase().replace(/[^a-z0-9]/g, '');
+  const cands = fullItems.filter(x => {
+    if (!x || x.duration < 60) return false;
+    if (isVersionTitle(x.title)) return false;
+    const xt = norm(x.title), xa = norm(x.artist);
+    if (!xt) return false;
+    /* judul persis — boleh juga diawali/diakhiri nama artis utama
+       ("Fiersa Besari - Celengan Rindu"): nama artis di judul bukan lagu lain */
+    const titleExact = xt === t || xt === (pa + ' ' + t).trim() || xt === (t + ' ' + pa).trim();
+    const titleOk = titleExact ||
+      (t.length >= 6 && xt.indexOf(t) !== -1) ||
+      (xt.length >= 6 && t.indexOf(xt) !== -1);
+    if (!titleOk) return false;
+    const artOk = !a || !xa || xa === a ||
+      xa.indexOf(a) !== -1 || a.indexOf(xa) !== -1 ||
+      (a.length >= 4 && xt.indexOf(a) !== -1);
+    if (!artOk) return false;
+    /* durasi harus dekat durasi resmi Deezer */
+    const dd = dzItem.duration || 0;
+    const diff = dd ? Math.abs(x.duration - dd) : 0;
+    const official = isOfficialUp(x.artist, dzItem.artists) || (primary && isOfficialUp(x.artist, primary));
+    const exactUp = official && (nUp(x.artist) === nUp(dzItem.artists) || (primary && nUp(x.artist) === nUp(primary)));
+    if (official && titleExact && exactUp) { if (diff > 60) return false; }
+    else if (diff > 10) return false;
+    x._official = official;
+    return true;
+  });
+  /* urutan: upload dari akun si artis sendiri dulu (ORI), lalu akun
+     terverifikasi, lalu durasi paling dekat sama durasi resmi Deezer */
+  cands.sort((p, q) => ((q._official ? 1 : 0) - (p._official ? 1 : 0)) ||
+    ((q.verified ? 1 : 0) - (p.verified ? 1 : 0)) ||
+    (Math.abs(p.duration - (dzItem.duration || 0)) - Math.abs(q.duration - (dzItem.duration || 0))));
+  const best = cands[0] || null;
+  if (best) dzItem.fullOfficial = !!best._official;
+  return best;
+}
+/* pasang versi original ke satu hasil Deezer — official diutamakan LINTAS
+   sumber: official SoundCloud > official Audius > fan-original SoundCloud >
+   fan-original Audius. (Jangan ambil fan SC mentah-mentah kalau ada official
+   di AU.) */
+function attachFull(it, scItems, auItems) {
+  const msc = matchFull(it, scItems);
+  const mau = matchFull(it, auItems);
+  const best = (msc && msc._official) ? { m: msc, src: 'sc' }
+    : (mau && mau._official) ? { m: mau, src: 'au' }
+    : msc ? { m: msc, src: 'sc' }
+    : mau ? { m: mau, src: 'au' } : null;
+  if (!best) return;
+  it.fullOfficial = !!best.m._official;
+  if (best.src === 'sc') { it.fullUrl = best.m.stream; it.fullSource = 'sc'; it.scId = best.m.id; }
+  else { it.fullUrl = best.m.stream; it.fullSource = 'au'; it.auId = best.m.id; }
+}
+async function doSearch(q) {
+  q = (q || '').trim();
+  if (!q) return;
+  view = 'search';
+  setFooterTab('search-footer-icon');
+  document.getElementById('cardLikes').classList.remove('on');
+  document.getElementById('cardHome').classList.remove('on');
+  document.getElementById('cardDJ').classList.remove('on');
+  document.getElementById('resTitle').textContent = 'Hasil buat "' + q + '"';
+  document.getElementById('moreBtn').style.display = 'none';
+  resultsBox.innerHTML = '<p class="empty">lagi nyari…</p>';
+  lastQ = q; lastIndex = 0;
+  try {
+    const auP = getJSON(WORKER + '/?au=' + encodeURIComponent(q)).catch(() => null);
+    const scP = getJSON(WORKER + '/?sc=' + encodeURIComponent(q)).catch(() => null);
+    const j = await getJSON(WORKER + '/?dz=' + encodeURIComponent(q) + '&limit=' + PAGE + '&index=0');
+    const aj = await auP;
+    const sj = await scP;
+    let items = j.items || [];
+    /* jangan masukin lagu versi ubahan (remix/nightcore/edit/dll.) — kecuali
+       user-nya sendiri yang nyari "remix" */
+    if (!/remix/i.test(q)) items = items.filter(it => !isVersionTitle(it.title));
+    const auItems = (aj && aj.items) || [];
+    const scItems = (sj && sj.items) || [];
+    items.forEach(it => attachFull(it, scItems, auItems));
+    if (!items.length) {
+      lastResults = []; queue = []; curIdx = -1;
+      resultsBox.innerHTML = '<p class="empty">nggak ketemu. coba kata kunci lain ya.</p>';
+      return;
+    }
+    lastResults = items; queue = items; curIdx = -1;
+    lastIndex = items.length;
+    document.getElementById('moreBtn').style.display = items.length === PAGE ? 'block' : 'none';
+    if (items.some(hasFull)) renderRows(items);
+    else resultsBox.innerHTML = '<p class="empty">lagi nyari versi original-nya…</p>';
+    topUpFull(items);
+  } catch (err) {
+    resultsBox.innerHTML = '<p class="empty">✕ nggak bisa terhubung, coba lagi.</p>';
+  }
+}
+/* cari versi original per lagu (maks. 16 lagu pertama yang belum FULL):
+   satu ?sc= + satu ?au= per lagu ("judul + artis") — SoundCloud dulu,
+   baru Audius. hasilnya ditempel ke barisnya begitu ketemu, tanpa nunggu.
+   Gagal = lagu itu tetap nggak muncul, nggak ngerusak apa-apa. */
+async function topUpFull(items) {
+  const todo = items.filter(it => !hasFull(it) && !it._tried).slice(0, 16);
+  if (!todo.length) return;
+  await Promise.all(todo.map(async it => {
+    it._tried = true;
+    try {
+      const q1 = encodeURIComponent((it.title + ' ' + it.artists).slice(0, 120));
+      const [sj, aj] = await Promise.all([
+        getJSON(WORKER + '/?sc=' + q1).catch(() => null),
+        getJSON(WORKER + '/?au=' + q1).catch(() => null),
+      ]);
+      attachFull(it, (sj && sj.items) || [], (aj && aj.items) || []);
+    } catch (e) { /* abaikan, lagu itu tetap nggak muncul */ }
+  }));
+  if (queue === items) {
+    if (view === 'search') {
+      if (items.some(hasFull)) renderRows(items);
+      else resultsBox.innerHTML = '<p class="empty">Belum ada versi original untuk pencarian ini — di sini cuma lagu original, bukan cover/remix ♪</p>';
+    } else if (view === 'home') renderHome();
+    if (items.some(it => !hasFull(it) && !it._tried)) topUpFull(items);
+  }
+}
+/* ---------- beranda ala Spotify: lagu langsung tampil ---------- */
+let lastQ = '', lastIndex = 0, homeParts = [];
+const PAGE = 50;
+/* ---------- beranda: lagu ORIGINAL terverifikasi (scan 16 Nov 2026) ----------
+   Daftar ini dibangun dari official-100.json: 650 lagu terverifikasi audio
+   (140 official dari akun si artis + 510 fan-upload rekaman original).
+   SC: simpan id saja, stream di-resolve fresh pas diputar (URL bertanda
+   tangan kedaluwarsa ~2-3 jam). AU: simpan stream langsung. */
+const VERIFIED_HOME = [{"sec":"✦ Bring Me The Horizon","songs":[{"t":"Throne","a":"Bring Me The Horizon","s":"sc","id":235047336,"u":null,"d":190,"c":"https://cdn-images.dzcdn.net/images/cover/dd6af81a0d098fdd32e824fd43f2635d/1000x1000-000000-80-0-0.jpg","al":"That's The Spirit","o":0},{"t":"Drown","a":"Bring Me The Horizon","s":"sc","id":179855543,"u":null,"d":221,"c":"https://cdn-images.dzcdn.net/images/cover/dd6af81a0d098fdd32e824fd43f2635d/1000x1000-000000-80-0-0.jpg","al":"That's The Spirit","o":0},{"t":"Can You Feel My Heart","a":"Bring Me The Horizon","s":"au","id":"jNd9pxV","u":"https://discoveryprovider.audius.co/v1/tracks/jNd9pxV/stream?app_name=4ever","d":224,"c":"https://cdn-images.dzcdn.net/images/cover/38b98355bf62d69e8955ed5719535efc/1000x1000-000000-80-0-0.jpg","al":"Sempiternal (Expanded Edition)","o":0},{"t":"It Never Ends","a":"Bring Me The Horizon","s":"sc","id":4980700,"u":null,"d":274,"c":"https://cdn-images.dzcdn.net/images/cover/d2ef7db7e46eab617449d21832ba51dd/1000x1000-000000-80-0-0.jpg","al":"There is a Hell Believe Me I've Seen It. There is a Heaven Let's Keep it a Secret (Bonus Track Version)","o":0},{"t":"Antivist","a":"Bring Me The Horizon","s":"sc","id":178988108,"u":null,"d":193,"c":"https://cdn-images.dzcdn.net/images/cover/38b98355bf62d69e8955ed5719535efc/1000x1000-000000-80-0-0.jpg","al":"Sempiternal (Expanded Edition)","o":0},{"t":"Hospital for Souls","a":"Bring Me The Horizon","s":"sc","id":1571779450,"u":null,"d":404,"c":"https://cdn-images.dzcdn.net/images/cover/38b98355bf62d69e8955ed5719535efc/1000x1000-000000-80-0-0.jpg","al":"Sempiternal (Expanded Edition)","o":0},{"t":"Kingslayer (feat. BABYMETAL)","a":"Bring Me The Horizon","s":"sc","id":1057234213,"u":null,"d":220,"c":"https://cdn-images.dzcdn.net/images/cover/0790daea9da2d50e2af292faae6cb228/1000x1000-000000-80-0-0.jpg","al":"POST HUMAN: SURVIVAL HORROR","o":0},{"t":"CODE MISTAKE","a":"Bring Me The Horizon","s":"sc","id":1552494613,"u":null,"d":165,"c":"https://cdn-images.dzcdn.net/images/cover/36d9fd08db0226f610c09d168699965e/1000x1000-000000-80-0-0.jpg","al":"CODE MISTAKE","o":0},{"t":"VAMPIR (feat. Oli Sykes of Bring Me The Horizon)","a":"Bring Me The Horizon","s":"sc","id":1176626356,"u":null,"d":144,"c":"https://cdn-images.dzcdn.net/images/cover/ef539a769b5a3c99f216edb08ad1b71b/1000x1000-000000-80-0-0.jpg","al":"VAMPIR","o":0}]},{"sec":"❀ Jawa","songs":[{"t":"Lancar","a":"Sadewok","s":"sc","id":2256956807,"u":null,"d":273,"c":"https://cdn-images.dzcdn.net/images/cover/aa008afa6e932e39483e1ccc26b68c4c/1000x1000-000000-80-0-0.jpg","al":"Lancar","o":0},{"t":"Ilmu Padi","a":"Sadewok","s":"sc","id":2290227665,"u":null,"d":301,"c":"https://cdn-images.dzcdn.net/images/cover/5f51017cf09066c67c254f9d58650b17/1000x1000-000000-80-0-0.jpg","al":"Ilmu Padi","o":0},{"t":"Sabar","a":"Sadewok","s":"sc","id":2163324027,"u":null,"d":278,"c":"https://cdn-images.dzcdn.net/images/cover/f1c7c8d5d6036afa6f40dbe4bf7353c9/1000x1000-000000-80-0-0.jpg","al":"Sabar","o":0},{"t":"Ndoro Ayu","a":"Cindi Cintya","s":"sc","id":2386402869,"u":null,"d":294,"c":"https://cdn-images.dzcdn.net/images/cover/bd051a3d55e4f1ba98a4eccc01bfbd17/1000x1000-000000-80-0-0.jpg","al":"Ndoro Ayu","o":0},{"t":"Sak Kuate Ati","a":"Cindi Cintya","s":"sc","id":1405613884,"u":null,"d":234,"c":"https://cdn-images.dzcdn.net/images/cover/ce9921d7dc2935846deae1940d3938a8/1000x1000-000000-80-0-0.jpg","al":"Sak Kuate Ati","o":0},{"t":"Banyu Moto","a":"Didik Budi","s":"sc","id":912259795,"u":null,"d":224,"c":"https://cdn-images.dzcdn.net/images/cover/cf0730abeaeefc275aebe71f07b44785/1000x1000-000000-80-0-0.jpg","al":"Banyu Moto","o":0},{"t":"Mergawe","a":"Didik Budi","s":"sc","id":2014816071,"u":null,"d":226,"c":"https://cdn-images.dzcdn.net/images/cover/091d7efef2f02312e5d5113c5c24d836/1000x1000-000000-80-0-0.jpg","al":"Mergawe","o":0},{"t":"Doa Terbaik Untukmu","a":"Didik Budi","s":"sc","id":764981173,"u":null,"d":269,"c":"https://cdn-images.dzcdn.net/images/cover/7dfd5b9374c387f92253dbf23a70e6c6/1000x1000-000000-80-0-0.jpg","al":"Doa Terbaik Untukmu","o":0},{"t":"Salam Dariku","a":"Didik Budi","s":"sc","id":741503872,"u":null,"d":305,"c":"https://cdn-images.dzcdn.net/images/cover/2d33063cc73154ed1e9648b5d8bc3d66/1000x1000-000000-80-0-0.jpg","al":"Salam Dariku","o":0},{"t":"Rosoku","a":"Didik Budi","s":"sc","id":838053172,"u":null,"d":246,"c":"https://cdn-images.dzcdn.net/images/cover/9f32db34be60c7966330da7c8bc96fb5/1000x1000-000000-80-0-0.jpg","al":"Rosoku","o":0}]},{"sec":"♩ Juicy Luicy","songs":[{"t":"Tanpa Tergesa","a":"Juicy Luicy","s":"sc","id":642879693,"u":null,"d":218,"c":"https://cdn-images.dzcdn.net/images/cover/b2f8dab4ce657c060f58ca1041384e65/1000x1000-000000-80-0-0.jpg","al":"Tanpa Tergesa","o":0},{"t":"Mawar Jingga","a":"Juicy Luicy","s":"sc","id":586763991,"u":null,"d":211,"c":"https://cdn-images.dzcdn.net/images/cover/ed3bd9f23ecaff3e00103717b9c777e6/1000x1000-000000-80-0-0.jpg","al":"Mawar Jingga","o":0}]},{"sec":"♫ For Revenge","songs":[{"t":"Ada Selamanya","a":"For Revenge","s":"sc","id":1455032851,"u":null,"d":201,"c":"https://cdn-images.dzcdn.net/images/cover/75a948b17f8bda89743733735a0b5239/1000x1000-000000-80-0-0.jpg","al":"Ada Selamanya","o":0},{"t":"Pulang","a":"For Revenge","s":"sc","id":142583452,"u":null,"d":270,"c":"https://cdn-images.dzcdn.net/images/cover/b8ab53bcd258dc6d4690d0e232b66cb6/1000x1000-000000-80-0-0.jpg","al":"Second Chance","o":0},{"t":"You Can Try To Dance (Or Die)","a":"For Revenge","s":"sc","id":306741807,"u":null,"d":289,"c":"https://cdn-images.dzcdn.net/images/cover/cea7cb03d1b433aee58d1af760afa0a9/1000x1000-000000-80-0-0.jpg","al":"Fireworks","o":0},{"t":"Untuk Siapa?","a":"For Revenge","s":"sc","id":1330422286,"u":null,"d":190,"c":"https://cdn-images.dzcdn.net/images/cover/cbca5b5b25207ff6b82a30ba337d622d/1000x1000-000000-80-0-0.jpg","al":"Untuk Siapa?","o":0}]},{"sec":"☾ Hindia","songs":[{"t":"Rumah Ke Rumah","a":"Hindia","s":"sc","id":2202283467,"u":null,"d":277,"c":"https://cdn-images.dzcdn.net/images/cover/23cc662ac90d414741c26754e0105d9d/1000x1000-000000-80-0-0.jpg","al":"Menari Dengan Bayangan","o":1},{"t":"Secukupnya","a":"Hindia","s":"sc","id":2202281699,"u":null,"d":208,"c":"https://cdn-images.dzcdn.net/images/cover/270414e23ad218252ea616c1f94accc3/1000x1000-000000-80-0-0.jpg","al":"Secukupnya","o":1},{"t":"Membasuh","a":"Hindia","s":"sc","id":2383078878,"u":null,"d":374,"c":"https://cdn-images.dzcdn.net/images/cover/23cc662ac90d414741c26754e0105d9d/1000x1000-000000-80-0-0.jpg","al":"Menari Dengan Bayangan","o":0},{"t":"Untuk Apa / Untuk Apa?","a":"Hindia","s":"sc","id":822122008,"u":null,"d":378,"c":"https://cdn-images.dzcdn.net/images/cover/23cc662ac90d414741c26754e0105d9d/1000x1000-000000-80-0-0.jpg","al":"Menari Dengan Bayangan","o":1},{"t":"Dehidrasi","a":"Hindia","s":"sc","id":2202280091,"u":null,"d":239,"c":"https://cdn-images.dzcdn.net/images/cover/23cc662ac90d414741c26754e0105d9d/1000x1000-000000-80-0-0.jpg","al":"Menari Dengan Bayangan","o":1},{"t":"Jam Makan Siang","a":"Hindia","s":"sc","id":2202273675,"u":null,"d":279,"c":"https://cdn-images.dzcdn.net/images/cover/23cc662ac90d414741c26754e0105d9d/1000x1000-000000-80-0-0.jpg","al":"Menari Dengan Bayangan","o":1},{"t":"Apapun Yang Terjadi","a":"Hindia","s":"sc","id":2202270631,"u":null,"d":229,"c":"https://cdn-images.dzcdn.net/images/cover/23cc662ac90d414741c26754e0105d9d/1000x1000-000000-80-0-0.jpg","al":"Menari Dengan Bayangan","o":1},{"t":"Berdansalah, Karir Ini Tak Ada Artinya","a":"Hindia","s":"sc","id":1908412112,"u":null,"d":224,"c":"https://cdn-images.dzcdn.net/images/cover/d5ff68831d11f794e18bca6a155ddc82/1000x1000-000000-80-0-0.jpg","al":"Lagipula Hidup Akan Berakhir","o":0}]},{"sec":"♪ Tulus","songs":[{"t":"Teh Hijau","a":"Tulus","s":"sc","id":2362596641,"u":null,"d":212,"c":"https://cdn-images.dzcdn.net/images/cover/f99cf5482ab60273bb1c8fc22fa7eb23/1000x1000-000000-80-0-0.jpg","al":"Teh Hijau","o":0},{"t":"Hati-Hati di Jalan","a":"Tulus","s":"sc","id":1225565887,"u":null,"d":242,"c":"https://cdn-images.dzcdn.net/images/cover/ec4b98e50b1c776c71774097eb1aee95/1000x1000-000000-80-0-0.jpg","al":"Manusia","o":0},{"t":"Interaksi","a":"Tulus","s":"sc","id":1225565860,"u":null,"d":174,"c":"https://cdn-images.dzcdn.net/images/cover/ec4b98e50b1c776c71774097eb1aee95/1000x1000-000000-80-0-0.jpg","al":"Manusia","o":0},{"t":"Monokrom","a":"Tulus","s":"sc","id":329636589,"u":null,"d":215,"c":"https://cdn-images.dzcdn.net/images/cover/f831ff7e281ca044205fe4e48288ee51/1000x1000-000000-80-0-0.jpg","al":"Monokrom","o":0},{"t":"Teman Hidup","a":"Tulus","s":"sc","id":99167043,"u":null,"d":224,"c":"https://cdn-images.dzcdn.net/images/cover/0f5a5ec0bd386e80881ebe7eb656a0bb/1000x1000-000000-80-0-0.jpg","al":"Tulus","o":0},{"t":"Jatuh Suka","a":"Tulus","s":"sc","id":2391239121,"u":null,"d":235,"c":"https://cdn-images.dzcdn.net/images/cover/ec4b98e50b1c776c71774097eb1aee95/1000x1000-000000-80-0-0.jpg","al":"Manusia","o":0}]},{"sec":"★ Pop Barat","songs":[{"t":"ocean eyes","a":"Billie Eilish","s":"sc","id":233719633,"u":null,"d":200,"c":"https://cdn-images.dzcdn.net/images/cover/d85200712419ae036b277deffeea5181/1000x1000-000000-80-0-0.jpg","al":"Ocean Eyes","o":1},{"t":"Sweet but Psycho","a":"Ava Max","s":"sc","id":486495918,"u":null,"d":187,"c":"https://cdn-images.dzcdn.net/images/cover/27b9039fed11398a5a3034129656f8fa/1000x1000-000000-80-0-0.jpg","al":"Sweet but Psycho","o":1},{"t":"Kings & Queens","a":"Ava Max","s":"sc","id":773748067,"u":null,"d":162,"c":"https://cdn-images.dzcdn.net/images/cover/996c48926ead8a54c1d90db4e9b109fe/1000x1000-000000-80-0-0.jpg","al":"Kings & Queens","o":1},{"t":"So Am I","a":"Ava Max","s":"sc","id":586430472,"u":null,"d":184,"c":"https://cdn-images.dzcdn.net/images/cover/ae2f71083d31e9e3019d0275e2645696/1000x1000-000000-80-0-0.jpg","al":"So Am I","o":1},{"t":"My Head & My Heart","a":"Ava Max","s":"sc","id":932248375,"u":null,"d":174,"c":"https://cdn-images.dzcdn.net/images/cover/0eca025ac1206d710f91c32e49d6e8a8/1000x1000-000000-80-0-0.jpg","al":"Heaven & Hell","o":1},{"t":"Wrecking Ball","a":"Miley Cyrus","s":"sc","id":107310727,"u":null,"d":221,"c":"https://cdn-images.dzcdn.net/images/cover/0e43d6341c659c4cd71e676fb13282e6/1000x1000-000000-80-0-0.jpg","al":"Bangerz (Deluxe Version)","o":1},{"t":"Viva La Vida","a":"Coldplay","s":"au","id":"Z4bXj9v","u":"https://discoveryprovider.audius.co/v1/tracks/Z4bXj9v/stream?app_name=4ever","d":242,"c":"https://cdn-images.dzcdn.net/images/cover/eede3cd0dc3a5a87c7a5b1085b022e2d/1000x1000-000000-80-0-0.jpg","al":"Viva La Vida or Death and All His Friends","o":0},{"t":"A Sky Full of Stars","a":"Coldplay","s":"au","id":"M2GK9Xx","u":"https://discoveryprovider.audius.co/v1/tracks/M2GK9Xx/stream?app_name=4ever","d":267,"c":"https://cdn-images.dzcdn.net/images/cover/58669ace38d333770941332f8d860dc1/1000x1000-000000-80-0-0.jpg","al":"Ghost Stories","o":0}]}];
+/* satu lagu terverifikasi -> item pemutar */
+function homeItem(s) {
+  const it = { title: s.t, artists: s.a, duration: s.d, cover: s.c, album: s.al || '', fullOfficial: !!s.o, fullSource: s.s };
+  if (s.s === 'sc') it.scId = s.id;
+  else { it.fullUrl = s.u; it.auId = s.id; }
+  return it;
+}
+function renderHome() {
+  view = 'home';
+  setFooterTab('home-footer-icon');
+  document.getElementById('cardHome').classList.add('on');
+  document.getElementById('cardLikes').classList.remove('on');
+  document.getElementById('cardDJ').classList.remove('on');
+  document.getElementById('resTitle').textContent = 'Buat kamu ♪';
+  document.getElementById('moreBtn').style.display = 'none';
+  let html = '', gi = 0;
+  homeParts.forEach(p => {
+    if (!p.items.some(hasFull)) return;
+    html += '<div class="sec-title">' + esc(p.title) + '</div>';
+    p.items.forEach(it => { html += rowHtml(it, gi); gi++; });
+  });
+  resultsBox.innerHTML = html || '<p class="empty">Belum ada lagu original, coba cari di atas ya ♪</p>';
+}
+/* DJ: tampilkan seksi DJ dari daftar home (DJ Indo + remix luar) */
+const DJ_SECS = ['♪ DJ'];
+function renderDJ() {
+  if (!homeParts.length) {
+    const parts = VERIFIED_HOME.map(sec => ({ title: sec.sec, items: sec.songs.map(homeItem) }));
+    homeParts = parts;
+    queue = parts.flatMap(p => p.items);
+    curIdx = -1;
+  }
+  view = 'home';
+  setFooterTab('home-footer-icon');
+  document.getElementById('cardDJ').classList.add('on');
+  document.getElementById('cardLikes').classList.remove('on');
+  document.getElementById('cardHome').classList.remove('on');
+  document.getElementById('resTitle').textContent = 'DJ ♪';
+  document.getElementById('moreBtn').style.display = 'none';
+  let html = '', gi = 0;
+  homeParts.forEach(p => {
+    const show = DJ_SECS.includes(p.title) && p.items.some(hasFull);
+    if (show) html += '<div class="sec-title">' + esc(p.title) + '</div>';
+    p.items.forEach(it => { if (show) html += rowHtml(it, gi); gi++; });
+  });
+  resultsBox.innerHTML = html || '<p class="empty">Lagu DJ lagi dicariin, bentar lagi nongol di sini ♪</p>';
+}
+async function loadHome() {
+  view = 'home';
+  document.getElementById('resTitle').textContent = 'Buat kamu ♪';
+  document.getElementById('moreBtn').style.display = 'none';
+  const parts = VERIFIED_HOME.map(sec => ({ title: sec.sec, items: sec.songs.map(homeItem) }));
+  homeParts = parts;
+  queue = parts.flatMap(p => p.items);
+  curIdx = -1;
+  renderHome();
+}
+async function loadMore() {
+  const btn = document.getElementById('moreBtn');
+  btn.textContent = 'lagi nyari…';
+  try {
+    const [j, sj, aj] = await Promise.all([
+      getJSON(WORKER + '/?dz=' + encodeURIComponent(lastQ) + '&limit=' + PAGE + '&index=' + lastIndex),
+      getJSON(WORKER + '/?sc=' + encodeURIComponent(lastQ)).catch(() => null),
+      getJSON(WORKER + '/?au=' + encodeURIComponent(lastQ)).catch(() => null),
+    ]);
+    let items = j.items || [];
+    if (!/remix/i.test(lastQ)) items = items.filter(it => !isVersionTitle(it.title));
+    const scItems = (sj && sj.items) || [], auItems = (aj && aj.items) || [];
+    const seen = new Set(queue.map(keyOf));
+    const fresh = items.filter(it => !seen.has(keyOf(it)));
+    fresh.forEach(it => attachFull(it, scItems, auItems));
+    queue = queue.concat(fresh);
+    lastResults = queue;
+    lastIndex += items.length;
+    if (view === 'search') renderRows(queue);
+    btn.style.display = items.length === PAGE ? 'block' : 'none';
+    btn.textContent = 'Muat lagi ↓';
+    topUpFull(queue);
+  } catch (e) { btn.textContent = 'Muat lagi ↓'; }
+}
+document.getElementById('moreBtn').onclick = loadMore;
+document.getElementById('searchBtn').onclick = () => doSearch(document.getElementById('q').value);
+document.getElementById('q').addEventListener('keydown', e => { if (e.key === 'Enter') doSearch(e.target.value); });
+document.getElementById('cardLikes').onclick = renderLikes;
+document.getElementById('cardHome').onclick = () => { if (view !== 'home' || !homeParts.length) loadHome(); else renderHome(); };
+document.getElementById('cardDJ').onclick = () => renderDJ();
+
+/* ---------- pemutar (hanya lagu full) ---------- */
+let hls = null; /* instance hls.js aktif (desktop non-Safari) */
+let scRetried = false;
+let auRetried = false;
+/* pasang sumber audio ke <audio>: HLS (SoundCloud) pakai hls.js kalau
+   browser tidak bisa native (Safari bisa native), mp3 langsung. */
+function attachSrc(url) {
+  if (hls) { try { hls.destroy(); } catch (e) {} hls = null; }
+  const isHls = /\.m3u8(\?|$)/i.test(url);
+  if (!isHls) { au.src = url; return 'mp3'; }
+  if (au.canPlayType('application/vnd.apple.mpegurl')) { au.src = url; return 'native'; }
+  if (window.Hls && Hls.isSupported()) {
+    hls = new Hls();
+    hls.loadSource(url);
+    hls.attachMedia(au);
+    return 'hls';
+  }
+  return null;
+}
+/* resolve ulang stream SoundCloud dari id lagu (url bertanda tangan
+   kedaluwarsa ~2-3 jam, jadi lagu yang disimpan di Playlist Saya
+   selalu di-resolve fresh pas mau diputar) */
+async function resolveSc(it) {
+  try {
+    const j = await getJSON(WORKER + '/?sc=' + encodeURIComponent((it.title + ' ' + it.artists).slice(0, 120)));
+    const items = (j && j.items) || [];
+    let m = it.scId ? items.find(x => x.id === it.scId) : null;
+    if (!m) m = matchFull(it, items);
+    return m ? m.stream : null;
+  } catch (e) { return null; }
+}
+/* resolve ulang stream Audius dari id lagu (beberapa track Audius ternyata
+   tidak bisa di-stream / dihapus — resolve fresh + matcher original-only
+   memastikan yang diputar cuma versi original yang masih hidup) */
+async function resolveAu(it) {
+  try {
+    const j = await getJSON(WORKER + '/?au=' + encodeURIComponent((it.title + ' ' + it.artists).slice(0, 120)));
+    const items = (j && j.items) || [];
+    let m = it.auId ? items.find(x => String(x.id) === String(it.auId)) : null;
+    if (!m) m = matchFull(it, items);
+    return m ? m.stream : null;
+  } catch (e) { return null; }
+}
+function nextIdx() {
+  if (shuffleOn) {
+    const full = queue.map((it, i) => hasFull(it) ? i : -1).filter(i => i >= 0 && i !== curIdx);
+    if (!full.length) return -1;
+    return full[Math.floor(Math.random() * full.length)];
+  }
+  let i = curIdx + 1;
+  while (i < queue.length && !hasFull(queue[i])) i++;
+  if (i < queue.length) return i;
+  return repeatMode === 1 ? (() => { let j = 0; while (j < queue.length && !hasFull(queue[j])) j++; return j < queue.length ? j : -1; })() : -1;
+}
+function prevIdx() {
+  let i = curIdx - 1;
+  while (i >= 0 && !hasFull(queue[i])) i--;
+  return i >= 0 ? i : -1;
+}
+async function playIdx(i) {
+  /* lagu tanpa versi original dilewati — tidak pernah diputar */
+  while (i >= 0 && i < queue.length && !hasFull(queue[i])) i++;
+  if (i < 0 || i >= queue.length) return;
+  curIdx = i; curTrack = queue[i];
+  scRetried = false; auRetried = false;
+  let url = null;
+  if (curTrack.fullSource === 'sc' && !curTrack.fullUrl) {
+    /* dari Playlist Saya / home: stream tidak disimpan, resolve fresh dulu */
+    url = await resolveSc(curTrack);
+    if (url) curTrack.fullUrl = url; /* cache di memori sesi ini saja */
+  }
+  if (!url && curTrack.fullSource === 'au' && !curTrack.fullUrl) {
+    url = await resolveAu(curTrack);
+    if (url) curTrack.fullUrl = url;
+  }
+  if (!url) url = curTrack.fullUrl;
+  if (!url) { playIdx(i + 1); return; } /* versi original-nya sudah tidak ada: lewati */
+  let how = attachSrc(url);
+  if (how === null) { playIdx(i + 1); return; } /* browser tidak bisa HLS: lewati */
+  if (how === 'hls' && hls) hls.on(Hls.Events.MANIFEST_PARSED, () => au.play().catch(() => {}));
+  else au.play().catch(() => {});
+  showMiniPlayer();
+  updateNowPlayingUI();
+  setDynColor(curTrack.cover);
+  markPlaying();
+  syncLikeButtons();
+  /* lirik: ambil diam-diam biar pas dibuka langsung muncul */
+  lyrLines = null; lyrActive = -1;
+  const lk = keyOf(curTrack);
+  fetchLyrics(curTrack).then(d => { if (curTrack && keyOf(curTrack) === lk) renderLyrics(d); });
+  if ('mediaSession' in navigator) {
+    try {
+      navigator.mediaSession.metadata = new MediaMetadata({ title: curTrack.title, artist: curTrack.artists, album: curTrack.album || '', artwork: curTrack.cover ? [{ src: curTrack.cover, sizes: '1000x1000' }] : [] });
+      navigator.mediaSession.setActionHandler('previoustrack', () => { const p = prevIdx(); if (p >= 0) playIdx(p); });
+      navigator.mediaSession.setActionHandler('nexttrack', () => { const n = nextIdx(); if (n >= 0) playIdx(n); });
+    } catch (e) {}
+  }
+}
+function showMiniPlayer() {
+  document.getElementById('playerBar').classList.add('active');
+}
+function updateNowPlayingUI() {
+  document.getElementById('pArt').src = curTrack.cover || '';
+  document.getElementById('pTitle').textContent = curTrack.title;
+  document.getElementById('pArtist').textContent = curTrack.artists;
+  document.getElementById('cdCover').src = curTrack.cover || '';
+  document.getElementById('cdSongName').textContent = curTrack.title;
+  document.getElementById('cdSingerName').textContent = curTrack.artists;
+  document.getElementById('cdHeaderTitle').textContent = curTrack.title + ' — ' + curTrack.artists;
+  document.getElementById('tEnd').textContent = fmt(curTrack.duration);
+  document.getElementById('lyrFullTitle').textContent = '♪ ' + curTrack.title + ' — ' + curTrack.artists;
+}
+function setPlayIcon() {
+  const t = au.paused ? '▶' : '⏸';
+  playBtn.textContent = t;
+  cdPlayBtn.textContent = t;
+}
+au.addEventListener('play', setPlayIcon);
+au.addEventListener('pause', setPlayIcon);
+au.addEventListener('ended', () => {
+  if (repeatMode === 2 && curTrack) { au.currentTime = 0; au.play().catch(() => {}); return; }
+  const n = nextIdx();
+  if (n >= 0) playIdx(n); else setPlayIcon();
+});
+/* stream kedaluwarsa / mati di tengah sesi: resolve ulang sekali, lalu mainkan lagi */
+au.addEventListener('error', () => {
+  if (!curTrack) return;
+  if (curTrack.fullSource === 'sc' && !scRetried) {
+    scRetried = true;
+    resolveSc(curTrack).then(u => {
+      if (u) { curTrack.fullUrl = u; attachSrc(u); au.play().catch(() => {}); }
+      else { const n = nextIdx(); if (n >= 0) playIdx(n); }
+    });
+  } else if (curTrack.fullSource === 'au' && !auRetried) {
+    auRetried = true;
+    resolveAu(curTrack).then(u => {
+      if (u) { curTrack.fullUrl = u; attachSrc(u); au.play().catch(() => {}); }
+      else { const n = nextIdx(); if (n >= 0) playIdx(n); }
+    });
+  }
+});
+au.addEventListener('loadedmetadata', () => { if (au.duration && isFinite(au.duration)) document.getElementById('tEnd').textContent = fmt(au.duration); });
+au.addEventListener('timeupdate', () => {
+  document.getElementById('tNow').textContent = fmt(au.currentTime);
+  if (au.duration && isFinite(au.duration)) {
+    const sb = document.getElementById('seekBar');
+    if (document.activeElement !== sb) sb.value = au.currentTime / au.duration * 100;
+  }
+  tickLyrics();
+});
+function togglePlay() { if (!curTrack) return; if (au.paused) au.play().catch(() => {}); else au.pause(); }
+playBtn.onclick = togglePlay;
+cdPlayBtn.onclick = togglePlay;
+document.getElementById('nextBtn').onclick = () => { const n = nextIdx(); if (n >= 0) playIdx(n); };
+document.getElementById('prevBtn').onclick = () => { const p = prevIdx(); if (p >= 0) playIdx(p); };
+document.getElementById('seekBar').addEventListener('input', e => {
+  if (!au.duration || !isFinite(au.duration)) return;
+  au.currentTime = e.target.value / 100 * au.duration;
+});
+const volSlider = document.getElementById('volSlider');
+au.volume = volSlider.value / 100;
+volSlider.addEventListener('input', () => { au.volume = volSlider.value / 100; });
+document.getElementById('shuffleBtn').onclick = e => {
+  shuffleOn = !shuffleOn;
+  e.currentTarget.classList.toggle('on', shuffleOn);
+};
+document.getElementById('repeatBtn').onclick = e => {
+  repeatMode = (repeatMode + 1) % 3;
+  e.currentTarget.classList.toggle('on', repeatMode > 0);
+  e.currentTarget.textContent = repeatMode === 2 ? '↻1' : '↻';
+  e.currentTarget.title = repeatMode === 0 ? 'Ulangi: mati' : repeatMode === 1 ? 'Ulangi: semua' : 'Ulangi: satu lagu';
+};
+document.getElementById('likeMini').onclick = () => { if (curTrack) toggleLike(curTrack); };
+document.getElementById('cdLike').onclick = () => { if (curTrack) toggleLike(curTrack); };
+
+/* ---------- full player ala clone: buka / tutup ---------- */
+const fullPlayer = document.getElementById('currPlayerDisplaySection');
+function openFullPlayer() {
+  if (!curTrack) return;
+  fullPlayer.classList.add('active');
+  document.body.classList.add('open-full');
+  document.getElementById('playerBar').classList.remove('active');
+}
+function closeFullPlayer() {
+  fullPlayer.classList.remove('active');
+  fullPlayer.style.transform = '';
+  document.body.classList.remove('open-full');
+  if (curTrack) document.getElementById('playerBar').classList.add('active');
+  closeLyricsFull();
+}
+document.getElementById('cdClose').onclick = closeFullPlayer;
+document.getElementById('miniCoverWrap').onclick = openFullPlayer;
+document.getElementById('miniInfo').onclick = openFullPlayer;
+document.getElementById('cdLyricsBtn').onclick = () => { if (curTrack) openLyricsFull(); };
+
+/* ---------- lirik (LRCLIB lewat Worker ?ly=) ---------- */
+let lyrCache = {}; /* keyOf(track) -> {plain, synced, instrumental} | null */
+let lyrLines = null; /* [{t, el}] baris synced lagu yang sedang diputar */
+let lyrActive = -1;
+function parseLRC(lrc) {
+  const out = [];
+  (lrc || '').split('\n').forEach(line => {
+    const tags = line.match(/\[(\d+):(\d+(?:\.\d+)?)\]/g);
+    if (!tags) return; /* abaikan tag metadata [ti:], [ar:], [offset:] */
+    const text = line.replace(/\[(\d+):(\d+(?:\.\d+)?)\]/g, '').trim();
+    if (!text) return;
+    tags.forEach(tg => {
+      const m = /\[(\d+):(\d+(?:\.\d+)?)\]/.exec(tg);
+      if (m) out.push({ t: (+m[1]) * 60 + (+m[2]), text });
+    });
+  });
+  out.sort((a, b) => a.t - b.t);
+  return out;
+}
+async function fetchLyrics(it) {
+  const k = keyOf(it);
+  if (k in lyrCache) return lyrCache[k];
+  try {
+    const j = await getJSON(WORKER + '/?ly=' + encodeURIComponent(it.title)
+      + '&artist=' + encodeURIComponent(it.artists || '')
+      + '&duration=' + Math.round(it.duration || 0));
+    lyrCache[k] = (j && (j.plain || j.synced || j.instrumental)) ? j : null;
+  } catch (e) { lyrCache[k] = null; }
+  return lyrCache[k];
+}
+function renderLyrics(data) {
+  const body = document.getElementById('lyrBody');
+  lyrLines = null; lyrActive = -1;
+  if (!data) { body.innerHTML = '<p class="lyr-msg">Lirik belum tersedia untuk lagu ini</p>'; return; }
+  if (data.instrumental) { body.innerHTML = '<p class="lyr-msg">♪ Lagu ini instrumental — tidak ada lirik.</p>'; return; }
+  if (data.synced) {
+    const lines = parseLRC(data.synced);
+    if (lines.length) {
+      body.innerHTML = lines.map((l, i) => '<p class="lyr-line" data-li="' + i + '">' + esc(l.text) + '</p>').join('');
+      lyrLines = lines.map((l, i) => ({ t: l.t, el: body.querySelector('[data-li="' + i + '"]') }));
+      return;
+    }
+  }
+  if (data.plain) {
+    body.innerHTML = data.plain.split('\n').map(p => '<p class="lyr-line">' + esc(p) + '</p>').join('');
+    return;
+  }
+  body.innerHTML = '<p class="lyr-msg">Lirik belum tersedia untuk lagu ini</p>';
+}
+function tickLyrics() {
+  if (!lyrLines || !lyrLines.length) return;
+  const t = au.currentTime || 0;
+  let idx = -1;
+  for (let i = 0; i < lyrLines.length; i++) { if (lyrLines[i].t <= t + 0.15) idx = i; else break; }
+  if (idx === lyrActive) return;
+  lyrActive = idx;
+  lyrLines.forEach((l, i) => l.el.classList.toggle('on', i === idx));
+  if (idx >= 0 && lyrLines[idx].el) lyrLines[idx].el.scrollIntoView({ block: 'center', behavior: 'smooth' });
+}
+/* lirik fullscreen: pindah node #lyrBody ke overlay biar highlight
+   tersinkron tetap jalan (elemen yang sama, bukan salinan) */
+const lyrBodyEl = document.getElementById('lyrBody');
+const lyrCardEl = document.getElementById('lyrCard');
+const lyrFullEl = document.getElementById('lyrFull');
+const lyrFullBodyEl = document.getElementById('lyrFullBody');
+function openLyricsFull() {
+  if (!curTrack) return;
+  lyrFullBodyEl.appendChild(lyrBodyEl);
+  lyrFullEl.classList.add('active');
+  if (lyrActive >= 0 && lyrLines[lyrActive] && lyrLines[lyrActive].el) lyrLines[lyrActive].el.scrollIntoView({ block: 'center' });
+  if (!(keyOf(curTrack) in lyrCache)) {
+    lyrBodyEl.innerHTML = '<p class="lyr-msg">lagi nyari lirik…</p>';
+    fetchLyrics(curTrack).then(d => { if (curTrack) renderLyrics(d); });
+  }
+}
+function closeLyricsFull() {
+  if (!lyrFullEl.classList.contains('active')) return;
+  lyrCardEl.insertBefore(lyrBodyEl, document.getElementById('lyrFullBtn'));
+  lyrFullEl.classList.remove('active');
+}
+document.getElementById('lyrFullBtn').onclick = openLyricsFull;
+document.getElementById('lyrFullClose').onclick = closeLyricsFull;
+
+/* ---------- gestur ala clone (touch.js) ---------- */
+/* geser ke atas di mini player = buka full player;
+   geser ke kiri di mini player = lagu berikutnya */
+(function () {
+  const bar = document.getElementById('playerBar');
+  let sx = 0, sy = 0, onCtl = false;
+  bar.addEventListener('touchstart', e => {
+    const t = e.changedTouches[0]; sx = t.clientX; sy = t.clientY;
+    onCtl = !!e.target.closest('button, .likeSongButton');
+  }, { passive: true });
+  bar.addEventListener('touchend', e => {
+    if (onCtl) return;
+    const t = e.changedTouches[0];
+    const dx = t.clientX - sx, dy = t.clientY - sy;
+    if (dy < -50 && Math.abs(dx) < 80) openFullPlayer();
+    else if (dx < -55 && Math.abs(dy) < 60) { const n = nextIdx(); if (n >= 0) playIdx(n); }
+  }, { passive: true });
+  /* geser ke bawah di full player = tutup (drag ala clone) */
+  let fy = 0, fSwiping = false;
+  fullPlayer.addEventListener('touchstart', e => {
+    if (e.touches.length !== 1) return;
+    if (e.target.closest('input, #lyrBody, #lyrFullBody')) return;
+    fy = e.touches[0].clientY; fSwiping = false;
+  }, { passive: true });
+  fullPlayer.addEventListener('touchmove', e => {
+    if (e.touches.length !== 1 || fullPlayer.scrollTop > 0) return;
+    const dy = e.touches[0].clientY - fy;
+    if (dy > 0) {
+      fSwiping = true;
+      fullPlayer.style.transition = 'none';
+      fullPlayer.style.transform = 'translateY(' + Math.min(dy, 240) + 'px)';
+    }
+  }, { passive: true });
+  fullPlayer.addEventListener('touchend', e => {
+    fullPlayer.style.transition = '';
+    if (!fSwiping) return;
+    const dy = e.changedTouches[0].clientY - fy;
+    if (dy >= 80) closeFullPlayer();
+    else fullPlayer.style.transform = '';
+    fSwiping = false;
+  }, { passive: true });
+})();
+
+/* ---------- footer nav ala clone ---------- */
+document.getElementById('home-footer-icon').onclick = () => {
+  closeFullPlayer();
+  if (view !== 'home' || !homeParts.length) loadHome(); else renderHome();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+};
+document.getElementById('search-footer-icon').onclick = () => {
+  closeFullPlayer();
+  document.getElementById('q').focus();
+  document.getElementById('q').scrollIntoView({ behavior: 'smooth', block: 'center' });
+};
+document.getElementById('library-footer-icon').onclick = () => {
+  closeFullPlayer();
+  renderLikes();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+};
+
+updateLikeChip();
+loadHome();
+</script>
+</body>
+</html>
