@@ -55,6 +55,23 @@
   .row .ar { color:var(--sub); font-size:.82rem; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; margin-top:2px; }
   .row .badge-full { flex:none; font-size:.68rem; font-weight:800; color:#fff; background:var(--green); border-radius:4px; padding:2px 6px; letter-spacing:.4px; }
   .row .badge-ori { flex:none; font-size:.68rem; font-weight:800; color:#fff; background:var(--red); border-radius:4px; padding:2px 6px; letter-spacing:.4px; }
+  .row .badge-yt { flex:none; font-size:.68rem; font-weight:800; color:#fff; background:#c00; border-radius:4px; padding:2px 6px; letter-spacing:.4px; }
+  /* baris artis ala SoundCloud: foto bundar, geser ke samping */
+  .artist-row { display:flex; gap:14px; overflow-x:auto; padding:4px 2px 12px; scrollbar-width:none; -webkit-overflow-scrolling:touch; }
+  .artist-row::-webkit-scrollbar { display:none; }
+  .artist { flex:0 0 auto; width:76px; background:none; border:0; padding:0; cursor:pointer; text-align:center; font-family:inherit; color:var(--txt); }
+  .artist img { width:68px; height:68px; border-radius:50%; object-fit:cover; display:block; margin:0 auto 6px; border:2px solid #eee; background:#eee; }
+  .artist span { display:block; font-size:.78rem; font-weight:600; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+  /* modal video YouTube resmi (pengecualian 1 lagu: Kabagyan) */
+  #ytModal { position:fixed; inset:0; z-index:90; display:none; align-items:center; justify-content:center; background:rgba(0,0,0,.75); padding:16px; }
+  #ytModal.show { display:flex; }
+  .ytBox { width:100%; max-width:640px; background:#111; border-radius:12px; overflow:hidden; }
+  .ytHead { display:flex; align-items:center; justify-content:space-between; gap:10px; padding:12px 14px; color:#fff; font-weight:700; font-size:.95rem; }
+  .ytHead button { background:none; border:0; color:#fff; font-size:1.3rem; cursor:pointer; padding:2px 8px; }
+  .ytWrap { position:relative; width:100%; padding-top:56.25%; }
+  .ytWrap iframe { position:absolute; inset:0; width:100%; height:100%; border:0; }
+  .ytFoot { padding:10px 14px; }
+  .ytFoot a { color:#ffb3b3; font-size:.85rem; }
   .row .dur { color:var(--sub); font-size:.8rem; flex:none; font-variant-numeric:tabular-nums; }
   .row .heart { flex:none; font-size:1.25rem; color:#aaa; padding:4px 2px; cursor:pointer; line-height:1; }
   .row .heart.liked { color:var(--red); }
@@ -221,6 +238,15 @@
   <div id="lyrFullBody"></div>
 </div>
 
+<!-- video YouTube resmi (pengecualian 1 lagu: Kabagyan) -->
+<div id="ytModal" role="dialog" aria-label="Video YouTube">
+  <div class="ytBox">
+    <div class="ytHead"><span id="ytTitle">—</span><button id="ytClose" aria-label="Tutup video">✕</button></div>
+    <div class="ytWrap"><iframe id="ytFrame" src="" title="Video YouTube resmi" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></div>
+    <div class="ytFoot"><a id="ytLink" href="#" target="_blank" rel="noopener">Buka di YouTube ↗</a></div>
+  </div>
+</div>
+
 <!-- footer nav ala clone -->
 <section id="fixedFooter" role="group">
   <div class="footerIconsCnt" role="navigation" aria-label="Navigasi bawah">
@@ -351,6 +377,14 @@ const hasFull = it => !!(it && (it.fullUrl || it.scId));
 /* hanya lagu ORIGINAL (full) yang ditampilkan — tanpa versi original,
    barisnya tidak muncul sama sekali (data-i tetap indeks asli di queue) */
 function rowHtml(it, i) {
+  /* baris video YouTube resmi: tanpa tombol ♥ (bukan lagu audio, tidak
+     masuk Playlist Saya), ketuk = buka video resminya */
+  if (it.ytId) return '<button class="row" data-i="' + i + '">' +
+    '<img src="' + esc(it.cover) + '" alt="" loading="lazy">' +
+    '<span class="meta"><span class="tt">' + esc(it.title) + '</span>' +
+    '<span class="ar" style="display:block">' + esc(it.artists) + (it.album ? ' — ' + esc(it.album) : '') + '</span></span>' +
+    '<span class="badge-yt">▶ MV</span>' +
+    '<span class="dur">' + fmt(it.duration) + '</span></button>';
   if (!hasFull(it)) return '';
   return '<button class="row' + (curTrack && keyOf(curTrack) === keyOf(it) ? ' playing' : '') + '" data-i="' + i + '">' +
     '<img src="' + esc(it.cover) + '" alt="" loading="lazy">' +
@@ -425,6 +459,8 @@ async function renderLikes() {
   renderRows(likes);
 }
 resultsBox.addEventListener('click', e => {
+  const artEl = e.target.closest('[data-artist]');
+  if (artEl) { renderArtist(artEl.getAttribute('data-artist')); return; }
   const heartEl = e.target.closest('[data-heart]');
   if (heartEl) {
     const it = queue[+heartEl.getAttribute('data-heart')];
@@ -432,7 +468,11 @@ resultsBox.addEventListener('click', e => {
     return;
   }
   const row = e.target.closest('.row');
-  if (row) playIdx(+row.getAttribute('data-i'));
+  if (row) {
+    const it = queue[+row.getAttribute('data-i')];
+    if (it && it.ytId) { openYt(it); return; }
+    playIdx(+row.getAttribute('data-i'));
+  }
 });
 
 /* ---------- pencarian ---------- */
@@ -609,12 +649,18 @@ const PAGE = 50;
    Daftar ini dibangun dari official-100.json: 650 lagu terverifikasi audio
    (140 official dari akun si artis + 510 fan-upload rekaman original).
    SC: simpan id saja, stream di-resolve fresh pas diputar (URL bertanda
-   tangan kedaluwarsa ~2-3 jam). AU: simpan stream langsung. */
-const VERIFIED_HOME = [{"sec":"✦ Bring Me The Horizon","songs":[{"t":"Throne","a":"Bring Me The Horizon","s":"sc","id":235047336,"u":null,"d":190,"c":"https://cdn-images.dzcdn.net/images/cover/dd6af81a0d098fdd32e824fd43f2635d/1000x1000-000000-80-0-0.jpg","al":"That's The Spirit","o":0},{"t":"Drown","a":"Bring Me The Horizon","s":"sc","id":179855543,"u":null,"d":221,"c":"https://cdn-images.dzcdn.net/images/cover/dd6af81a0d098fdd32e824fd43f2635d/1000x1000-000000-80-0-0.jpg","al":"That's The Spirit","o":0},{"t":"Can You Feel My Heart","a":"Bring Me The Horizon","s":"au","id":"jNd9pxV","u":"https://discoveryprovider.audius.co/v1/tracks/jNd9pxV/stream?app_name=4ever","d":224,"c":"https://cdn-images.dzcdn.net/images/cover/38b98355bf62d69e8955ed5719535efc/1000x1000-000000-80-0-0.jpg","al":"Sempiternal (Expanded Edition)","o":0},{"t":"It Never Ends","a":"Bring Me The Horizon","s":"sc","id":4980700,"u":null,"d":274,"c":"https://cdn-images.dzcdn.net/images/cover/d2ef7db7e46eab617449d21832ba51dd/1000x1000-000000-80-0-0.jpg","al":"There is a Hell Believe Me I've Seen It. There is a Heaven Let's Keep it a Secret (Bonus Track Version)","o":0},{"t":"Antivist","a":"Bring Me The Horizon","s":"sc","id":178988108,"u":null,"d":193,"c":"https://cdn-images.dzcdn.net/images/cover/38b98355bf62d69e8955ed5719535efc/1000x1000-000000-80-0-0.jpg","al":"Sempiternal (Expanded Edition)","o":0},{"t":"Hospital for Souls","a":"Bring Me The Horizon","s":"sc","id":1571779450,"u":null,"d":404,"c":"https://cdn-images.dzcdn.net/images/cover/38b98355bf62d69e8955ed5719535efc/1000x1000-000000-80-0-0.jpg","al":"Sempiternal (Expanded Edition)","o":0},{"t":"Kingslayer (feat. BABYMETAL)","a":"Bring Me The Horizon","s":"sc","id":1057234213,"u":null,"d":220,"c":"https://cdn-images.dzcdn.net/images/cover/0790daea9da2d50e2af292faae6cb228/1000x1000-000000-80-0-0.jpg","al":"POST HUMAN: SURVIVAL HORROR","o":0},{"t":"CODE MISTAKE","a":"Bring Me The Horizon","s":"sc","id":1552494613,"u":null,"d":165,"c":"https://cdn-images.dzcdn.net/images/cover/36d9fd08db0226f610c09d168699965e/1000x1000-000000-80-0-0.jpg","al":"CODE MISTAKE","o":0},{"t":"VAMPIR (feat. Oli Sykes of Bring Me The Horizon)","a":"Bring Me The Horizon","s":"sc","id":1176626356,"u":null,"d":144,"c":"https://cdn-images.dzcdn.net/images/cover/ef539a769b5a3c99f216edb08ad1b71b/1000x1000-000000-80-0-0.jpg","al":"VAMPIR","o":0}]},{"sec":"❀ Jawa","songs":[{"t":"Lancar","a":"Sadewok","s":"sc","id":2256956807,"u":null,"d":273,"c":"https://cdn-images.dzcdn.net/images/cover/aa008afa6e932e39483e1ccc26b68c4c/1000x1000-000000-80-0-0.jpg","al":"Lancar","o":0},{"t":"Ilmu Padi","a":"Sadewok","s":"sc","id":2290227665,"u":null,"d":301,"c":"https://cdn-images.dzcdn.net/images/cover/5f51017cf09066c67c254f9d58650b17/1000x1000-000000-80-0-0.jpg","al":"Ilmu Padi","o":0},{"t":"Sabar","a":"Sadewok","s":"sc","id":2163324027,"u":null,"d":278,"c":"https://cdn-images.dzcdn.net/images/cover/f1c7c8d5d6036afa6f40dbe4bf7353c9/1000x1000-000000-80-0-0.jpg","al":"Sabar","o":0},{"t":"Ndoro Ayu","a":"Cindi Cintya","s":"sc","id":2386402869,"u":null,"d":294,"c":"https://cdn-images.dzcdn.net/images/cover/bd051a3d55e4f1ba98a4eccc01bfbd17/1000x1000-000000-80-0-0.jpg","al":"Ndoro Ayu","o":0},{"t":"Sak Kuate Ati","a":"Cindi Cintya","s":"sc","id":1405613884,"u":null,"d":234,"c":"https://cdn-images.dzcdn.net/images/cover/ce9921d7dc2935846deae1940d3938a8/1000x1000-000000-80-0-0.jpg","al":"Sak Kuate Ati","o":0},{"t":"Banyu Moto","a":"Didik Budi","s":"sc","id":912259795,"u":null,"d":224,"c":"https://cdn-images.dzcdn.net/images/cover/cf0730abeaeefc275aebe71f07b44785/1000x1000-000000-80-0-0.jpg","al":"Banyu Moto","o":0},{"t":"Mergawe","a":"Didik Budi","s":"sc","id":2014816071,"u":null,"d":226,"c":"https://cdn-images.dzcdn.net/images/cover/091d7efef2f02312e5d5113c5c24d836/1000x1000-000000-80-0-0.jpg","al":"Mergawe","o":0},{"t":"Doa Terbaik Untukmu","a":"Didik Budi","s":"sc","id":764981173,"u":null,"d":269,"c":"https://cdn-images.dzcdn.net/images/cover/7dfd5b9374c387f92253dbf23a70e6c6/1000x1000-000000-80-0-0.jpg","al":"Doa Terbaik Untukmu","o":0},{"t":"Salam Dariku","a":"Didik Budi","s":"sc","id":741503872,"u":null,"d":305,"c":"https://cdn-images.dzcdn.net/images/cover/2d33063cc73154ed1e9648b5d8bc3d66/1000x1000-000000-80-0-0.jpg","al":"Salam Dariku","o":0},{"t":"Rosoku","a":"Didik Budi","s":"sc","id":838053172,"u":null,"d":246,"c":"https://cdn-images.dzcdn.net/images/cover/9f32db34be60c7966330da7c8bc96fb5/1000x1000-000000-80-0-0.jpg","al":"Rosoku","o":0}]},{"sec":"♩ Juicy Luicy","songs":[{"t":"Tanpa Tergesa","a":"Juicy Luicy","s":"sc","id":642879693,"u":null,"d":218,"c":"https://cdn-images.dzcdn.net/images/cover/b2f8dab4ce657c060f58ca1041384e65/1000x1000-000000-80-0-0.jpg","al":"Tanpa Tergesa","o":0},{"t":"Mawar Jingga","a":"Juicy Luicy","s":"sc","id":586763991,"u":null,"d":211,"c":"https://cdn-images.dzcdn.net/images/cover/ed3bd9f23ecaff3e00103717b9c777e6/1000x1000-000000-80-0-0.jpg","al":"Mawar Jingga","o":0}]},{"sec":"♫ For Revenge","songs":[{"t":"Ada Selamanya","a":"For Revenge","s":"sc","id":1455032851,"u":null,"d":201,"c":"https://cdn-images.dzcdn.net/images/cover/75a948b17f8bda89743733735a0b5239/1000x1000-000000-80-0-0.jpg","al":"Ada Selamanya","o":0},{"t":"Pulang","a":"For Revenge","s":"sc","id":142583452,"u":null,"d":270,"c":"https://cdn-images.dzcdn.net/images/cover/b8ab53bcd258dc6d4690d0e232b66cb6/1000x1000-000000-80-0-0.jpg","al":"Second Chance","o":0},{"t":"You Can Try To Dance (Or Die)","a":"For Revenge","s":"sc","id":306741807,"u":null,"d":289,"c":"https://cdn-images.dzcdn.net/images/cover/cea7cb03d1b433aee58d1af760afa0a9/1000x1000-000000-80-0-0.jpg","al":"Fireworks","o":0},{"t":"Untuk Siapa?","a":"For Revenge","s":"sc","id":1330422286,"u":null,"d":190,"c":"https://cdn-images.dzcdn.net/images/cover/cbca5b5b25207ff6b82a30ba337d622d/1000x1000-000000-80-0-0.jpg","al":"Untuk Siapa?","o":0}]},{"sec":"☾ Hindia","songs":[{"t":"Rumah Ke Rumah","a":"Hindia","s":"sc","id":2202283467,"u":null,"d":277,"c":"https://cdn-images.dzcdn.net/images/cover/23cc662ac90d414741c26754e0105d9d/1000x1000-000000-80-0-0.jpg","al":"Menari Dengan Bayangan","o":1},{"t":"Secukupnya","a":"Hindia","s":"sc","id":2202281699,"u":null,"d":208,"c":"https://cdn-images.dzcdn.net/images/cover/270414e23ad218252ea616c1f94accc3/1000x1000-000000-80-0-0.jpg","al":"Secukupnya","o":1},{"t":"Membasuh","a":"Hindia","s":"sc","id":2383078878,"u":null,"d":374,"c":"https://cdn-images.dzcdn.net/images/cover/23cc662ac90d414741c26754e0105d9d/1000x1000-000000-80-0-0.jpg","al":"Menari Dengan Bayangan","o":0},{"t":"Untuk Apa / Untuk Apa?","a":"Hindia","s":"sc","id":822122008,"u":null,"d":378,"c":"https://cdn-images.dzcdn.net/images/cover/23cc662ac90d414741c26754e0105d9d/1000x1000-000000-80-0-0.jpg","al":"Menari Dengan Bayangan","o":1},{"t":"Dehidrasi","a":"Hindia","s":"sc","id":2202280091,"u":null,"d":239,"c":"https://cdn-images.dzcdn.net/images/cover/23cc662ac90d414741c26754e0105d9d/1000x1000-000000-80-0-0.jpg","al":"Menari Dengan Bayangan","o":1},{"t":"Jam Makan Siang","a":"Hindia","s":"sc","id":2202273675,"u":null,"d":279,"c":"https://cdn-images.dzcdn.net/images/cover/23cc662ac90d414741c26754e0105d9d/1000x1000-000000-80-0-0.jpg","al":"Menari Dengan Bayangan","o":1},{"t":"Apapun Yang Terjadi","a":"Hindia","s":"sc","id":2202270631,"u":null,"d":229,"c":"https://cdn-images.dzcdn.net/images/cover/23cc662ac90d414741c26754e0105d9d/1000x1000-000000-80-0-0.jpg","al":"Menari Dengan Bayangan","o":1},{"t":"Berdansalah, Karir Ini Tak Ada Artinya","a":"Hindia","s":"sc","id":1908412112,"u":null,"d":224,"c":"https://cdn-images.dzcdn.net/images/cover/d5ff68831d11f794e18bca6a155ddc82/1000x1000-000000-80-0-0.jpg","al":"Lagipula Hidup Akan Berakhir","o":0}]},{"sec":"♪ Tulus","songs":[{"t":"Teh Hijau","a":"Tulus","s":"sc","id":2362596641,"u":null,"d":212,"c":"https://cdn-images.dzcdn.net/images/cover/f99cf5482ab60273bb1c8fc22fa7eb23/1000x1000-000000-80-0-0.jpg","al":"Teh Hijau","o":0},{"t":"Hati-Hati di Jalan","a":"Tulus","s":"sc","id":1225565887,"u":null,"d":242,"c":"https://cdn-images.dzcdn.net/images/cover/ec4b98e50b1c776c71774097eb1aee95/1000x1000-000000-80-0-0.jpg","al":"Manusia","o":0},{"t":"Interaksi","a":"Tulus","s":"sc","id":1225565860,"u":null,"d":174,"c":"https://cdn-images.dzcdn.net/images/cover/ec4b98e50b1c776c71774097eb1aee95/1000x1000-000000-80-0-0.jpg","al":"Manusia","o":0},{"t":"Monokrom","a":"Tulus","s":"sc","id":329636589,"u":null,"d":215,"c":"https://cdn-images.dzcdn.net/images/cover/f831ff7e281ca044205fe4e48288ee51/1000x1000-000000-80-0-0.jpg","al":"Monokrom","o":0},{"t":"Teman Hidup","a":"Tulus","s":"sc","id":99167043,"u":null,"d":224,"c":"https://cdn-images.dzcdn.net/images/cover/0f5a5ec0bd386e80881ebe7eb656a0bb/1000x1000-000000-80-0-0.jpg","al":"Tulus","o":0},{"t":"Jatuh Suka","a":"Tulus","s":"sc","id":2391239121,"u":null,"d":235,"c":"https://cdn-images.dzcdn.net/images/cover/ec4b98e50b1c776c71774097eb1aee95/1000x1000-000000-80-0-0.jpg","al":"Manusia","o":0}]},{"sec":"★ Pop Barat","songs":[{"t":"ocean eyes","a":"Billie Eilish","s":"sc","id":233719633,"u":null,"d":200,"c":"https://cdn-images.dzcdn.net/images/cover/d85200712419ae036b277deffeea5181/1000x1000-000000-80-0-0.jpg","al":"Ocean Eyes","o":1},{"t":"Sweet but Psycho","a":"Ava Max","s":"sc","id":486495918,"u":null,"d":187,"c":"https://cdn-images.dzcdn.net/images/cover/27b9039fed11398a5a3034129656f8fa/1000x1000-000000-80-0-0.jpg","al":"Sweet but Psycho","o":1},{"t":"Kings & Queens","a":"Ava Max","s":"sc","id":773748067,"u":null,"d":162,"c":"https://cdn-images.dzcdn.net/images/cover/996c48926ead8a54c1d90db4e9b109fe/1000x1000-000000-80-0-0.jpg","al":"Kings & Queens","o":1},{"t":"So Am I","a":"Ava Max","s":"sc","id":586430472,"u":null,"d":184,"c":"https://cdn-images.dzcdn.net/images/cover/ae2f71083d31e9e3019d0275e2645696/1000x1000-000000-80-0-0.jpg","al":"So Am I","o":1},{"t":"My Head & My Heart","a":"Ava Max","s":"sc","id":932248375,"u":null,"d":174,"c":"https://cdn-images.dzcdn.net/images/cover/0eca025ac1206d710f91c32e49d6e8a8/1000x1000-000000-80-0-0.jpg","al":"Heaven & Hell","o":1},{"t":"Wrecking Ball","a":"Miley Cyrus","s":"sc","id":107310727,"u":null,"d":221,"c":"https://cdn-images.dzcdn.net/images/cover/0e43d6341c659c4cd71e676fb13282e6/1000x1000-000000-80-0-0.jpg","al":"Bangerz (Deluxe Version)","o":1},{"t":"Viva La Vida","a":"Coldplay","s":"au","id":"Z4bXj9v","u":"https://discoveryprovider.audius.co/v1/tracks/Z4bXj9v/stream?app_name=4ever","d":242,"c":"https://cdn-images.dzcdn.net/images/cover/eede3cd0dc3a5a87c7a5b1085b022e2d/1000x1000-000000-80-0-0.jpg","al":"Viva La Vida or Death and All His Friends","o":0},{"t":"A Sky Full of Stars","a":"Coldplay","s":"au","id":"M2GK9Xx","u":"https://discoveryprovider.audius.co/v1/tracks/M2GK9Xx/stream?app_name=4ever","d":267,"c":"https://cdn-images.dzcdn.net/images/cover/58669ace38d333770941332f8d860dc1/1000x1000-000000-80-0-0.jpg","al":"Ghost Stories","o":0}]}];
+   tangan kedaluwarsa ~2-3 jam). AU: simpan stream langsung.
+   YT: SATU pengecualian — "Kabagyan" Sadewok (s:"yt", id = video YouTube
+   resmi) karena tidak ada sumber audio full di mana pun (65 upload SC
+   DRM, Spotify cuma preview 30 dtk buat yang tidak login); diputar lewat
+   embed resmi YouTube, BUKAN audio re-host. Afis 17 Nov 16:52: "bebas
+   intinya komplitin". Lagu ini TIDAK masuk katalog 650 (bukan audio). */
+const VERIFIED_HOME = [{"sec":"✦ Bring Me The Horizon","songs":[{"t":"Throne","a":"Bring Me The Horizon","s":"sc","id":235047336,"u":null,"d":190,"c":"https://cdn-images.dzcdn.net/images/cover/dd6af81a0d098fdd32e824fd43f2635d/1000x1000-000000-80-0-0.jpg","al":"That's The Spirit","o":0},{"t":"Drown","a":"Bring Me The Horizon","s":"sc","id":179855543,"u":null,"d":221,"c":"https://cdn-images.dzcdn.net/images/cover/dd6af81a0d098fdd32e824fd43f2635d/1000x1000-000000-80-0-0.jpg","al":"That's The Spirit","o":0},{"t":"Can You Feel My Heart","a":"Bring Me The Horizon","s":"au","id":"jNd9pxV","u":"https://discoveryprovider.audius.co/v1/tracks/jNd9pxV/stream?app_name=4ever","d":224,"c":"https://cdn-images.dzcdn.net/images/cover/38b98355bf62d69e8955ed5719535efc/1000x1000-000000-80-0-0.jpg","al":"Sempiternal (Expanded Edition)","o":0},{"t":"It Never Ends","a":"Bring Me The Horizon","s":"sc","id":4980700,"u":null,"d":274,"c":"https://cdn-images.dzcdn.net/images/cover/d2ef7db7e46eab617449d21832ba51dd/1000x1000-000000-80-0-0.jpg","al":"There is a Hell Believe Me I've Seen It. There is a Heaven Let's Keep it a Secret (Bonus Track Version)","o":0},{"t":"Antivist","a":"Bring Me The Horizon","s":"sc","id":178988108,"u":null,"d":193,"c":"https://cdn-images.dzcdn.net/images/cover/38b98355bf62d69e8955ed5719535efc/1000x1000-000000-80-0-0.jpg","al":"Sempiternal (Expanded Edition)","o":0},{"t":"Hospital for Souls","a":"Bring Me The Horizon","s":"sc","id":1571779450,"u":null,"d":404,"c":"https://cdn-images.dzcdn.net/images/cover/38b98355bf62d69e8955ed5719535efc/1000x1000-000000-80-0-0.jpg","al":"Sempiternal (Expanded Edition)","o":0},{"t":"Kingslayer (feat. BABYMETAL)","a":"Bring Me The Horizon","s":"sc","id":1057234213,"u":null,"d":220,"c":"https://cdn-images.dzcdn.net/images/cover/0790daea9da2d50e2af292faae6cb228/1000x1000-000000-80-0-0.jpg","al":"POST HUMAN: SURVIVAL HORROR","o":0},{"t":"CODE MISTAKE","a":"Bring Me The Horizon","s":"sc","id":1552494613,"u":null,"d":165,"c":"https://cdn-images.dzcdn.net/images/cover/36d9fd08db0226f610c09d168699965e/1000x1000-000000-80-0-0.jpg","al":"CODE MISTAKE","o":0},{"t":"VAMPIR (feat. Oli Sykes of Bring Me The Horizon)","a":"Bring Me The Horizon","s":"sc","id":1176626356,"u":null,"d":144,"c":"https://cdn-images.dzcdn.net/images/cover/ef539a769b5a3c99f216edb08ad1b71b/1000x1000-000000-80-0-0.jpg","al":"VAMPIR","o":0}]},{"sec":"❀ Jawa","songs":[{"t":"Kabagyan","a":"Sadewok","s":"yt","id":"3HjPJTkSCFU","u":null,"d":261,"c":"https://i.ytimg.com/vi/3HjPJTkSCFU/hqdefault.jpg","al":"Kabagyan","o":1},{"t":"Lancar","a":"Sadewok","s":"sc","id":2256956807,"u":null,"d":273,"c":"https://cdn-images.dzcdn.net/images/cover/aa008afa6e932e39483e1ccc26b68c4c/1000x1000-000000-80-0-0.jpg","al":"Lancar","o":0},{"t":"Ilmu Padi","a":"Sadewok","s":"sc","id":2290227665,"u":null,"d":301,"c":"https://cdn-images.dzcdn.net/images/cover/5f51017cf09066c67c254f9d58650b17/1000x1000-000000-80-0-0.jpg","al":"Ilmu Padi","o":0},{"t":"Sabar","a":"Sadewok","s":"sc","id":2163324027,"u":null,"d":278,"c":"https://cdn-images.dzcdn.net/images/cover/f1c7c8d5d6036afa6f40dbe4bf7353c9/1000x1000-000000-80-0-0.jpg","al":"Sabar","o":0},{"t":"Ndoro Ayu","a":"Cindi Cintya","s":"sc","id":2386402869,"u":null,"d":294,"c":"https://cdn-images.dzcdn.net/images/cover/bd051a3d55e4f1ba98a4eccc01bfbd17/1000x1000-000000-80-0-0.jpg","al":"Ndoro Ayu","o":0},{"t":"Sak Kuate Ati","a":"Cindi Cintya","s":"sc","id":1405613884,"u":null,"d":234,"c":"https://cdn-images.dzcdn.net/images/cover/ce9921d7dc2935846deae1940d3938a8/1000x1000-000000-80-0-0.jpg","al":"Sak Kuate Ati","o":0},{"t":"Banyu Moto","a":"Didik Budi","s":"sc","id":912259795,"u":null,"d":224,"c":"https://cdn-images.dzcdn.net/images/cover/cf0730abeaeefc275aebe71f07b44785/1000x1000-000000-80-0-0.jpg","al":"Banyu Moto","o":0},{"t":"Mergawe","a":"Didik Budi","s":"sc","id":2014816071,"u":null,"d":226,"c":"https://cdn-images.dzcdn.net/images/cover/091d7efef2f02312e5d5113c5c24d836/1000x1000-000000-80-0-0.jpg","al":"Mergawe","o":0},{"t":"Doa Terbaik Untukmu","a":"Didik Budi","s":"sc","id":764981173,"u":null,"d":269,"c":"https://cdn-images.dzcdn.net/images/cover/7dfd5b9374c387f92253dbf23a70e6c6/1000x1000-000000-80-0-0.jpg","al":"Doa Terbaik Untukmu","o":0},{"t":"Salam Dariku","a":"Didik Budi","s":"sc","id":741503872,"u":null,"d":305,"c":"https://cdn-images.dzcdn.net/images/cover/2d33063cc73154ed1e9648b5d8bc3d66/1000x1000-000000-80-0-0.jpg","al":"Salam Dariku","o":0},{"t":"Rosoku","a":"Didik Budi","s":"sc","id":838053172,"u":null,"d":246,"c":"https://cdn-images.dzcdn.net/images/cover/9f32db34be60c7966330da7c8bc96fb5/1000x1000-000000-80-0-0.jpg","al":"Rosoku","o":0}]},{"sec":"♩ Juicy Luicy","songs":[{"t":"Tanpa Tergesa","a":"Juicy Luicy","s":"sc","id":642879693,"u":null,"d":218,"c":"https://cdn-images.dzcdn.net/images/cover/b2f8dab4ce657c060f58ca1041384e65/1000x1000-000000-80-0-0.jpg","al":"Tanpa Tergesa","o":0},{"t":"Mawar Jingga","a":"Juicy Luicy","s":"sc","id":586763991,"u":null,"d":211,"c":"https://cdn-images.dzcdn.net/images/cover/ed3bd9f23ecaff3e00103717b9c777e6/1000x1000-000000-80-0-0.jpg","al":"Mawar Jingga","o":0}]},{"sec":"♫ For Revenge","songs":[{"t":"Ada Selamanya","a":"For Revenge","s":"sc","id":1455032851,"u":null,"d":201,"c":"https://cdn-images.dzcdn.net/images/cover/75a948b17f8bda89743733735a0b5239/1000x1000-000000-80-0-0.jpg","al":"Ada Selamanya","o":0},{"t":"Pulang","a":"For Revenge","s":"sc","id":142583452,"u":null,"d":270,"c":"https://cdn-images.dzcdn.net/images/cover/b8ab53bcd258dc6d4690d0e232b66cb6/1000x1000-000000-80-0-0.jpg","al":"Second Chance","o":0},{"t":"You Can Try To Dance (Or Die)","a":"For Revenge","s":"sc","id":306741807,"u":null,"d":289,"c":"https://cdn-images.dzcdn.net/images/cover/cea7cb03d1b433aee58d1af760afa0a9/1000x1000-000000-80-0-0.jpg","al":"Fireworks","o":0},{"t":"Untuk Siapa?","a":"For Revenge","s":"sc","id":1330422286,"u":null,"d":190,"c":"https://cdn-images.dzcdn.net/images/cover/cbca5b5b25207ff6b82a30ba337d622d/1000x1000-000000-80-0-0.jpg","al":"Untuk Siapa?","o":0}]},{"sec":"☾ Hindia","songs":[{"t":"Rumah Ke Rumah","a":"Hindia","s":"sc","id":2202283467,"u":null,"d":277,"c":"https://cdn-images.dzcdn.net/images/cover/23cc662ac90d414741c26754e0105d9d/1000x1000-000000-80-0-0.jpg","al":"Menari Dengan Bayangan","o":1},{"t":"Secukupnya","a":"Hindia","s":"sc","id":2202281699,"u":null,"d":208,"c":"https://cdn-images.dzcdn.net/images/cover/270414e23ad218252ea616c1f94accc3/1000x1000-000000-80-0-0.jpg","al":"Secukupnya","o":1},{"t":"Membasuh","a":"Hindia","s":"sc","id":2383078878,"u":null,"d":374,"c":"https://cdn-images.dzcdn.net/images/cover/23cc662ac90d414741c26754e0105d9d/1000x1000-000000-80-0-0.jpg","al":"Menari Dengan Bayangan","o":0},{"t":"Untuk Apa / Untuk Apa?","a":"Hindia","s":"sc","id":822122008,"u":null,"d":378,"c":"https://cdn-images.dzcdn.net/images/cover/23cc662ac90d414741c26754e0105d9d/1000x1000-000000-80-0-0.jpg","al":"Menari Dengan Bayangan","o":1},{"t":"Dehidrasi","a":"Hindia","s":"sc","id":2202280091,"u":null,"d":239,"c":"https://cdn-images.dzcdn.net/images/cover/23cc662ac90d414741c26754e0105d9d/1000x1000-000000-80-0-0.jpg","al":"Menari Dengan Bayangan","o":1},{"t":"Jam Makan Siang","a":"Hindia","s":"sc","id":2202273675,"u":null,"d":279,"c":"https://cdn-images.dzcdn.net/images/cover/23cc662ac90d414741c26754e0105d9d/1000x1000-000000-80-0-0.jpg","al":"Menari Dengan Bayangan","o":1},{"t":"Apapun Yang Terjadi","a":"Hindia","s":"sc","id":2202270631,"u":null,"d":229,"c":"https://cdn-images.dzcdn.net/images/cover/23cc662ac90d414741c26754e0105d9d/1000x1000-000000-80-0-0.jpg","al":"Menari Dengan Bayangan","o":1},{"t":"Berdansalah, Karir Ini Tak Ada Artinya","a":"Hindia","s":"sc","id":1908412112,"u":null,"d":224,"c":"https://cdn-images.dzcdn.net/images/cover/d5ff68831d11f794e18bca6a155ddc82/1000x1000-000000-80-0-0.jpg","al":"Lagipula Hidup Akan Berakhir","o":0}]},{"sec":"♪ Tulus","songs":[{"t":"Teh Hijau","a":"Tulus","s":"sc","id":2362596641,"u":null,"d":212,"c":"https://cdn-images.dzcdn.net/images/cover/f99cf5482ab60273bb1c8fc22fa7eb23/1000x1000-000000-80-0-0.jpg","al":"Teh Hijau","o":0},{"t":"Hati-Hati di Jalan","a":"Tulus","s":"sc","id":1225565887,"u":null,"d":242,"c":"https://cdn-images.dzcdn.net/images/cover/ec4b98e50b1c776c71774097eb1aee95/1000x1000-000000-80-0-0.jpg","al":"Manusia","o":0},{"t":"Interaksi","a":"Tulus","s":"sc","id":1225565860,"u":null,"d":174,"c":"https://cdn-images.dzcdn.net/images/cover/ec4b98e50b1c776c71774097eb1aee95/1000x1000-000000-80-0-0.jpg","al":"Manusia","o":0},{"t":"Monokrom","a":"Tulus","s":"sc","id":329636589,"u":null,"d":215,"c":"https://cdn-images.dzcdn.net/images/cover/f831ff7e281ca044205fe4e48288ee51/1000x1000-000000-80-0-0.jpg","al":"Monokrom","o":0},{"t":"Teman Hidup","a":"Tulus","s":"sc","id":99167043,"u":null,"d":224,"c":"https://cdn-images.dzcdn.net/images/cover/0f5a5ec0bd386e80881ebe7eb656a0bb/1000x1000-000000-80-0-0.jpg","al":"Tulus","o":0},{"t":"Jatuh Suka","a":"Tulus","s":"sc","id":2391239121,"u":null,"d":235,"c":"https://cdn-images.dzcdn.net/images/cover/ec4b98e50b1c776c71774097eb1aee95/1000x1000-000000-80-0-0.jpg","al":"Manusia","o":0}]},{"sec":"★ Pop Barat","songs":[{"t":"ocean eyes","a":"Billie Eilish","s":"sc","id":233719633,"u":null,"d":200,"c":"https://cdn-images.dzcdn.net/images/cover/d85200712419ae036b277deffeea5181/1000x1000-000000-80-0-0.jpg","al":"Ocean Eyes","o":1},{"t":"Sweet but Psycho","a":"Ava Max","s":"sc","id":486495918,"u":null,"d":187,"c":"https://cdn-images.dzcdn.net/images/cover/27b9039fed11398a5a3034129656f8fa/1000x1000-000000-80-0-0.jpg","al":"Sweet but Psycho","o":1},{"t":"Kings & Queens","a":"Ava Max","s":"sc","id":773748067,"u":null,"d":162,"c":"https://cdn-images.dzcdn.net/images/cover/996c48926ead8a54c1d90db4e9b109fe/1000x1000-000000-80-0-0.jpg","al":"Kings & Queens","o":1},{"t":"So Am I","a":"Ava Max","s":"sc","id":586430472,"u":null,"d":184,"c":"https://cdn-images.dzcdn.net/images/cover/ae2f71083d31e9e3019d0275e2645696/1000x1000-000000-80-0-0.jpg","al":"So Am I","o":1},{"t":"My Head & My Heart","a":"Ava Max","s":"sc","id":932248375,"u":null,"d":174,"c":"https://cdn-images.dzcdn.net/images/cover/0eca025ac1206d710f91c32e49d6e8a8/1000x1000-000000-80-0-0.jpg","al":"Heaven & Hell","o":1},{"t":"Wrecking Ball","a":"Miley Cyrus","s":"sc","id":107310727,"u":null,"d":221,"c":"https://cdn-images.dzcdn.net/images/cover/0e43d6341c659c4cd71e676fb13282e6/1000x1000-000000-80-0-0.jpg","al":"Bangerz (Deluxe Version)","o":1},{"t":"Viva La Vida","a":"Coldplay","s":"au","id":"Z4bXj9v","u":"https://discoveryprovider.audius.co/v1/tracks/Z4bXj9v/stream?app_name=4ever","d":242,"c":"https://cdn-images.dzcdn.net/images/cover/eede3cd0dc3a5a87c7a5b1085b022e2d/1000x1000-000000-80-0-0.jpg","al":"Viva La Vida or Death and All His Friends","o":0},{"t":"A Sky Full of Stars","a":"Coldplay","s":"au","id":"M2GK9Xx","u":"https://discoveryprovider.audius.co/v1/tracks/M2GK9Xx/stream?app_name=4ever","d":267,"c":"https://cdn-images.dzcdn.net/images/cover/58669ace38d333770941332f8d860dc1/1000x1000-000000-80-0-0.jpg","al":"Ghost Stories","o":0}]}];
 /* satu lagu terverifikasi -> item pemutar */
 function homeItem(s) {
   const it = { title: s.t, artists: s.a, duration: s.d, cover: s.c, album: s.al || '', fullOfficial: !!s.o, fullSource: s.s };
   if (s.s === 'sc') it.scId = s.id;
+  else if (s.s === 'yt') it.ytId = s.id; /* pengecualian video YouTube resmi */
   else { it.fullUrl = s.u; it.auId = s.id; }
   return it;
 }
@@ -626,7 +672,7 @@ function renderHome() {
   document.getElementById('cardDJ').classList.remove('on');
   document.getElementById('resTitle').textContent = 'Buat kamu ♪';
   document.getElementById('moreBtn').style.display = 'none';
-  let html = '', gi = 0;
+  let html = artistRowHtml(), gi = 0;
   homeParts.forEach(p => {
     if (!p.items.some(hasFull)) return;
     html += '<div class="sec-title">' + esc(p.title) + '</div>';
@@ -658,6 +704,57 @@ function renderDJ() {
   });
   resultsBox.innerHTML = html || '<p class="empty">Lagu DJ lagi dicariin, bentar lagi nongol di sini ♪</p>';
 }
+/* ---------- baris artis ala SoundCloud di beranda ----------
+   Dibangun dari artis yang ada di beranda (tumbuh otomatis begitu
+   perburuan lagu mendarat) — foto bundar, geser ke samping, ketuk
+   buat lihat semua lagu si artis yang ada di beranda. */
+function artistRowHtml() {
+  if (!homeParts.length) return '';
+  const seen = {}, list = [];
+  homeParts.forEach(p => p.items.forEach(it => {
+    if (!it.artists || seen[it.artists]) return;
+    seen[it.artists] = 1;
+    list.push(it);
+  }));
+  if (!list.length) return '';
+  return '<div class="sec-title">Artis</div><div class="artist-row">' + list.map(it =>
+    '<button class="artist" data-artist="' + esc(it.artists) + '"><img src="' + esc(it.cover) + '" alt="" loading="lazy"><span>' + esc(it.artists) + '</span></button>').join('') + '</div>';
+}
+function renderArtist(name) {
+  if (!homeParts.length) {
+    const parts = VERIFIED_HOME.map(sec => ({ title: sec.sec, items: sec.songs.map(homeItem) }));
+    homeParts = parts;
+    queue = parts.flatMap(p => p.items);
+    curIdx = -1;
+  }
+  view = 'home';
+  setFooterTab('home-footer-icon');
+  document.getElementById('cardHome').classList.add('on');
+  document.getElementById('cardLikes').classList.remove('on');
+  document.getElementById('cardDJ').classList.remove('on');
+  document.getElementById('resTitle').textContent = name;
+  document.getElementById('moreBtn').style.display = 'none';
+  let html = artistRowHtml(), gi = 0;
+  homeParts.forEach(p => {
+    p.items.forEach(it => { if (it.artists === name) html += rowHtml(it, gi); gi++; });
+  });
+  resultsBox.innerHTML = html || '<p class="empty">Belum ada lagu ' + esc(name) + ' di sini ♪</p>';
+}
+/* ---------- modal video YouTube resmi (pengecualian Kabagyan) ---------- */
+function openYt(it) {
+  try { au.pause(); } catch (e) {}
+  document.getElementById('ytTitle').textContent = it.title + ' — ' + it.artists;
+  document.getElementById('ytLink').href = 'https://www.youtube.com/watch?v=' + it.ytId;
+  document.getElementById('ytFrame').src = 'https://www.youtube-nocookie.com/embed/' + it.ytId + '?autoplay=1&rel=0';
+  document.getElementById('ytModal').classList.add('show');
+}
+function closeYt() {
+  document.getElementById('ytFrame').src = '';
+  document.getElementById('ytModal').classList.remove('show');
+}
+document.getElementById('ytClose').onclick = closeYt;
+document.getElementById('ytModal').addEventListener('click', e => { if (e.target.id === 'ytModal') closeYt(); });
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeYt(); });
 async function loadHome() {
   view = 'home';
   document.getElementById('resTitle').textContent = 'Buat kamu ♪';
