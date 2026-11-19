@@ -297,6 +297,53 @@ function escH(s) {
   return String(s || '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 }
 let LAST_ITEMS = [];
+// Alamat polos dari header To — "Nama <a@b.id>" -> "a@b.id" (huruf kecil)
+function bareAddr(s) {
+  const m = String(s || '').match(/<([^<>@\s]+@[^<>@\s]+)>/);
+  return (m ? m[1] : String(s || '')).toLowerCase().trim();
+}
+// Teks bersih dari isi email mentah: buang header + tag HTML + decode quoted-printable
+function cleanText(raw) {
+  try {
+    const parts = String(raw || '').split(/\r?\n\r?\n/);
+    let t = parts.length > 1 ? parts.slice(1).join('\n') : String(raw || '');
+    t = t.replace(/=\r?\n/g, '');
+    const bytes = [];
+    for (let i = 0; i < t.length; i++) {
+      if (t[i] === '=' && /^[0-9A-Fa-f]{2}$/.test(t.slice(i + 1, i + 3))) {
+        bytes.push(parseInt(t.slice(i + 1, i + 3), 16));
+        i += 2;
+      } else {
+        const c = t.charCodeAt(i);
+        if (c < 128) bytes.push(c);
+        else { const enc = new TextEncoder().encode(t[i]); for (const b of enc) bytes.push(b); }
+      }
+    }
+    try { t = new TextDecoder('utf-8').decode(new Uint8Array(bytes)); } catch (e) {}
+    return t.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim();
+  } catch (e) { return ''; }
+}
+// Cari kode verifikasi di sisi halaman — buat email LAMA yg kesimpen
+// waktu Worker masih versi lama (code-nya null di API). Pola sama kayak
+// Worker v4: frasa verifikasi di teks bersih, BUKAN angka polos.
+function extractCodeClient(raw, subject) {
+  try {
+    const sj = String(subject || '');
+    let m;
+    m = String(raw || '').match(/(\d{6})\s+is your Instagram code/i);
+    if (m) return m[1];
+    m = String(raw || '').match(/Instagram code[^0-9]{0,20}(\d{6})/i);
+    if (m) return m[1];
+    m = sj.match(/(?:kode|code|otp|verifikasi|verification|pin)[^0-9]{0,30}(\d{4,8})/i);
+    if (m) return m[1];
+    m = sj.match(/(\d{5,6})/);
+    if (m) return m[1];
+    const t = cleanText(raw);
+    m = t.match(/(?:verification code|confirmation code|kode verifikasi|kode konfirmasi|kode aktivasi|activation code|your code|kode anda|one-time passcode|one time code|security code|kode keamanan|code to confirm|code to verify|\botp\b)[^0-9]{0,60}(\d{4,8})/i);
+    if (m) return m[1];
+  } catch (e) {}
+  return null;
+}
 function loadInbox() {
   wapi('/api/list').then(d => {
     LAST_ITEMS = d.items || [];
@@ -313,7 +360,7 @@ function renderInbox() {
     box.innerHTML = '<p style="color:#777;margin-top:26px;line-height:1.7;"><svg viewBox="0 0 24 24" width="30" height="30" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" style="color:#e53935;vertical-align:-4px;flex:none"><path d="M4 13.8l2.1-6.9A1.9 1.9 0 0 1 7.9 5.5h8.2a1.9 1.9 0 0 1 1.8 1.4L20 13.8v4.4a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2z"/><path d="M4 13.8h4.6l1.2 2.2h4.4l1.2-2.2H20"/></svg><br>inbox kamu masih fresh.<br>generate alamat di bawah — kode buat alamat itu tampil di sini, cuma punya kamu.</p>';
     return;
   }
-  const cocok = LAST_ITEMS.filter(m => (m.to || '').toLowerCase() === q);
+  const cocok = LAST_ITEMS.filter(m => bareAddr(m.to) === q);
   if (!cocok.length) {
     box.innerHTML = '<p style="color:#888;margin-top:22px;line-height:1.7;">belum ada email masuk buat alamat itu...<br>kalau abis daftar, tunggu bentar terus tap Muat Ulang.</p>';
     return;
@@ -322,10 +369,11 @@ function renderInbox() {
   cocok.slice(0, 10).forEach(m => {
     const div = document.createElement('div');
     div.className = 'inbox-item';
+    const code = m.code || extractCodeClient(m.body || '', m.subject);
     div.innerHTML = '<div class="sj">' + escH(m.subject) + '</div>' +
       '<div class="fm">dari: ' + escH(m.from) + '<br>ke: ' + escH(m.to) + '</div>' +
       '<div class="tm">' + fmtT(m.time) + '</div>' +
-      (m.code ? '<span class="kode-chip">' + escH(m.code) + '</span>' : '');
+      (code ? '<span class="kode-chip">' + escH(code) + '</span>' : '');
     div.onclick = () => openInboxMail(m.id);
     box.appendChild(div);
   });
@@ -339,13 +387,14 @@ function renderInbox() {
 function openInboxMail(id) {
   wapi('/api/read?id=' + encodeURIComponent(id)).then(m => {
     const d = document.getElementById('inDetail');
+    const code = m.code || extractCodeClient(m.body || m.text || '', m.subject);
     let html = '';
-    if (m.code) html += '<button class="btn" id="cpCode">' + CLIP_SVG + ' Salin Kode: ' + escH(m.code) + '</button>';
-    html += '<pre class="mail-body">' + escH(m.text || '(isi kosong)') + '</pre>';
+    if (code) html += '<button class="btn" id="cpCode">' + CLIP_SVG + ' Salin Kode: ' + escH(code) + '</button>';
+    html += '<pre class="mail-body">' + escH(cleanText(m.body || m.text || '') || '(isi kosong)') + '</pre>';
     html += '<button class="btn ghost" id="delMail">' + TRASH_SVG + ' Hapus email ini</button>';
     d.innerHTML = html;
     const cp = document.getElementById('cpCode');
-    if (cp) cp.onclick = () => copyText(m.code, cp);
+    if (cp) cp.onclick = () => copyText(code, cp);
     document.getElementById('delMail').onclick = () => wapi('/api/delete?id=' + encodeURIComponent(id)).then(loadInbox);
     d.scrollIntoView({ behavior: 'smooth' });
   });
