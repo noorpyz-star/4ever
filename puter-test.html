@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="en">
+<head><meta charset="utf-8"><title>Puter txt2vid test</title></head>
+<body>
+<h1 id="status">LOADING puter.js...</h1>
+<pre id="log"></pre>
+<div id="out"></div>
+<script src="https://js.puter.com/v2/"></script>
+<script>
+const logEl = document.getElementById('log');
+const statusEl = document.getElementById('status');
+function log(m){ logEl.textContent += m + "\n"; }
+async function run(){
+  try {
+    if (typeof puter === 'undefined') { statusEl.textContent = 'ERROR: puter undefined'; return; }
+    log('puter.js loaded. auth user: ' + JSON.stringify(puter.auth ? await puter.auth.getUser().catch(e => 'auth-check-failed: ' + e.message) : 'no-auth-api'));
+    statusEl.textContent = 'TEST MODE...';
+    const sample = await puter.ai.txt2vid("a cat sitting in a sunny garden, cinematic", { test_mode: true });
+    log('TEST MODE OK: src=' + String(sample).slice(0, 120));
+    document.getElementById('out').appendChild(sample);
+    statusEl.textContent = 'REAL GENERATION RUNNING (Wan 2.7 default, 5s)...';
+    const t0 = Date.now();
+    const video = await puter.ai.txt2vid("a cat sitting in a sunny garden, cinematic", { seconds: 5 });
+    const secs = Math.round((Date.now() - t0) / 1000);
+    log('REAL OK in ' + secs + 's: src=' + String(video).slice(0, 160));
+    log('video duration attr: ' + video.duration);
+    document.getElementById('out').appendChild(video);
+    statusEl.textContent = 'DONE REAL in ' + secs + 's';
+  } catch (e) {
+    statusEl.textContent = 'ERROR: ' + (e && e.message ? e.message : String(e)) + ' | code=' + (e && e.code ? e.code : 'n/a');
+    log('ERROR full: ' + JSON.stringify(e, null, 2));
+  }
+}
+run();
+</script>
+</body>
+</html>
