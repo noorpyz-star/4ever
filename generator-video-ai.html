@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Generator Video AI Gratis — 4ever.ai.id</title>
+<meta name="description" content="Bikin video AI dari teks, gratis. Tulis prompt, pilih model, generate, download.">
+<style>
+  :root { --red:#e53935; --yellow:#f9a825; --green:#43a047; --ink:#222; --muted:#666; --line:#e5e5e5; }
+  * { box-sizing:border-box; }
+  body { margin:0; font-family:system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif; color:var(--ink); background:#fff; }
+  header { background:var(--red); color:#fff; padding:18px 16px; text-align:center; }
+  header h1 { margin:0; font-size:22px; }
+  header p { margin:6px 0 0; opacity:.95; font-size:14px; }
+  main { max-width:720px; margin:0 auto; padding:18px 16px 40px; }
+  .card { border:1px solid var(--line); border-radius:14px; padding:16px; margin-bottom:16px; box-shadow:0 2px 8px rgba(0,0,0,.05); }
+  label { display:block; font-weight:700; margin:12px 0 6px; font-size:14px; }
+  textarea, select, input[type=text], input[type=password] { width:100%; padding:11px 12px; border:1.5px solid #ccc; border-radius:10px; font-size:15px; font-family:inherit; }
+  textarea { min-height:90px; resize:vertical; }
+  textarea:focus, select:focus, input:focus { outline:2px solid var(--yellow); border-color:var(--yellow); }
+  .row { display:flex; gap:12px; flex-wrap:wrap; }
+  .row > div { flex:1; min-width:140px; }
+  .hint { font-size:13px; color:var(--muted); margin-top:5px; }
+  button#generateBtn { width:100%; padding:14px; font-size:17px; font-weight:800; color:#fff; background:var(--green); border:0; border-radius:12px; cursor:pointer; margin-top:14px; }
+  button#generateBtn:disabled { background:#bbb; cursor:wait; }
+  .status { font-size:14px; line-height:1.6; white-space:pre-wrap; background:#fafafa; border:1px dashed var(--line); border-radius:10px; padding:12px; min-height:48px; }
+  video { width:100%; border-radius:12px; background:#000; display:none; }
+  #downloadBtn { display:none; width:100%; padding:12px; margin-top:10px; font-size:15px; font-weight:700; color:#fff; background:var(--red); border:0; border-radius:12px; cursor:pointer; text-align:center; text-decoration:none; }
+  .badge { display:inline-block; background:var(--yellow); color:#222; font-weight:800; font-size:12px; padding:3px 9px; border-radius:20px; }
+  footer { text-align:center; color:var(--muted); font-size:13px; padding:0 16px 30px; }
+  footer a { color:var(--red); }
+</style>
+</head>
+<body>
+<header>
+  <h1>🎬 Generator Video AI Gratis</h1>
+  <p>Tulis prompt → generate → download. Tanpa kartu kredit.</p>
+</header>
+<main>
+  <div class="card">
+    <span class="badge">BETA — mesin video sedang disambung</span>
+    <label for="prompt">Prompt video</label>
+    <textarea id="prompt" placeholder="Contoh: seekor kucing duduk di taman yang cerah, sinematik, gerakan lambat"></textarea>
+    <div class="hint">Tulis dalam bahasa Inggris hasilnya biasanya lebih bagus. Satu adegan, satu subjek, gerakan jelas.</div>
+
+    <div class="row">
+      <div>
+        <label for="model">Model</label>
+        <select id="model"></select>
+      </div>
+      <div>
+        <label for="duration">Durasi</label>
+        <select id="duration">
+          <option value="5">5 detik</option>
+          <option value="10">10 detik</option>
+        </select>
+      </div>
+      <div>
+        <label for="ratio">Rasio</label>
+        <select id="ratio">
+          <option value="9:16">9:16 — Shorts / Reels</option>
+          <option value="16:9">16:9 — YouTube</option>
+          <option value="1:1">1:1 — Feed</option>
+        </select>
+      </div>
+    </div>
+
+    <label for="apiKey">API key (disimpan di browser kamu saja)</label>
+    <input type="password" id="apiKey" placeholder="Tempel API key di sini">
+    <div class="hint">Key tidak dikirim ke mana-mana kecuali ke penyedia video yang kamu pilih. Kosongkan kalau pakai mode gratis bawaan.</div>
+
+    <button id="generateBtn">▶ Generate Video</button>
+  </div>
+
+  <div class="card" style="border-color:var(--green);">
+    <span class="badge" style="background:var(--green); color:#fff;">GRATIS TIAP HARI — tanpa API key</span>
+    <label>Google Flow (Veo 3.1) — 50 kredit gratis / hari</label>
+    <div class="hint" style="font-size:14px; line-height:1.7;">
+      Flow tidak punya API, jadi video tidak bisa di-generate langsung dari halaman ini. Tapi Flow kasih <b>50 kredit gratis tiap hari</b> (reset harian) — cukup buat ~5 video 8 detik Veo 3.1 Lite per hari, tanpa watermark, kualitas paling bagus. Login pakai akun Google kamu, tempel prompt di bawah ke Flow, generate di sana, lalu download videonya.
+    </div>
+    <div class="row" style="margin-top:12px;">
+      <div>
+        <button id="copyPromptBtn" style="width:100%; padding:12px; font-size:15px; font-weight:700; color:#222; background:var(--yellow); border:0; border-radius:12px; cursor:pointer;">📋 Salin Prompt</button>
+      </div>
+      <div>
+        <a href="https://flow.google.com" target="_blank" rel="noopener" style="display:block; width:100%; padding:12px; font-size:15px; font-weight:800; color:#fff; background:var(--green); border:0; border-radius:12px; cursor:pointer; text-align:center; text-decoration:none;">▶ Buka Google Flow</a>
+      </div>
+    </div>
+    <div class="hint">Butuh akun Google (gratis). Kalau Flow minta upgrade berbayar, berarti jatah gratis hari itu habis — coba lagi besok.</div>
+  </div>
+
+  <div class="card">
+    <label>Mesin gratis lain (tanpa kartu kredit)</label>
+    <div class="hint" style="font-size:14px; line-height:1.7;">
+      • <b>Magic Hour</b> — tool video gratis tanpa daftar, 3x generate/hari (klip 3 detik, 480p, watermark). <a href="https://magichour.ai" target="_blank" rel="noopener">Buka Magic Hour →</a><br>
+      • <b>GenRelay</b> — daftar gratis dapat kredit $0,50 (cukup ~8 video Veo 3.1 Lite), tanpa kartu. <a href="https://genrelay.ai" target="_blank" rel="noopener">Buka GenRelay →</a><br>
+      • <b>Kling</b> — kredit gratis harian (lagi dites, hasilnya menyusul).<br>
+      Semua mesin di atas gratis — kalau ada yang minta kartu pembayaran, berhenti dan jangan lanjutkan.
+    </div>
+  </div>
+
+  <div class="card">
+    <label>Status</label>
+    <div class="status" id="status">Siap. Tulis prompt lalu tekan Generate.</div>
+    <video id="resultVideo" controls playsinline></video>
+    <a id="downloadBtn" href="#" download="video-ai.mp4">⬇ Download Video (MP4)</a>
+  </div>
+
+  <div class="card">
+    <label>Catatan</label>
+    <div class="hint" style="font-size:14px; line-height:1.7;">
+      • Video AI gratis itu kredit trial — sekali habis, generate berhenti sampai top-up atau ganti akun.<br>
+      • Prompt Inggris + satu adegan = hasil paling stabil.<br>
+      • Video yang kamu generate tersimpan di perangkatmu, bukan di server kami.
+    </div>
+  </div>
+</main>
+<footer>
+  <a href="https://4ever.ai.id">🌐 4ever.ai.id</a> — musik gratis, TV gratis, game &amp; tools gratis 🎵📺🎮
+</footer>
+
+<script>
+/* ============================================================
+   PROVIDER CONFIG — diisi setelah mesin pemenang ketemu.
+   Alur umum semua API video: POST buat job -> polling status
+   -> dapat URL video -> tampilkan + sediakan download.
+   ============================================================ */
+const PROVIDER = {
+  name: "BELUM DISAMBUNG",
+  endpoint: "",          // contoh: "https://api.magichour.ai/v1/video/generate"
+  statusEndpoint: "",   // contoh: "https://api.magichour.ai/v1/video/status"
+  models: [],           // contoh: [{id:"veo-3.1", label:"Veo 3.1"}, {id:"kling-3.0", label:"Kling 3.0"}]
+  headers: function (key) { return { "Authorization": "Bearer " + key, "Content-Type": "application/json" }; },
+  buildPayload: function (prompt, model, duration, ratio) {
+    return { model: model, prompt: prompt, duration_seconds: duration, aspect_ratio: ratio };
+  },
+  jobIdFrom: function (data) { return data.id || data.job_id || null; },
+  videoUrlFrom: function (data) { return data.video_url || data.url || (data.result && data.result.video_url) || null; },
+  statusFrom: function (data) { return (data.status || "").toLowerCase(); } // "queued" | "processing" | "completed" | "failed"
+};
+
+const $ = (id) => document.getElementById(id);
+const statusEl = $("status"), videoEl = $("resultVideo"), dlBtn = $("downloadBtn"), genBtn = $("generateBtn");
+
+function setStatus(msg) { statusEl.textContent = msg; }
+
+function refreshModels() {
+  const sel = $("model");
+  sel.innerHTML = "";
+  if (!PROVIDER.models.length) {
+    const o = document.createElement("option");
+    o.textContent = "— mesin belum disambung —";
+    sel.appendChild(o);
+    return;
+  }
+  PROVIDER.models.forEach(m => {
+    const o = document.createElement("option");
+    o.value = m.id; o.textContent = m.label;
+    sel.appendChild(o);
+  });
+}
+
+// API key tersimpan lokal di browser pengunjung (bukan di server).
+$("apiKey").value = localStorage.getItem("videoai_key") || "";
+$("apiKey").addEventListener("input", (e) => localStorage.setItem("videoai_key", e.target.value));
+
+async function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
+
+async function generate() {
+  const prompt = $("prompt").value.trim();
+  const key = $("apiKey").value.trim();
+  if (!prompt) { setStatus("Isi dulu prompt-nya."); return; }
+  if (!PROVIDER.endpoint) {
+    setStatus("Mesin video belum disambung. Halaman ini masih menunggu hasil tes penyedia gratis — coba lagi nanti.");
+    return;
+  }
+  genBtn.disabled = true;
+  videoEl.style.display = "none";
+  dlBtn.style.display = "none";
+  try {
+    setStatus("Mengirim prompt ke " + PROVIDER.name + "…");
+    const res = await fetch(PROVIDER.endpoint, {
+      method: "POST",
+      headers: PROVIDER.headers(key),
+      body: JSON.stringify(PROVIDER.buildPayload(prompt, $("model").value, +$("duration").value, $("ratio").value))
+    });
+    if (!res.ok) {
+      const t = await res.text();
+      throw new Error("Server menolak (" + res.status + "): " + t.slice(0, 200));
+    }
+    const data = await res.json();
+    const jobId = PROVIDER.jobIdFrom(data);
+    if (!jobId) throw new Error("Tidak dapat job id dari server.");
+    setStatus("Job dibuat (" + jobId + "). Video lagi di-render, tunggu ya…");
+    // Polling status sampai selesai (maks ~5 menit).
+    for (let i = 0; i < 60; i++) {
+      await sleep(5000);
+      const s = await fetch(PROVIDER.statusEndpoint + "?job_id=" + encodeURIComponent(jobId), { headers: PROVIDER.headers(key) });
+      const sd = await s.json();
+      const st = PROVIDER.statusFrom(sd);
+      if (st === "completed") {
+        const url = PROVIDER.videoUrlFrom(sd);
+        if (!url) throw new Error("Selesai tapi tidak ada URL video.");
+        videoEl.src = url;
+        videoEl.style.display = "block";
+        dlBtn.href = url;
+        dlBtn.style.display = "block";
+        setStatus("Selesai! Video bisa diputar di atas dan di-download.");
+        return;
+      }
+      if (st === "failed") throw new Error("Render gagal: " + (sd.error || sd.message || "tidak ada detail."));
+      setStatus("Masih render… (" + st + ", cek ke-" + (i + 1) + ")");
+    }
+    throw new Error("Render kelamaan (lebih dari 5 menit). Coba lagi nanti.");
+  } catch (err) {
+    setStatus("Gagal: " + err.message);
+  } finally {
+    genBtn.disabled = false;
+  }
+}
+
+genBtn.addEventListener("click", generate);
+$("copyPromptBtn").addEventListener("click", async () => {
+  const prompt = $("prompt").value.trim();
+  if (!prompt) { setStatus("Isi dulu prompt-nya, baru disalin."); return; }
+  try {
+    await navigator.clipboard.writeText(prompt);
+    setStatus("Prompt disalin. Buka Google Flow, tempel prompt-nya di sana, lalu generate.");
+  } catch (e) {
+    setStatus("Gagal menyalin otomatis — blokir prompt di atas lalu salin manual (Ctrl+C).");
+  }
+});
+refreshModels();
+</script>
+</body>
+</html>
