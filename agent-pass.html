@@ -1,0 +1,624 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>4ever Agent Pass — Badge Gratis untuk Pemegang Agent ID</title>
+<meta name="description" content="Badge gratis untuk pemegang Agent ID: mint badge, check-in harian, dan dinding pendukung. Cuma bayar gas, tanpa janji apa pun.">
+<style>
+  :root{
+    --merah:#e53935; --kuning:#f9a825; --hijau:#43a047;
+    --teks:#222; --abu:#666; --garis:#eee; --latar:#fff8e1;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;color:var(--teks);background:#fff;line-height:1.55}
+  header{background:linear-gradient(135deg,var(--merah),#f4511e 55%,var(--kuning));color:#fff;padding:28px 16px 24px;text-align:center}
+  header .lencana{display:inline-block;background:#fff;color:var(--merah);font-weight:700;font-size:13px;padding:4px 12px;border-radius:999px;margin-bottom:10px}
+  header h1{margin:0 0 6px;font-size:26px;line-height:1.25}
+  header p{margin:0;font-size:15px;opacity:.95}
+  main{max-width:720px;margin:0 auto;padding:16px 16px 40px}
+  .kartu{background:#fff;border:1px solid var(--garis);border-radius:14px;padding:16px;margin:14px 0;box-shadow:0 2px 8px rgba(0,0,0,.05)}
+  .kartu h2{margin:0 0 10px;font-size:18px;color:var(--merah)}
+  .kartu h2.hijau{color:var(--hijau)}
+  .baris{display:flex;justify-content:space-between;gap:10px;padding:7px 0;border-bottom:1px dashed var(--garis);font-size:15px}
+  .baris:last-child{border-bottom:0}
+  .baris b{font-weight:600}
+  .baris .nilai{text-align:right;word-break:break-all}
+  .ok{color:var(--hijau);font-weight:700}
+  .belum{color:var(--merah);font-weight:700}
+  .abu{color:var(--abu)}
+  button{display:block;width:100%;padding:13px 16px;margin:8px 0;border:0;border-radius:12px;font-size:16px;font-weight:700;cursor:pointer}
+  button:disabled{opacity:.45;cursor:not-allowed}
+  .btn-merah{background:var(--merah);color:#fff}
+  .btn-kuning{background:var(--kuning);color:#222}
+  .btn-hijau{background:var(--hijau);color:#fff}
+  .btn-abu{background:#eee;color:#555}
+  #pesan{display:none;border-radius:12px;padding:12px 14px;margin:14px 0;font-size:14px}
+  #pesan.tampil{display:block}
+  #pesan.sukses{background:#e8f5e9;color:#2e7d32;border:1px solid #a5d6a7}
+  #pesan.gagal{background:#ffebee;color:#b71c1c;border:1px solid #ef9a9a}
+  #pesan.info{background:#fff8e1;color:#7a5c00;border:1px solid #ffe082}
+  .dinding{list-style:none;margin:0;padding:0}
+  .dinding li{display:flex;justify-content:space-between;gap:10px;padding:9px 2px;border-bottom:1px dashed var(--garis);font-size:14px}
+  .dinding li:last-child{border-bottom:0}
+  .dinding .alamat{font-family:ui-monospace,Menlo,Consolas,monospace;font-weight:600}
+  .dinding .meta{color:var(--abu);text-align:right;white-space:nowrap}
+  .peringkat{font-weight:700;color:var(--merah)}
+  .catatan{font-size:13px;color:var(--abu)}
+  .peringatan{background:#fff3e0;border:1px solid #ffcc80;border-radius:12px;padding:12px 14px;font-size:14px;margin:14px 0}
+  ul.bersih{padding-left:20px;font-size:15px}
+  ul.bersih li{margin:6px 0}
+  footer{text-align:center;color:var(--abu);font-size:13px;padding:10px 0 30px}
+  footer a{color:var(--merah);text-decoration:none;font-weight:600}
+  a.tautan{color:var(--merah);word-break:break-all}
+  .memuat{color:var(--abu);font-size:14px}
+  @media (max-width:480px){
+    header h1{font-size:22px}
+    .baris{font-size:14px}
+    button{font-size:15px}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <span class="lencana">🎖️ 4ever Agent Pass</span>
+  <h1>Badge Gratis untuk Pemegang Agent ID</h1>
+  <p>Mint badge, check-in harian, dan dukung sesama pemegang Agent ID. Gratis — cuma bayar gas.</p>
+</header>
+
+<main>
+
+  <!-- Pesan status / error (ramah, tanpa alert) -->
+  <div id="pesan" role="status"></div>
+
+  <!-- Status dompet & badge -->
+  <section class="kartu">
+    <h2>Dompet &amp; Badge Kamu</h2>
+    <div class="baris"><b>Dompet</b><span class="nilai" id="st-dompet">Belum terhubung</span></div>
+    <div class="baris"><b>Jaringan</b><span class="nilai" id="st-jaringan">—</span></div>
+    <div class="baris"><b>Agent ID</b><span class="nilai" id="st-agentid">—</span></div>
+    <div class="baris"><b>Badge Agent Pass</b><span class="nilai" id="st-badge">—</span></div>
+    <div class="baris"><b>Token ID badge</b><span class="nilai" id="st-tokenid">—</span></div>
+    <div class="baris"><b>Streak check-in</b><span class="nilai" id="st-streak">—</span></div>
+    <div class="baris"><b>Total check-in</b><span class="nilai" id="st-total">—</span></div>
+    <div class="baris"><b>Check-in terakhir</b><span class="nilai" id="st-terakhir">—</span></div>
+
+    <button id="btn-connect" class="btn-merah" type="button">🔗 Connect Wallet</button>
+    <button id="btn-mint" class="btn-hijau" type="button" disabled>Mint Badge (gratis, cuma gas)</button>
+    <button id="btn-checkin" class="btn-kuning" type="button" disabled>✅ Check-in Harian</button>
+    <p class="catatan" id="info-tombol">Hubungkan dompet dulu untuk melihat status badge kamu.</p>
+    <p class="catatan">Semua transaksi harus kamu konfirmasi sendiri di dompetmu. Kami <b>tidak pernah</b> meminta seed phrase atau private key — siapa pun yang memintanya, abaikan.</p>
+  </section>
+
+  <!-- Dinding pendukung -->
+  <section class="kartu">
+    <h2 class="hijau">🧱 Dinding Pendukung</h2>
+    <p class="catatan">Pemegang badge terbaru, dibaca langsung dari kontrak di jaringan BSC.</p>
+    <p id="dinding-kosong" class="memuat">Memuat dinding pendukung…</p>
+    <ul class="dinding" id="dinding"></ul>
+    <button id="btn-muat-ulang" class="btn-abu" type="button">↻ Muat Ulang Dinding</button>
+  </section>
+
+  <!-- Leaderboard streak -->
+  <section class="kartu">
+    <h2>🏆 Leaderboard Streak Check-in</h2>
+    <p class="catatan">Peringkat streak check-in harian tertinggi, dihitung dari event check-in di kontrak.</p>
+    <p id="papan-kosong" class="memuat">Memuat leaderboard…</p>
+    <ul class="dinding" id="papan"></ul>
+  </section>
+
+  <!-- Cara kerja -->
+  <section class="kartu">
+    <h2>Cara Kerja</h2>
+    <ul class="bersih">
+      <li><b>1.</b> Hubungkan dompet (MetaMask / dompet browser lain) dan pastikan jaringan BSC.</li>
+      <li><b>2.</b> Kalau kamu pegang Agent ID, tombol <b>Mint Badge</b> aktif — mint badge gratis, cuma bayar gas.</li>
+      <li><b>3.</b> Sudah mint? Tekan <b>Check-in Harian</b> sekali sehari untuk menaikkan streak kamu.</li>
+      <li><b>4.</b> Nama kamu muncul di dinding pendukung dan leaderboard streak di atas.</li>
+    </ul>
+    <div class="peringatan">
+      <b>Jujur saja:</b> badge ini cuma tanda dukungan — <b>bukan</b> janji airdrop, cuan, passive income, atau imbal hasil apa pun. Jangan mint kalau kamu berharap dapat uang dari sini.
+    </div>
+    <p class="catatan">Tidak ada login QR, tidak ada akun, tidak ada sesi yang disimpan di server. Dompetmu, kuncimu, keputusanmu.</p>
+  </section>
+
+</main>
+
+<footer>
+  Dibuat dengan 💙 oleh <a href="https://4ever.ai.id/">4ever.ai.id</a> — Muhammad Nur Afis Siswanto
+</footer>
+
+<script src="https://cdn.jsdelivr.net/npm/ethers@6.13.4/dist/ethers.umd.min.js"></script>
+<script>
+/* ============================================================================
+   KONFIGURASI — EDIT DI SINI SAJA
+   ========================================================================== */
+const CONFIG = {
+  // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+  //  ISI SETELAH DEPLOY
+  //  Ganti nilai di bawah dengan alamat kontrak AgentPass hasil deploy.
+  //  Selama masih 0x0000... (placeholder), tombol Mint & Check-in nonaktif
+  //  dan dinding menampilkan pesan "kontrak belum di-deploy".
+  // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+  CONTRACT_ADDRESS: "0xcC53DfEc4289391aC77cBA6B483194c483263a75",
+
+  // Alamat kontrak Agent ID (sudah benar — jangan diubah kecuali ada info baru).
+  AGENT_ID_CONTRACT: "0x60b9262456de011f7d15a54cdd8c48baaa8b022f",
+
+  // Chain id jaringan BSC = 56 (angka teknis, tidak ditampilkan ke pengguna
+  // kecuali sebagai "jaringan BSC").
+  CHAIN_ID: 56,
+
+  // Blok saat kontrak di-deploy. Isi setelah deploy supaya dinding tidak perlu
+  // memindai dari awal. 0 = pindai mundur dari blok terbaru (terbatas).
+  DEPLOY_BLOCK: 134466090,
+
+  // RPC publik untuk membaca data (dinding & leaderboard) tanpa dompet.
+  RPC_URL: "https://bsc-dataseed.binance.org/",
+
+  // Berapa blok yang dipindai per permintaan (RPC publik membatasi rentang log).
+  CHUNK_BLOCKS: 2000,
+
+  // Kalau DEPLOY_BLOCK masih 0, seberapa jauh mundur memindai (blok).
+  // 20.000 blok di BSC ≈ 17 jam terakhir.
+  SCAN_BACK_BLOCKS: 20000,
+
+  // ABI minimal kontrak AgentPass + kontrak Agent ID.
+  ABI_PASS: [
+    "function mint() external",
+    "function checkIn() external",
+    "function balanceOf(address owner) external view returns (uint256)",
+    "function tokenIdOf(address owner) external view returns (uint256)",
+    "function streakOf(address user) external view returns (uint32)",
+    "function totalCheckIns(address user) external view returns (uint32)",
+    "function lastCheckInDay(address user) external view returns (uint64)",
+    "event Minted(address indexed holder, uint256 indexed tokenId, uint256 timestamp)",
+    "event CheckedIn(address indexed holder, uint256 indexed tokenId, uint256 streak, uint256 day)"
+  ],
+  // Kontrak Agent ID: cukup balanceOf untuk membuktikan kepemilikan.
+  ABI_AGENT_ID: [
+    "function balanceOf(address owner) external view returns (uint256)"
+  ]
+};
+/* ============================================================================
+   AKHIR KONFIGURASI
+   ========================================================================== */
+
+const PLACEHOLDER = "0x0000000000000000000000000000000000000000";
+const kontrakSiap = CONFIG.CONTRACT_ADDRESS &&
+  CONFIG.CONTRACT_ADDRESS.toLowerCase() !== PLACEHOLDER;
+
+let provider = null;      // provider baca-saja (RPC publik)
+let signer = null;        // signer dari dompet pengguna
+let akun = null;          // alamat dompet yang terhubung
+let kontrakPass = null;   // kontrak AgentPass (baca-saja)
+let kontrakAgentId = null;
+
+const $ = (id) => document.getElementById(id);
+
+function tampilkanPesan(jenis, teks) {
+  const el = $("pesan");
+  el.className = "tampil " + jenis; // jenis: sukses | gagal | info
+  el.textContent = teks;
+  el.scrollIntoView({ behavior: "smooth", block: "nearest" });
+}
+
+function sembunyikanPesan() {
+  const el = $("pesan");
+  el.className = "";
+  el.textContent = "";
+}
+
+function pendekkanAlamat(alamat) {
+  if (!alamat) return "—";
+  return alamat.slice(0, 6) + "…" + alamat.slice(-4);
+}
+
+function formatTanggal(detik) {
+  if (!detik || Number(detik) === 0) return "Belum pernah";
+  const t = new Date(Number(detik) * 1000);
+  return t.toLocaleDateString("id-ID", { day: "numeric", month: "short", year: "numeric" })
+    + " " + t.toLocaleTimeString("id-ID", { hour: "2-digit", minute: "2-digit" });
+}
+
+/* Pesan error yang bisa dibaca manusia, bukan kode mentah. */
+function pesanErrorRamah(err) {
+  const kode = err && (err.code || err.reason || "");
+  const teks = String((err && err.message) || err || "");
+  if (kode === "ACTION_REJECTED" || /user rejected/i.test(teks) || /user denied/i.test(teks)) {
+    return "Transaksi dibatalkan — kamu menolaknya di dompet. Tidak ada biaya yang keluar.";
+  }
+  if (/insufficient funds/i.test(teks) || /insufficient balance/i.test(teks)) {
+    return "Saldo tidak cukup untuk membayar gas. Isi saldo dulu, lalu coba lagi.";
+  }
+  if (/network|chain|wrong network/i.test(teks)) {
+    return "Jaringan dompetmu belum di jaringan BSC. Tekan Connect Wallet lagi dan setujui perpindahan jaringan.";
+  }
+  if (/could not coalesce|missing revert data|call revert/i.test(teks)) {
+    return "Kontrak menolak panggilan ini (kemungkinan kamu belum memenuhi syarat, misalnya belum pegang Agent ID atau sudah check-in hari ini).";
+  }
+  if (/timeout|network error|fetch failed|failed to fetch/i.test(teks)) {
+    return "Koneksi ke jaringan sedang bermasalah. Periksa internetmu, lalu muat ulang halaman.";
+  }
+  return "Terjadi kesalahan: " + (teks.length > 200 ? teks.slice(0, 200) + "…" : teks);
+}
+
+function setStatus(id, teks, kelas) {
+  const el = $(id);
+  el.textContent = teks;
+  el.className = "nilai" + (kelas ? " " + kelas : "");
+}
+
+function aturTombol() {
+  const btnMint = $("btn-mint");
+  const btnCheckin = $("btn-checkin");
+  const info = $("info-tombol");
+  btnMint.disabled = true;
+  btnCheckin.disabled = true;
+
+  if (!kontrakSiap) {
+    info.textContent = "Kontrak belum di-deploy — tombol Mint dan Check-in baru aktif setelah alamat kontrak diisi.";
+    return;
+  }
+  if (!akun) {
+    info.textContent = "Hubungkan dompet dulu untuk melihat status badge kamu.";
+    return;
+  }
+  const pegangId = $("st-agentid").dataset.pegang === "ya";
+  const sudahMint = $("st-badge").dataset.mint === "ya";
+  if (!pegangId) {
+    info.textContent = "Kamu belum pegang Agent ID — klaim dulu lewat aplikasi resmi Agent ID, lalu kembali ke sini.";
+    return;
+  }
+  if (!sudahMint) {
+    btnMint.disabled = false;
+    info.textContent = "Kamu pegang Agent ID ✅ — silakan mint badge gratis (cuma bayar gas).";
+  } else {
+    btnCheckin.disabled = false;
+    info.textContent = "Badge sudah di tangan ✅ — check-in sekali sehari untuk menaikkan streak kamu.";
+  }
+}
+
+async function buatProviderBaca() {
+  if (typeof ethers === "undefined") {
+    throw new Error("Library dompet (ethers.js) gagal dimuat dari CDN. Periksa internetmu lalu muat ulang halaman.");
+  }
+  if (!provider) provider = new ethers.JsonRpcProvider(CONFIG.RPC_URL);
+  if (kontrakSiap && !kontrakPass) {
+    kontrakPass = new ethers.Contract(CONFIG.CONTRACT_ADDRESS, CONFIG.ABI_PASS, provider);
+  }
+  if (!kontrakAgentId) {
+    kontrakAgentId = new ethers.Contract(CONFIG.AGENT_ID_CONTRACT, CONFIG.ABI_AGENT_ID, provider);
+  }
+}
+
+/* --- Connect Wallet ------------------------------------------------------ */
+async function connectWallet() {
+  sembunyikanPesan();
+  if (typeof window.ethereum === "undefined") {
+    tampilkanPesan("gagal", "Dompet tidak ditemukan. Pasang MetaMask atau dompet browser lain dulu, lalu muat ulang halaman ini.");
+    return;
+  }
+  if (typeof ethers === "undefined") {
+    tampilkanPesan("gagal", "Library dompet (ethers.js) gagal dimuat dari CDN. Periksa internetmu lalu muat ulang halaman.");
+    return;
+  }
+  try {
+    const ethProvider = new ethers.BrowserProvider(window.ethereum);
+    const akunList = await ethProvider.send("eth_requestAccounts", []);
+    if (!akunList || !akunList.length) {
+      tampilkanPesan("gagal", "Tidak ada akun yang dipilih. Pilih satu akun di dompetmu lalu coba lagi.");
+      return;
+    }
+    akun = akunList[0];
+
+    // Pastikan jaringan BSC (chain id 56). Kalau bukan, minta pindah.
+    const jaringan = await ethProvider.getNetwork();
+    if (Number(jaringan.chainId) !== CONFIG.CHAIN_ID) {
+      try {
+        await window.ethereum.request({
+          method: "wallet_switchEthereumChain",
+          params: [{ chainId: "0x38" }] // 56 dalam hex
+        });
+      } catch (errPindah) {
+        if (errPindah && errPindah.code === 4902) {
+          // Jaringan belum ada di dompet — tambahkan dulu.
+          await window.ethereum.request({
+            method: "wallet_addEthereumChain",
+            params: [{
+              chainId: "0x38",
+              chainName: "BNB Smart Chain",
+              nativeCurrency: { name: "BNB", symbol: "BNB", decimals: 18 },
+              rpcUrls: [CONFIG.RPC_URL],
+              blockExplorerUrls: ["https://bscscan.com"]
+            }]
+          });
+        } else {
+          tampilkanPesan("gagal", "Pindah jaringan dibatalkan atau gagal. Halaman ini butuh jaringan BSC — setujui perpindahan jaringan di dompetmu, lalu tekan Connect Wallet lagi.");
+          return;
+        }
+      }
+    }
+
+    signer = await ethProvider.getSigner();
+    setStatus("st-dompet", pendekkanAlamat(akun), "ok");
+    setStatus("st-jaringan", "Jaringan BSC (chain 56)", "ok");
+    $("btn-connect").textContent = "✅ Dompet Terhubung (" + pendekkanAlamat(akun) + ")";
+    tampilkanPesan("sukses", "Dompet terhubung: " + pendekkanAlamat(akun) + ". Mengecek Agent ID dan badge kamu…");
+    await refreshStatus();
+  } catch (err) {
+    tampilkanPesan("gagal", pesanErrorRamah(err));
+  }
+}
+
+/* --- Cek status Agent ID + badge ------------------------------------------ */
+async function refreshStatus() {
+  if (!akun) return;
+  try {
+    await buatProviderBaca();
+
+    // 1) Apakah pegang Agent ID?
+    let saldoId = 0n;
+    try {
+      saldoId = await kontrakAgentId.balanceOf(akun);
+    } catch (e) {
+      setStatus("st-agentid", "Tidak bisa dicek sekarang", "abu");
+    }
+    const pegangId = saldoId > 0n;
+    $("st-agentid").dataset.pegang = pegangId ? "ya" : "tidak";
+    setStatus("st-agentid",
+      pegangId ? "Kamu pegang Agent ID ✅ (" + saldoId.toString() + ")" : "Kamu belum pegang Agent ID",
+      pegangId ? "ok" : "belum");
+
+    if (!kontrakSiap) {
+      setStatus("st-badge", "Kontrak belum di-deploy", "abu");
+      setStatus("st-tokenid", "—");
+      setStatus("st-streak", "—");
+      setStatus("st-total", "—");
+      setStatus("st-terakhir", "—");
+      $("st-badge").dataset.mint = "tidak";
+      aturTombol();
+      return;
+    }
+
+    // 2) Apakah sudah mint badge?
+    const saldoBadge = await kontrakPass.balanceOf(akun);
+    const sudahMint = saldoBadge > 0n;
+    $("st-badge").dataset.mint = sudahMint ? "ya" : "tidak";
+    setStatus("st-badge", sudahMint ? "Sudah mint ✅" : "Belum mint", sudahMint ? "ok" : "belum");
+
+    if (sudahMint) {
+      // Token ID langsung dari kontrak (tokenIdOf).
+      const tokenId = await kontrakPass.tokenIdOf(akun);
+      setStatus("st-tokenid", "#" + tokenId.toString());
+      const [streak, total, terakhir] = await Promise.all([
+        kontrakPass.streakOf(akun),
+        kontrakPass.totalCheckIns(akun),
+        kontrakPass.lastCheckInDay(akun)
+      ]);
+      setStatus("st-streak", streak.toString() + " hari 🔥");
+      setStatus("st-total", total.toString() + " kali");
+      // lastCheckInDay = nomor hari UTC, bukan timestamp — kali 86400.
+      setStatus("st-terakhir", formatTanggal(Number(terakhir) * 86400));
+    } else {
+      setStatus("st-tokenid", "—");
+      setStatus("st-streak", "0 hari");
+      setStatus("st-total", "0 kali");
+      setStatus("st-terakhir", "Belum pernah");
+    }
+    aturTombol();
+  } catch (err) {
+    tampilkanPesan("gagal", pesanErrorRamah(err));
+    aturTombol();
+  }
+}
+
+/* --- Mint badge ------------------------------------------------------------ */
+async function mintBadge() {
+  if (!kontrakSiap) {
+    tampilkanPesan("info", "Kontrak belum di-deploy — mint baru bisa setelah alamat kontrak diisi.");
+    return;
+  }
+  if (!signer) { tampilkanPesan("gagal", "Hubungkan dompet dulu."); return; }
+  const btn = $("btn-mint");
+  btn.disabled = true;
+  btn.textContent = "⏳ Menunggu konfirmasi di dompet…";
+  try {
+    const kontrak = new ethers.Contract(CONFIG.CONTRACT_ADDRESS, CONFIG.ABI_PASS, signer);
+    const tx = await kontrak.mint();
+    tampilkanPesan("info", "Transaksi dikirim! Menunggu konfirmasi di jaringan… (hash: " + tx.hash.slice(0, 18) + "…)");
+    const kwitansi = await tx.wait();
+    if (kwitansi && kwitansi.status === 1) {
+      tampilkanPesan("sukses", "🎉 Badge berhasil di-mint! Lihat transaksimu: https://bscscan.com/tx/" + tx.hash);
+      const el = $("pesan");
+      el.innerHTML = "🎉 Badge berhasil di-mint! Lihat transaksi: <a class=\"tautan\" href=\"https://bscscan.com/tx/" + tx.hash + "\" target=\"_blank\" rel=\"noopener\">bscscan.com/tx/" + tx.hash.slice(0, 18) + "…</a>";
+      await refreshStatus();
+      await muatDindingDanPapan();
+    } else {
+      tampilkanPesan("gagal", "Transaksi masuk tapi statusnya gagal di jaringan. Cek di BscScan: https://bscscan.com/tx/" + tx.hash);
+    }
+  } catch (err) {
+    tampilkanPesan("gagal", pesanErrorRamah(err));
+  } finally {
+    btn.textContent = "Mint Badge (gratis, cuma gas)";
+    aturTombol();
+  }
+}
+
+/* --- Check-in harian -------------------------------------------------------- */
+async function checkInHarian() {
+  if (!kontrakSiap) {
+    tampilkanPesan("info", "Kontrak belum di-deploy — check-in baru bisa setelah alamat kontrak diisi.");
+    return;
+  }
+  if (!signer) { tampilkanPesan("gagal", "Hubungkan dompet dulu."); return; }
+  const btn = $("btn-checkin");
+  btn.disabled = true;
+  btn.textContent = "⏳ Menunggu konfirmasi di dompet…";
+  try {
+    const kontrak = new ethers.Contract(CONFIG.CONTRACT_ADDRESS, CONFIG.ABI_PASS, signer);
+    const tx = await kontrak.checkIn();
+    tampilkanPesan("info", "Check-in dikirim! Menunggu konfirmasi di jaringan…");
+    const kwitansi = await tx.wait();
+    if (kwitansi && kwitansi.status === 1) {
+      await refreshStatus();
+      tampilkanPesan("sukses", "✅ Check-in berhasil! Streak kamu sekarang " + $("st-streak").textContent + ". Lihat transaksi: https://bscscan.com/tx/" + tx.hash);
+      const el = $("pesan");
+      el.innerHTML = "✅ Check-in berhasil! Streak kamu sekarang <b>" + $("st-streak").textContent + "</b>. Lihat transaksi: <a class=\"tautan\" href=\"https://bscscan.com/tx/" + tx.hash + "\" target=\"_blank\" rel=\"noopener\">bscscan.com/tx/" + tx.hash.slice(0, 18) + "…</a>";
+      await muatDindingDanPapan();
+    } else {
+      tampilkanPesan("gagal", "Check-in masuk tapi statusnya gagal di jaringan. Cek di BscScan: https://bscscan.com/tx/" + tx.hash);
+    }
+  } catch (err) {
+    tampilkanPesan("gagal", pesanErrorRamah(err));
+  } finally {
+    btn.textContent = "✅ Check-in Harian";
+    aturTombol();
+  }
+}
+
+/* --- Baca event dalam chunk (RPC publik membatasi rentang log) ------------- */
+async function bacaEventChunk(filter, blokAwal, blokAkhir) {
+  const hasil = [];
+  const CHUNK = CONFIG.CHUNK_BLOCKS;
+  for (let akhir = blokAkhir; akhir >= blokAwal; akhir -= CHUNK) {
+    const awal = Math.max(blokAwal, akhir - CHUNK + 1);
+    try {
+      const ev = await kontrakPass.queryFilter(filter, awal, akhir);
+      hasil.push(...ev);
+    } catch (err) {
+      throw new Error("Gagal membaca riwayat kontrak pada blok " + awal + "–" + akhir + ". " + pesanErrorRamah(err));
+    }
+  }
+  return hasil;
+}
+
+/* --- Dinding pendukung + leaderboard --------------------------------------- */
+async function muatDindingDanPapan() {
+  const elDinding = $("dinding");
+  const elPapan = $("papan");
+  const kosongDinding = $("dinding-kosong");
+  const kosongPapan = $("papan-kosong");
+
+  if (!kontrakSiap) {
+    kosongDinding.textContent = "Kontrak belum di-deploy — dinding akan muncul setelah deploy.";
+    kosongPapan.textContent = "Kontrak belum di-deploy — leaderboard akan muncul setelah deploy.";
+    elDinding.innerHTML = "";
+    elPapan.innerHTML = "";
+    return;
+  }
+
+  kosongDinding.textContent = "Memuat dinding pendukung…";
+  kosongPapan.textContent = "Memuat leaderboard…";
+  elDinding.innerHTML = "";
+  elPapan.innerHTML = "";
+
+  try {
+    await buatProviderBaca();
+    const blokTerbaru = await provider.getBlockNumber();
+    const blokAwal = CONFIG.DEPLOY_BLOCK > 0
+      ? CONFIG.DEPLOY_BLOCK
+      : Math.max(0, blokTerbaru - CONFIG.SCAN_BACK_BLOCKS);
+
+    // Dinding: event Minted, terbaru dulu, maks 50.
+    const mintEvents = await bacaEventChunk(kontrakPass.filters.Minted(), blokAwal, blokTerbaru);
+    mintEvents.sort((a, b) => (b.blockNumber - a.blockNumber) || (b.index - a.index));
+    if (!mintEvents.length) {
+      kosongDinding.textContent = "Belum ada yang mint badge — jadilah yang pertama! 🎖️";
+    } else {
+      kosongDinding.textContent = "";
+      const ambil = mintEvents.slice(0, 50);
+      for (const ev of ambil) {
+        const alamat = ev.args.holder || ev.args.minter || ev.args.to || ev.args[0];
+        const tokenId = ev.args.tokenId || ev.args[1];
+        const waktu = ev.args.timestamp ? formatTanggal(ev.args.timestamp) : ("Blok #" + ev.blockNumber);
+        const li = document.createElement("li");
+        const spanAlamat = document.createElement("span");
+        spanAlamat.className = "alamat";
+        spanAlamat.textContent = pendekkanAlamat(alamat);
+        const spanMeta = document.createElement("span");
+        spanMeta.className = "meta";
+        spanMeta.textContent = "Badge #" + tokenId + " · " + waktu;
+        li.appendChild(spanAlamat);
+        li.appendChild(spanMeta);
+        elDinding.appendChild(li);
+      }
+      if (mintEvents.length > 50) {
+        const li = document.createElement("li");
+        li.innerHTML = "<span class=\"abu\">…dan " + (mintEvents.length - 50) + " pendukung lainnya</span><span></span>";
+        elDinding.appendChild(li);
+      }
+    }
+
+    // Leaderboard: event CheckedIn, streak tertinggi per alamat, top 10.
+    const checkEvents = await bacaEventChunk(kontrakPass.filters.CheckedIn(), blokAwal, blokTerbaru);
+    if (!checkEvents.length) {
+      kosongPapan.textContent = "Belum ada check-in — jadilah yang pertama! 🔥";
+    } else {
+      kosongPapan.textContent = "";
+      const terbaik = new Map(); // alamat -> streak tertinggi
+      for (const ev of checkEvents) {
+        const alamat = (ev.args.holder || ev.args.user || ev.args[0] || "").toLowerCase();
+        const streak = Number(ev.args.streak !== undefined ? ev.args.streak : ev.args[2] || 0);
+        if (!alamat) continue;
+        if (!terbaik.has(alamat) || streak > terbaik.get(alamat)) terbaik.set(alamat, streak);
+      }
+      const urut = [...terbaik.entries()].sort((a, b) => b[1] - a[1]).slice(0, 10);
+      const medali = ["🥇", "🥈", "🥉"];
+      urut.forEach(([alamat, streak], i) => {
+        const li = document.createElement("li");
+        const spanAlamat = document.createElement("span");
+        spanAlamat.innerHTML = "<span class=\"peringkat\">" + (medali[i] || ("#" + (i + 1))) + "</span> <span class=\"alamat\">" + pendekkanAlamat(alamat) + "</span>";
+        const spanMeta = document.createElement("span");
+        spanMeta.className = "meta";
+        spanMeta.textContent = streak + " hari 🔥";
+        li.appendChild(spanAlamat);
+        li.appendChild(spanMeta);
+        elPapan.appendChild(li);
+      });
+    }
+  } catch (err) {
+    kosongDinding.textContent = "Dinding belum bisa dimuat: " + pesanErrorRamah(err) + " Coba tekan “Muat Ulang Dinding”.";
+    kosongPapan.textContent = "Leaderboard belum bisa dimuat — coba lagi sebentar lagi.";
+  }
+}
+
+/* --- Init ------------------------------------------------------------------- */
+$("btn-connect").addEventListener("click", connectWallet);
+$("btn-mint").addEventListener("click", mintBadge);
+$("btn-checkin").addEventListener("click", checkInHarian);
+$("btn-muat-ulang").addEventListener("click", muatDindingDanPapan);
+
+if (window.ethereum) {
+  window.ethereum.on("accountsChanged", (daftar) => {
+    akun = (daftar && daftar[0]) || null;
+    signer = null;
+    if (!akun) {
+      setStatus("st-dompet", "Belum terhubung");
+      setStatus("st-jaringan", "—");
+      setStatus("st-agentid", "—");
+      setStatus("st-badge", "—");
+      setStatus("st-tokenid", "—");
+      setStatus("st-streak", "—");
+      setStatus("st-total", "—");
+      setStatus("st-terakhir", "—");
+      $("btn-connect").textContent = "🔗 Connect Wallet";
+      tampilkanPesan("info", "Dompet terputus. Tekan Connect Wallet untuk menghubungkan lagi.");
+    } else {
+      setStatus("st-dompet", pendekkanAlamat(akun), "ok");
+      connectWallet();
+    }
+    aturTombol();
+  });
+  window.ethereum.on("chainChanged", () => window.location.reload());
+}
+
+if (!kontrakSiap) {
+  tampilkanPesan("info", "Kontrak belum di-deploy — dinding akan muncul setelah deploy, dan tombol Mint / Check-in baru aktif setelah alamat kontrak diisi di CONFIG.");
+}
+aturTombol();
+muatDindingDanPapan();
+</script>
+</body>
+</html>
