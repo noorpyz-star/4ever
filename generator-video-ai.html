@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Generator Video AI Gratis — 4ever.ai.id</title>
-<meta name="description" content="Bikin video AI dari teks, gratis. Tulis prompt, pilih model, generate, download.">
+<meta name="description" content="Bikin video AI dari teks, gratis. Template prompt, pembuat prompt, storyboard 4-shot, Google Flow Veo 3.1.">
 <style>
   :root { --red:#e53935; --yellow:#f9a825; --green:#43a047; --ink:#222; --muted:#666; --line:#e5e5e5; }
   * { box-sizing:border-box; }
@@ -14,43 +14,60 @@
   header p { margin:6px 0 0; opacity:.95; font-size:14px; }
   main { max-width:720px; margin:0 auto; padding:18px 16px 40px; }
   .card { border:1px solid var(--line); border-radius:14px; padding:16px; margin-bottom:16px; box-shadow:0 2px 8px rgba(0,0,0,.05); }
+  .card.green { border-color:var(--green); }
+  .card.yellow { border-color:var(--yellow); }
   label { display:block; font-weight:700; margin:12px 0 6px; font-size:14px; }
-  textarea, select, input[type=text], input[type=password] { width:100%; padding:11px 12px; border:1.5px solid #ccc; border-radius:10px; font-size:15px; font-family:inherit; }
+  textarea, select, input[type=text], input[type=password], input[type=number] { width:100%; padding:11px 12px; border:1.5px solid #ccc; border-radius:10px; font-size:15px; font-family:inherit; }
   textarea { min-height:90px; resize:vertical; }
+  textarea.small { min-height:64px; }
   textarea:focus, select:focus, input:focus { outline:2px solid var(--yellow); border-color:var(--yellow); }
   .row { display:flex; gap:12px; flex-wrap:wrap; }
   .row > div { flex:1; min-width:140px; }
-  .hint { font-size:13px; color:var(--muted); margin-top:5px; }
-  button#generateBtn { width:100%; padding:14px; font-size:17px; font-weight:800; color:#fff; background:var(--green); border:0; border-radius:12px; cursor:pointer; margin-top:14px; }
-  button#generateBtn:disabled { background:#bbb; cursor:wait; }
+  .hint { font-size:13px; color:var(--muted); margin-top:5px; line-height:1.6; }
+  .hint.big { font-size:14px; line-height:1.7; }
+  .btn { width:100%; padding:14px; font-size:16px; font-weight:800; color:#fff; background:var(--green); border:0; border-radius:12px; cursor:pointer; margin-top:14px; }
+  .btn.red { background:var(--red); }
+  .btn.yellow { background:var(--yellow); color:#222; }
+  .btn.ghost { background:#fff; color:var(--ink); border:1.5px solid #ccc; font-weight:700; }
+  .btn.small { padding:10px; font-size:14px; margin-top:8px; }
   .status { font-size:14px; line-height:1.6; white-space:pre-wrap; background:#fafafa; border:1px dashed var(--line); border-radius:10px; padding:12px; min-height:48px; }
   video { width:100%; border-radius:12px; background:#000; display:none; }
   #downloadBtn { display:none; width:100%; padding:12px; margin-top:10px; font-size:15px; font-weight:700; color:#fff; background:var(--red); border:0; border-radius:12px; cursor:pointer; text-align:center; text-decoration:none; }
   .badge { display:inline-block; background:var(--yellow); color:#222; font-weight:800; font-size:12px; padding:3px 9px; border-radius:20px; }
+  .badge.green { background:var(--green); color:#fff; }
+  .tpl { border:1px solid var(--line); border-radius:12px; padding:12px; margin-bottom:10px; }
+  .tpl b { font-size:15px; }
+  .tpl p { margin:6px 0 0; font-size:13px; color:var(--muted); line-height:1.6; }
+  .tpl .meta { font-size:12px; color:var(--green); font-weight:700; }
+  .shot { border:1px dashed var(--line); border-radius:12px; padding:12px; margin-bottom:10px; }
+  .shot h4 { margin:0 0 4px; font-size:14px; }
+  .voice { background:#fafafa; border:1px solid var(--line); border-radius:10px; padding:10px 12px; font-size:14px; margin-bottom:8px; display:flex; justify-content:space-between; gap:10px; align-items:center; }
+  .voice code { font-size:13px; word-break:break-all; }
+  .voice button { flex-shrink:0; padding:8px 12px; font-size:13px; font-weight:700; background:var(--yellow); border:0; border-radius:8px; cursor:pointer; }
   footer { text-align:center; color:var(--muted); font-size:13px; padding:0 16px 30px; }
   footer a { color:var(--red); }
+  h2 { font-size:17px; margin:0 0 4px; }
+  .section-sub { font-size:13px; color:var(--muted); margin:0 0 10px; line-height:1.6; }
 </style>
 </head>
 <body>
 <header>
   <h1>🎬 Generator Video AI Gratis</h1>
-  <p>Tulis prompt → generate → download. Tanpa kartu kredit.</p>
+  <p>Tulis prompt → generate di Google Flow → download. Tanpa kartu kredit.</p>
 </header>
 <main>
-  <div class="card">
-    <span class="badge">BETA — mesin video sedang disambung</span>
-    <label for="prompt">Prompt video</label>
-    <textarea id="prompt" placeholder="Contoh: seekor kucing duduk di taman yang cerah, sinematik, gerakan lambat"></textarea>
-    <div class="hint">Tulis dalam bahasa Inggris hasilnya biasanya lebih bagus. Satu adegan, satu subjek, gerakan jelas.</div>
 
+  <!-- 1. PROMPT UTAMA -->
+  <div class="card">
+    <span class="badge">LANGSUNG PAKAI — via Google Flow (gratis)</span>
+    <label for="prompt">Prompt video</label>
+    <textarea id="prompt" placeholder="Contoh: seekor kucing oranye duduk di taman yang cerah, sinematik, gerakan lambat"></textarea>
+    <div class="hint">Tulis dalam bahasa Inggris hasilnya biasanya lebih bagus. Satu adegan, satu subjek, gerakan jelas.</div>
     <div class="row">
-      <div>
-        <label for="model">Model</label>
-        <select id="model"></select>
-      </div>
       <div>
         <label for="duration">Durasi</label>
         <select id="duration">
+          <option value="8">8 detik (Flow Veo Lite)</option>
           <option value="5">5 detik</option>
           <option value="10">10 detik</option>
         </select>
@@ -64,18 +81,83 @@
         </select>
       </div>
     </div>
-
-    <label for="apiKey">API key (disimpan di browser kamu saja)</label>
-    <input type="password" id="apiKey" placeholder="Tempel API key di sini">
-    <div class="hint">Key tidak dikirim ke mana-mana kecuali ke penyedia video yang kamu pilih. Kosongkan kalau pakai mode gratis bawaan.</div>
-
-    <button id="generateBtn">▶ Generate Video</button>
+    <button class="btn" id="generateBtn">▶ Generate via Google Flow (gratis)</button>
+    <div class="hint">Tombol ini menyalin prompt kamu lalu membuka Google Flow — tempel prompt di sana, pilih Veo 3.1 Lite 8 detik, generate, download videonya.</div>
   </div>
 
-  <div class="card" style="border-color:var(--green);">
-    <span class="badge" style="background:var(--green); color:#fff;">GRATIS TIAP HARI — tanpa API key</span>
+  <!-- 2. TEMPLATE SIAP PAKAI -->
+  <div class="card yellow">
+    <h2>📋 Template prompt siap pakai</h2>
+    <p class="section-sub">Klik "Pakai template" — prompt langsung masuk ke kotak di atas. Diadaptasi dari pustaka 160 prompt Wan 3.0 (formula: Output → Subjek → Dunia → Aksi → Kamera → Suasana → Suara → Batasan).</p>
+    <div id="tplList"></div>
+  </div>
+
+  <!-- 3. PEMBUAT PROMPT -->
+  <div class="card">
+    <h2>🧩 Pembuat prompt (formula)</h2>
+    <p class="section-sub">Isi tiap bagian dengan kata-katamu sendiri (Indonesia atau Inggris), lalu tekan "Rakit Prompt" — hasilnya dirangkai otomatis jadi satu prompt sinematik yang rapi.</p>
+    <label for="bSubject">Subjek — siapa / apa + detail yang harus tetap sama</label>
+    <input type="text" id="bSubject" placeholder="Contoh: seekor kucing oranye, mata hijau, kalung merah">
+    <label for="bWorld">Dunia — tempat, waktu, cuaca</label>
+    <input type="text" id="bWorld" placeholder="Contoh: taman yang cerah di pagi hari, bunga bermekaran">
+    <label for="bAction">Aksi — pemicu → gerakan → hasil</label>
+    <input type="text" id="bAction" placeholder="Contoh: kucing menatap kupu-kupu, lalu melompat pelan dan mendarat lembut">
+    <label for="bCamera">Kamera — ukuran shot + satu gerakan</label>
+    <input type="text" id="bCamera" placeholder="Contoh: close-up, kamera bergerak maju perlahan">
+    <label for="bLook">Suasana — cahaya, warna, gaya</label>
+    <input type="text" id="bLook" placeholder="Contoh: cahaya emas lembut, warna hangat, sinematik">
+    <label for="bSound">Suara — ambience + dialog (kalau ada)</label>
+    <input type="text" id="bSound" placeholder="Contoh: burung berkicau, angin sepoi-sepoi">
+    <label for="bNo">Batasan — yang TIDAK boleh muncul</label>
+    <input type="text" id="bNo" placeholder="Contoh: teks, logo, orang tambahan, gerakan melompat-lompat">
+    <button class="btn yellow" id="buildBtn">🧩 Rakit Prompt</button>
+  </div>
+
+  <!-- 4. STORYBOARD 4-SHOT -->
+  <div class="card green">
+    <h2>🎞️ Storyboard 4-shot — film pendek 20–32 detik</h2>
+    <p class="section-sub">Satu film = 4 shot nyambung. Shot 1 dibuat dari teks; shot 2–4 dibuat di Flow pakai <b>image-to-video</b> dengan frame terakhir shot sebelumnya sebagai gambar awal — trik ini yang menjaga karakter tetap sama antar shot. Satu film 4-shot = 4 klip × 10 kredit = 40 kredit.</p>
+    <label for="sbTheme">Tema film</label>
+    <input type="text" id="sbTheme" placeholder="Contoh: Semut & Gajah — persahabatan di taman">
+    <div class="row">
+      <div><button class="btn ghost small" id="sbExampleBtn">Isi contoh: Semut &amp; Gajah</button></div>
+      <div><button class="btn ghost small" id="sbClearBtn">Bersihkan</button></div>
+    </div>
+    <div id="shots"></div>
+    <button class="btn" id="sbCopyAllBtn">📋 Salin Semua Shot (untuk Flow)</button>
+    <div class="hint">Cara pakai: generate Shot 1 di Flow (text-to-video) → download → ambil frame terakhirnya → pakai sebagai gambar awal Shot 2 (image-to-video) → ulangi sampai Shot 4 → gabungkan 4 klip dengan aplikasi edit video di HP.</div>
+  </div>
+
+  <!-- 5. SUARA FLOW -->
+  <div class="card">
+    <h2>🎙️ Suara Flow — Afis &amp; Dita</h2>
+    <p class="section-sub">Tempel baris ini ke prompt Flow supaya suara karakternya konsisten di semua video. Suara Afis &amp; Dita harus sama di tiap prompt.</p>
+    <div class="voice"><span><b>Afis:</b> <code>avocado_v2:vg_id_m41</code> — warm young adult male voice, gentle storytelling tone</span><button data-copy="Voice (Afis): warm young adult male voice, gentle storytelling tone — reference avocado_v2:vg_id_m41">Salin</button></div>
+    <div class="voice"><span><b>Dita:</b> <code>avocado_v2:vg_id_f44</code> — warm young adult female voice, gentle storytelling tone</span><button data-copy="Voice (Dita): warm young adult female voice, gentle storytelling tone — reference avocado_v2:vg_id_f44">Salin</button></div>
+  </div>
+
+  <!-- 6. KALKULATOR KREDIT -->
+  <div class="card yellow">
+    <h2>🧮 Kalkulator kredit Flow</h2>
+    <p class="section-sub">Flow kasih 50 kredit gratis tiap hari (reset harian) + 200 kredit/bulan dari Google AI Plus. Satu klip Veo 3.1 Lite 8 detik = 10 kredit.</p>
+    <div class="row">
+      <div>
+        <label for="clipCount">Mau bikin berapa klip hari ini?</label>
+        <input type="number" id="clipCount" value="1" min="1" max="25">
+      </div>
+      <div>
+        <label>&nbsp;</label>
+        <button class="btn yellow" id="calcBtn" style="margin-top:0;">Hitung</button>
+      </div>
+    </div>
+    <div class="hint big" id="calcOut">1 klip = 10 kredit. Sisa jatah harian: 40 kredit (4 klip lagi).</div>
+  </div>
+
+  <!-- 7. GOOGLE FLOW -->
+  <div class="card green">
+    <span class="badge green">GRATIS TIAP HARI — tanpa API key</span>
     <label>Google Flow (Veo 3.1) — 50 kredit gratis / hari</label>
-    <div class="hint" style="font-size:14px; line-height:1.7;">
+    <div class="hint big">
       Flow tidak punya API, jadi video tidak bisa di-generate langsung dari halaman ini. Tapi Flow kasih <b>50 kredit gratis tiap hari</b> (reset harian) — cukup buat ~5 video 8 detik Veo 3.1 Lite per hari, tanpa watermark, kualitas paling bagus. Login pakai akun Google kamu, tempel prompt di bawah ke Flow, generate di sana, lalu download videonya.
     </div>
     <div class="row" style="margin-top:12px;">
@@ -89,28 +171,35 @@
     <div class="hint">Butuh akun Google (gratis). Kalau Flow minta upgrade berbayar, berarti jatah gratis hari itu habis — coba lagi besok.</div>
   </div>
 
+  <!-- 8. MESIN GRATIS LAIN -->
   <div class="card">
     <label>Mesin gratis lain (tanpa kartu kredit)</label>
-    <div class="hint" style="font-size:14px; line-height:1.7;">
+    <div class="hint big">
       • <b>Magic Hour</b> — tool video gratis tanpa daftar, 3x generate/hari (klip 3 detik, 480p, watermark). <a href="https://magichour.ai" target="_blank" rel="noopener">Buka Magic Hour →</a><br>
       • <b>GenRelay</b> — daftar gratis dapat kredit $0,50 (cukup ~8 video Veo 3.1 Lite), tanpa kartu. <a href="https://genrelay.ai" target="_blank" rel="noopener">Buka GenRelay →</a><br>
       • <b>Kling</b> — kredit gratis harian (lagi dites, hasilnya menyusul).<br>
+      • <b>NVIDIA NIM</b> — gambar + perbaiki prompt gratis (1.000 kredit, FLUX + SD3 + Llama 3.1). API key sedang dibuat — nanti kolom API di bawah aktif buat generate gambar.<br>
       Semua mesin di atas gratis — kalau ada yang minta kartu pembayaran, berhenti dan jangan lanjutkan.
     </div>
   </div>
 
+  <!-- 9. MESIN API (SEGERA) -->
   <div class="card">
+    <label for="apiKey">API key (disimpan di browser kamu saja — untuk mesin API nanti)</label>
+    <input type="password" id="apiKey" placeholder="Tempel API key di sini (NVIDIA NIM, dll)">
+    <div class="hint">Key tidak dikirim ke mana-mana kecuali ke penyedia yang kamu pilih. Kosongkan kalau pakai mode gratis bawaan (Google Flow).</div>
     <label>Status</label>
-    <div class="status" id="status">Siap. Tulis prompt lalu tekan Generate.</div>
+    <div class="status" id="status">Siap. Tulis prompt lalu tekan Generate — prompt disalin dan Google Flow dibuka.</div>
     <video id="resultVideo" controls playsinline></video>
     <a id="downloadBtn" href="#" download="video-ai.mp4">⬇ Download Video (MP4)</a>
   </div>
 
   <div class="card">
     <label>Catatan</label>
-    <div class="hint" style="font-size:14px; line-height:1.7;">
-      • Video AI gratis itu kredit trial — sekali habis, generate berhenti sampai top-up atau ganti akun.<br>
+    <div class="hint big">
+      • Video AI gratis itu kredit trial — sekali habis, generate berhenti sampai reset harian atau ganti akun.<br>
       • Prompt Inggris + satu adegan = hasil paling stabil.<br>
+      • Satu film 4-shot butuh 40 kredit Flow — cukup buat 1 film/hari dari jatah harian.<br>
       • Video yang kamu generate tersimpan di perangkatmu, bukan di server kami.
     </div>
   </div>
@@ -120,117 +209,180 @@
 </footer>
 
 <script>
-/* ============================================================
-   PROVIDER CONFIG — diisi setelah mesin pemenang ketemu.
-   Alur umum semua API video: POST buat job -> polling status
-   -> dapat URL video -> tampilkan + sediakan download.
-   ============================================================ */
-const PROVIDER = {
-  name: "BELUM DISAMBUNG",
-  endpoint: "",          // contoh: "https://api.magichour.ai/v1/video/generate"
-  statusEndpoint: "",   // contoh: "https://api.magichour.ai/v1/video/status"
-  models: [],           // contoh: [{id:"veo-3.1", label:"Veo 3.1"}, {id:"kling-3.0", label:"Kling 3.0"}]
-  headers: function (key) { return { "Authorization": "Bearer " + key, "Content-Type": "application/json" }; },
-  buildPayload: function (prompt, model, duration, ratio) {
-    return { model: model, prompt: prompt, duration_seconds: duration, aspect_ratio: ratio };
-  },
-  jobIdFrom: function (data) { return data.id || data.job_id || null; },
-  videoUrlFrom: function (data) { return data.video_url || data.url || (data.result && data.result.video_url) || null; },
-  statusFrom: function (data) { return (data.status || "").toLowerCase(); } // "queued" | "processing" | "completed" | "failed"
-};
-
 const $ = (id) => document.getElementById(id);
 const statusEl = $("status"), videoEl = $("resultVideo"), dlBtn = $("downloadBtn"), genBtn = $("generateBtn");
-
 function setStatus(msg) { statusEl.textContent = msg; }
-
-function refreshModels() {
-  const sel = $("model");
-  sel.innerHTML = "";
-  if (!PROVIDER.models.length) {
-    const o = document.createElement("option");
-    o.textContent = "— mesin belum disambung —";
-    sel.appendChild(o);
-    return;
-  }
-  PROVIDER.models.forEach(m => {
-    const o = document.createElement("option");
-    o.value = m.id; o.textContent = m.label;
-    sel.appendChild(o);
-  });
+function copyText(text, okMsg) {
+  const done = () => setStatus(okMsg);
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(text).then(done).catch(() => { setStatus("Gagal menyalin otomatis — blokir teksnya lalu salin manual (Ctrl+C)."); });
+  } else { setStatus("Browser tidak mendukung salin otomatis — blokir teksnya lalu salin manual (Ctrl+C)."); }
 }
 
-// API key tersimpan lokal di browser pengunjung (bukan di server).
+/* ---------- TEMPLATE PROMPT ---------- */
+const TEMPLATES = [
+  {
+    title: "🎭 Drama pendek vertikal — pesan suara yang terlambat",
+    meta: "9:16 · 8 detik · dialog",
+    desc: "Drama mikro di peron kereta: kurir sadar ada satu voicemail yang belum didengar. Ending menggantung — cocok buat serial.",
+    prompt: "Create a restrained vertical micro-drama on an almost empty suburban train platform at blue hour. A courier in a rust-red jacket watches the last train doors close, then notices one unheard voicemail on a scratched phone. Close shot over the courier's shoulder as the voicemail plays; their thumb stops above the call button and their expression changes from irritation to concern. Sound: departing train, voicemail compression, one station chime. Preserve face, jacket, phone damage, train direction. No subtitles, logos, extra passengers."
+  },
+  {
+    title: "😂 Komedi tetangga — paket tertukar",
+    meta: "9:16 · 8 detik · komedi ringan",
+    desc: "Dua tetangga salah ambil paket — satu kotak bunyi bel sepeda, satu lagi bunyi bersin. Ringan, visual jelas.",
+    prompt: "Create a warm vertical hallway comedy with two neighbors and two clearly different unbranded parcels: a long narrow kraft box with blue twine, and a small square gray box with a red sticker. Both freeze and compare labels that remain unreadable to camera, then exchange the boxes carefully. One soft bicycle bell sounds from the first box. Camera: fixed hallway wide shot with one slow push. Sound: twine, cardboard, bell, lock. No readable addresses, subtitles, logos, forced laughter."
+  },
+  {
+    title: "🎥 Sinematik — tukang pos di jalan hujan",
+    meta: "16:9 · 8 detik · sinematik",
+    desc: "Contoh klasik formula prompt: satu adegan, gerakan jelas, kamera satu jalur. Hasil paling stabil.",
+    prompt: "8 seconds, 16:9, naturalistic cinematic footage. At dawn on a rain-washed old street, a young postal worker in a dark green coat rides a vintage bicycle through a shallow puddle. The front wheel parts the water into two low sprays; droplets fall back onto the stone instead of floating. The camera tracks from knee height at the rear-left, starts as a medium environmental shot, moves closer to the hand and bell, then rises toward warm light at the end of the street. Realistic speed and soft overcast light. Sound: tire through water, a distant shop shutter, one clear bicycle bell. Keep the face, coat, bicycle geometry, and travel direction consistent. No text, logos, extra limbs, jump cuts, or floating objects."
+  },
+  {
+    title: "🛍️ Iklan produk — serum botol kaca",
+    meta: "9:16 · 8 detik · iklan",
+    desc: "Shot produk premium: satu tetes serum jatuh slow motion. Cocok buat promosi Shopee / affiliate.",
+    prompt: "8 seconds, 9:16, product commercial. On a white marble table in soft morning light, a small amber glass serum bottle with a gold cap stands beside a green leaf. A hand enters frame, lifts the bottle, and a single golden drop falls in slow motion onto the marble. Camera: slow push-in, macro close-up at the end. Look: clean, bright, premium skincare aesthetic. Sound: soft piano note, one droplet sound. Preserve bottle shape, gold cap, label position. No text, logos, extra hands."
+  },
+  {
+    title: "🐱 Hewan — kucing di taman (sudah teruji di Flow)",
+    meta: "16:9 · 8 detik · hewan",
+    desc: "Prompt yang sudah terbukti jadi video di Google Flow (Veo 3.1 Lite): kucing oranye di taman, tanpa watermark.",
+    prompt: "Create an 8-second video using Veo 3.1 Lite: an orange kitten sitting in a sunny garden, cinematic, slow gentle movement, soft golden light, shallow depth of field. The kitten looks up at a butterfly, ears twitching. Sound: birds, soft breeze. No text, logos."
+  },
+  {
+    title: "💃 Musik / dance — gang mural sore hari",
+    meta: "9:16 · 8 detik · dance",
+    desc: "Klip dance energik buat Reels / Shorts: warna cerah, kamera berputar pelan.",
+    prompt: "8 seconds, 9:16, energetic dance clip. A young woman in a bright yellow jacket dances in a colorful street mural alley at golden hour, joyful and rhythmic. Camera: smooth tracking shot circling slowly around her. Look: vibrant saturated colors, warm sunset light. Sound: upbeat pop beat. Keep her face, jacket, and the mural consistent. No text, logos, jump cuts."
+  }
+];
+const tplList = $("tplList");
+TEMPLATES.forEach((t, i) => {
+  const div = document.createElement("div");
+  div.className = "tpl";
+  div.innerHTML = "<b>" + t.title + "</b><br><span class='meta'>" + t.meta + "</span><p>" + t.desc + "</p>";
+  const btn = document.createElement("button");
+  btn.className = "btn yellow small";
+  btn.textContent = "Pakai template ini";
+  btn.addEventListener("click", () => {
+    $("prompt").value = t.prompt;
+    $("prompt").scrollIntoView({ behavior: "smooth", block: "center" });
+    setStatus("Template \"" + t.title + "\" dimasukkan ke kotak prompt. Tekan Generate untuk menyalinnya ke Flow.");
+  });
+  div.appendChild(btn);
+  tplList.appendChild(div);
+});
+
+/* ---------- PEMBUAT PROMPT ---------- */
+$("buildBtn").addEventListener("click", () => {
+  const dur = $("duration").value, ratio = $("ratio").value;
+  const s = $("bSubject").value.trim(), w = $("bWorld").value.trim(), a = $("bAction").value.trim();
+  const c = $("bCamera").value.trim(), l = $("bLook").value.trim(), so = $("bSound").value.trim(), n = $("bNo").value.trim();
+  if (!s && !a) { setStatus("Isi dulu Subjek dan Aksi-nya, baru dirakit."); return; }
+  let p = dur + " seconds, " + ratio + ", cinematic video. ";
+  if (s) p += s + ". ";
+  if (w) p += "Setting: " + w + ". ";
+  if (a) p += a + ". ";
+  if (c) p += "Camera: " + c + ". ";
+  if (l) p += "Look: " + l + ". ";
+  if (so) p += "Sound: " + so + ". ";
+  if (s) p += "Keep " + s + " consistent throughout. ";
+  if (n) p += "No " + n + ".";
+  $("prompt").value = p.trim();
+  $("prompt").scrollIntoView({ behavior: "smooth", block: "center" });
+  setStatus("Prompt dirakit dari formula dan dimasukkan ke kotak prompt. Tekan Generate untuk menyalinnya ke Flow.");
+});
+
+/* ---------- STORYBOARD 4-SHOT ---------- */
+const SHOT_LABELS = ["Shot 1 — Pembuka", "Shot 2 — Konflik", "Shot 3 — Klimaks", "Shot 4 — Penutup"];
+const SB_EXAMPLE = [
+  "3D cartoon, vertical 9:16. A tiny brave ant in a red helmet stands on a green leaf at sunrise in a lush garden, looking up at a giant friendly elephant. The ant waves hello. Camera: low angle wide shot. Warm morning light, vibrant colors. Sound: birds, soft breeze.",
+  "3D cartoon, vertical 9:16. The giant friendly elephant gently lowers its trunk toward the tiny ant in the red helmet. The ant climbs onto the trunk, laughing. Camera: close-up on the trunk, slow push-in. Same garden, same characters, same morning light. Sound: playful flute, elephant trumpet softly.",
+  "3D cartoon, vertical 9:16. The elephant carries the tiny ant on its back through the garden, crossing a small stream on a fallen log. The ant points forward excitedly. Camera: tracking shot from the side. Same characters and light. Sound: water flowing, cheerful music.",
+  "3D cartoon, vertical 9:16. At sunset, the ant and the elephant sit together on a hill watching the orange sky, sharing a berry. The ant waves goodbye as fireflies appear. Camera: wide shot pulling back slowly. Warm sunset light. Sound: crickets, gentle music. End on both friends silhouetted against the sunset."
+];
+const shotsEl = $("shots");
+SHOT_LABELS.forEach((label, i) => {
+  const div = document.createElement("div");
+  div.className = "shot";
+  div.innerHTML = "<h4>" + label + " (8 detik)</h4>";
+  const ta = document.createElement("textarea");
+  ta.className = "small";
+  ta.id = "shot" + (i + 1);
+  ta.placeholder = i === 0 ? "Shot 1 dibuat dari teks di Flow…" : "Shot " + (i + 1) + " dibuat image-to-video dari frame terakhir shot sebelumnya…";
+  div.appendChild(ta);
+  const btn = document.createElement("button");
+  btn.className = "btn ghost small";
+  btn.textContent = "📋 Salin " + label;
+  btn.addEventListener("click", () => {
+    const v = ta.value.trim();
+    if (!v) { setStatus(label + " masih kosong — isi dulu."); return; }
+    copyText(v, label + " disalin. Tempel di Flow (shot " + (i + 1) + (i === 0 ? ", text-to-video" : ", image-to-video dari frame terakhir shot sebelumnya") + ").");
+  });
+  div.appendChild(btn);
+  shotsEl.appendChild(div);
+});
+$("sbExampleBtn").addEventListener("click", () => {
+  $("sbTheme").value = "Semut & Gajah — persahabatan di taman";
+  SB_EXAMPLE.forEach((t, i) => { $("shot" + (i + 1)).value = t; });
+  setStatus("Contoh Semut & Gajah dimasukkan ke 4 shot. Sesuaikan lalu salin satu per satu ke Flow.");
+});
+$("sbClearBtn").addEventListener("click", () => {
+  $("sbTheme").value = "";
+  for (let i = 1; i <= 4; i++) $("shot" + i).value = "";
+  setStatus("Storyboard dibersihkan.");
+});
+$("sbCopyAllBtn").addEventListener("click", () => {
+  const theme = $("sbTheme").value.trim();
+  const parts = [];
+  if (theme) parts.push("Tema: " + theme);
+  for (let i = 1; i <= 4; i++) {
+    const v = $("shot" + i).value.trim();
+    if (v) parts.push("SHOT " + i + " (8 detik):\n" + v);
+  }
+  if (parts.length <= (theme ? 1 : 0)) { setStatus("Isi dulu minimal satu shot, baru disalin."); return; }
+  copyText(parts.join("\n\n"), "Semua shot disalin. Generate satu per satu di Flow — Shot 1 text-to-video, Shot 2–4 image-to-video dari frame terakhir shot sebelumnya.");
+});
+
+/* ---------- SUARA ---------- */
+document.querySelectorAll(".voice button").forEach(btn => {
+  btn.addEventListener("click", () => copyText(btn.getAttribute("data-copy"), "Referensi suara disalin. Tempel ke prompt Flow supaya suaranya konsisten."));
+});
+
+/* ---------- KALKULATOR ---------- */
+function calc() {
+  const n = Math.max(1, parseInt($("clipCount").value || "1", 10));
+  const credits = n * 10;
+  const dailyLeft = 50 - credits;
+  const monthly = Math.floor(200 / 10);
+  let msg = n + " klip × 10 kredit = " + credits + " kredit. ";
+  if (dailyLeft >= 0) msg += "Sisa jatah harian: " + dailyLeft + " kredit (" + Math.floor(dailyLeft / 10) + " klip lagi).";
+  else msg += "Melebihi jatah harian 50 kredit sebanyak " + (-dailyLeft) + " kredit — sisanya pakai 200 kredit/bulan (cukup " + monthly + " klip/bulan) atau lanjut besok.";
+  $("calcOut").textContent = msg;
+}
+$("calcBtn").addEventListener("click", calc);
+$("clipCount").addEventListener("input", calc);
+calc();
+
+/* ---------- GENERATE VIA FLOW ---------- */
 $("apiKey").value = localStorage.getItem("videoai_key") || "";
 $("apiKey").addEventListener("input", (e) => localStorage.setItem("videoai_key", e.target.value));
 
-async function sleep(ms) { return new Promise(r => setTimeout(r, ms)); }
-
-async function generate() {
+genBtn.addEventListener("click", async () => {
   const prompt = $("prompt").value.trim();
-  const key = $("apiKey").value.trim();
   if (!prompt) { setStatus("Isi dulu prompt-nya."); return; }
-  if (!PROVIDER.endpoint) {
-    setStatus("Mesin video belum disambung. Halaman ini masih menunggu hasil tes penyedia gratis — coba lagi nanti.");
-    return;
-  }
-  genBtn.disabled = true;
-  videoEl.style.display = "none";
-  dlBtn.style.display = "none";
-  try {
-    setStatus("Mengirim prompt ke " + PROVIDER.name + "…");
-    const res = await fetch(PROVIDER.endpoint, {
-      method: "POST",
-      headers: PROVIDER.headers(key),
-      body: JSON.stringify(PROVIDER.buildPayload(prompt, $("model").value, +$("duration").value, $("ratio").value))
-    });
-    if (!res.ok) {
-      const t = await res.text();
-      throw new Error("Server menolak (" + res.status + "): " + t.slice(0, 200));
-    }
-    const data = await res.json();
-    const jobId = PROVIDER.jobIdFrom(data);
-    if (!jobId) throw new Error("Tidak dapat job id dari server.");
-    setStatus("Job dibuat (" + jobId + "). Video lagi di-render, tunggu ya…");
-    // Polling status sampai selesai (maks ~5 menit).
-    for (let i = 0; i < 60; i++) {
-      await sleep(5000);
-      const s = await fetch(PROVIDER.statusEndpoint + "?job_id=" + encodeURIComponent(jobId), { headers: PROVIDER.headers(key) });
-      const sd = await s.json();
-      const st = PROVIDER.statusFrom(sd);
-      if (st === "completed") {
-        const url = PROVIDER.videoUrlFrom(sd);
-        if (!url) throw new Error("Selesai tapi tidak ada URL video.");
-        videoEl.src = url;
-        videoEl.style.display = "block";
-        dlBtn.href = url;
-        dlBtn.style.display = "block";
-        setStatus("Selesai! Video bisa diputar di atas dan di-download.");
-        return;
-      }
-      if (st === "failed") throw new Error("Render gagal: " + (sd.error || sd.message || "tidak ada detail."));
-      setStatus("Masih render… (" + st + ", cek ke-" + (i + 1) + ")");
-    }
-    throw new Error("Render kelamaan (lebih dari 5 menit). Coba lagi nanti.");
-  } catch (err) {
-    setStatus("Gagal: " + err.message);
-  } finally {
-    genBtn.disabled = false;
-  }
-}
-
-genBtn.addEventListener("click", generate);
+  const full = "Create an " + $("duration").value + "-second video using Veo 3.1 Lite, " + $("ratio").value + ": " + prompt;
+  try { await navigator.clipboard.writeText(full); } catch (e) { /* lanjut buka Flow, user salin manual */ }
+  window.open("https://flow.google.com", "_blank");
+  setStatus("Prompt disalin dan Google Flow dibuka. Di Flow: tempel prompt (Ctrl+V), pilih Veo 3.1 Lite 8 detik, generate, lalu download videonya.");
+});
 $("copyPromptBtn").addEventListener("click", async () => {
   const prompt = $("prompt").value.trim();
   if (!prompt) { setStatus("Isi dulu prompt-nya, baru disalin."); return; }
-  try {
-    await navigator.clipboard.writeText(prompt);
-    setStatus("Prompt disalin. Buka Google Flow, tempel prompt-nya di sana, lalu generate.");
-  } catch (e) {
-    setStatus("Gagal menyalin otomatis — blokir prompt di atas lalu salin manual (Ctrl+C).");
-  }
+  copyText(prompt, "Prompt disalin. Buka Google Flow, tempel prompt-nya di sana, lalu generate.");
 });
-refreshModels();
 </script>
 </body>
 </html>
