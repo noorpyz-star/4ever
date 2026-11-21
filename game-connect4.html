@@ -1,142 +1,18 @@
-<!DOCTYPE html>
-<html lang="id">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Connect Four — Game Berdua</title>
-<meta name="description" content="Main Connect Four gratis di Game Berdua 4ever.ai.id — tanpa download, langsung main di HP.">
-<style>
-  * { box-sizing: border-box; }
-  body { font-family: -apple-system, "Segoe UI", Roboto, Arial, sans-serif; margin: 0; background: #ffffff; color: #222; padding-bottom: 40px; }
-  .topbar { position:sticky; top:0; z-index:50; background:rgba(255,255,255,.95); backdrop-filter:blur(8px); -webkit-backdrop-filter:blur(8px); border-bottom:1px solid #eee; box-shadow:0 2px 10px rgba(0,0,0,.05); }
-  .topbar-in { max-width:640px; margin:0 auto; display:flex; align-items:center; gap:12px; padding:10px 16px; }
-  .tb-logo { font-weight:900; font-size:1rem; letter-spacing:.02em; text-decoration:none; background-image:linear-gradient(90deg,#e53935,#f9a825,#43a047); -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent; color:transparent; flex:none; }
-  .topbar nav { margin-left:auto; display:flex; gap:14px; overflow-x:auto; scrollbar-width:none; }
-  .topbar nav::-webkit-scrollbar { display:none; }
-  .topbar nav a { color:#666; text-decoration:none; font-size:.83rem; font-weight:600; white-space:nowrap; }
-  .topbar nav a:hover { color:#111; }
-  .topbar nav a.on { color:#e53935; }
-  .wrap { max-width: 480px; margin: 0 auto; padding: 16px; text-align: center; }
-  .back { display: inline-block; margin: 4px 0 10px; color: #e53935; text-decoration: none; font-weight: 700; font-size: 14px; }
-  h1 { font-size: 22px; margin: 4px 0 2px; }
-  .sub { color: #666; font-size: 13px; margin-bottom: 14px; }
-  .players { display: flex; justify-content: center; gap: 24px; margin-bottom: 14px; }
-  .pl { text-align: center; font-size: 13px; padding: 8px 14px; border-radius: 12px; border: 2px solid transparent; }
-  .pl.aktif { border-color: #e53935; background: #fff8e1; }
-  .pl b { display: block; font-size: 15px; }
-  .pl .skor { color: #e53935; font-weight: 700; font-size: 18px; }
-  #papan { display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; background: #0288d1; border-radius: 14px; padding: 10px; max-width: 420px; margin: 0 auto; }
-  .sel { aspect-ratio: 1; border-radius: 50%; background: #fff; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 26px; }
-  .sel.merah { background: #e53935; }
-  .sel.kuning { background: #f9a825; }
-  .sel.menang { box-shadow: 0 0 0 3px #fff, 0 0 14px #fff; }
-  .btn { font-size: 15px; padding: 11px 20px; border: none; border-radius: 999px; cursor: pointer; font-weight: 700; background: #e53935; color: #fff; margin-top: 14px; }
-  #msg { font-size: 17px; font-weight: 700; margin: 12px 0 4px; min-height: 24px; }
-  .hint { font-size: 12.5px; color: #888; }
-</style>
-</head>
-<body>
-<div class="topbar"><div class="topbar-in">
-  <a class="tb-logo" href="https://4ever.ai.id/">4EVER</a>
-  <nav>
-    <a href="https://4ever.ai.id/">Beranda</a>
-    <a href="https://4ever.ai.id/profil.html">Profil</a>
-    <a href="https://4ever.ai.id/musik-yt.html">Musik</a>
-    <a href="https://4ever.ai.id/tools.html">Tools</a>
-    <a href="https://4ever.ai.id/artikel.html">Artikel</a>
-    <a href="https://4ever.ai.id/tv-gratis.html">TV</a>
-    <a href="https://4ever.ai.id/berita.html">Berita</a>
-    <a href="https://4ever.ai.id/game-hub-afis-dita.html" class="on">Game</a>
-  </nav>
-</div></div>
 
-<div class="wrap">
-  <a class="back" href="game-hub-afis-dita.html">⬅ Kembali ke Hub</a>
-  <h1>🔴🟡 Connect Four</h1>
-  <p class="sub">Pemain 1 🔴 vs Pemain 2 🟡 — gantian jatuhkan koin, 4 sejajar menang! Main berdua di satu HP.</p>
-  <div class="players">
-    <div class="pl aktif" id="plA"><b>🔴 Pemain 1</b><span class="skor" id="skorA">0</span></div>
-    <div class="pl" id="plD"><b>🟡 Pemain 2</b><span class="skor" id="skorD">0</span></div>
-  </div>
-  <div id="papan"></div>
-  <div id="msg">Giliran Pemain 1 🔴 — klik kolom untuk menjatuhkan koin!</div>
-  <button class="btn" id="btnBaru">🔄 Ronde Baru</button>
-  <p class="hint">Menang 4 sejajar: mendatar, tegak, atau miring.</p>
-</div>
-
-<script>
-const KOL = 7, BAR = 6;
-let grid, giliran, selesai, skorA = 0, skorD = 0;
-
-function baru() {
-  grid = Array.from({ length: BAR }, () => Array(KOL).fill(""));
-  giliran = "A"; selesai = false;
-  document.getElementById("msg").textContent = "Giliran Pemain 1 🔴 — klik kolom untuk menjatuhkan koin!";
-  render();
-}
-function render() {
-  document.getElementById("plA").classList.toggle("aktif", !selesai && giliran === "A");
-  document.getElementById("plD").classList.toggle("aktif", !selesai && giliran === "D");
-  document.getElementById("skorA").textContent = skorA;
-  document.getElementById("skorD").textContent = skorD;
-  const p = document.getElementById("papan");
-  p.innerHTML = "";
-  for (let y = 0; y < BAR; y++) for (let x = 0; x < KOL; x++) {
-    const d = document.createElement("div");
-    d.className = "sel" + (grid[y][x] === "A" ? " merah" : grid[y][x] === "D" ? " kuning" : "");
-    d.onclick = () => jatuh(x);
-    p.appendChild(d);
-  }
-}
-function jatuh(x) {
-  if (selesai) return;
-  let y = -1;
-  for (let r = BAR - 1; r >= 0; r--) { if (!grid[r][x]) { y = r; break; } }
-  if (y === -1) return;
-  grid[y][x] = giliran;
-  const menang = cekMenang(x, y);
-  if (menang) {
-    selesai = true;
-    if (giliran === "A") skorA++; else skorD++;
-    render();
-    menang.forEach(([mx, my]) => {
-      const idx = my * KOL + mx;
-      const el = document.getElementById("papan").children[idx];
-      if (el) el.classList.add("menang");
-    });
-    document.getElementById("skorA").textContent = skorA;
-    document.getElementById("skorD").textContent = skorD;
-    document.getElementById("msg").textContent = "🎉 " + (giliran === "A" ? "Pemain 1 🔴" : "Pemain 2 🟡") + " MENANG! 4 sejajar!";
-    return;
-  }
-  if (grid.flat().every(Boolean)) {
-    selesai = true;
-    render();
-    document.getElementById("msg").textContent = "🤝 Seri! Papan penuh.";
-    return;
-  }
-  giliran = giliran === "A" ? "D" : "A";
-  document.getElementById("msg").textContent = "Giliran " + (giliran === "A" ? "Pemain 1 🔴" : "Pemain 2 🟡") + " — klik kolom!";
-  render();
-}
-function cekMenang(x, y) {
-  const p = grid[y][x];
-  const arah = [[1, 0], [0, 1], [1, 1], [1, -1]];
-  for (const [dx, dy] of arah) {
-    const garis = [[x, y]];
-    for (const s of [1, -1]) {
-      let nx = x + dx * s, ny = y + dy * s;
-      while (nx >= 0 && ny >= 0 && nx < KOL && ny < BAR && grid[ny][nx] === p) {
-        garis.push([nx, ny]);
-        nx += dx * s; ny += dy * s;
-      }
-    }
-    if (garis.length >= 4) return garis.slice(0, 4);
-  }
-  return null;
-}
-document.getElementById("btnBaru").onclick = baru;
-baru();
-</script>
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+ "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+  <head>
+    <title>503 Backend.max_conn reached</title>
+  </head>
+  <body>
+    <h1>Error 503 Backend.max_conn reached</h1>
+    <p>Backend.max_conn reached</p>
+    <h3>Error 54113</h3>
+    <p>Details: cache-bur-kbur8200088-BUR 1795282914 3053097356</p>
+    <hr>
+    <p>Varnish cache server</p>
+  <footer><a href="https://4ever.ai.id/profil.html" style="color:#888;text-decoration:none;">Profil</a> &nbsp;•&nbsp; <a href="https://4ever.ai.id/faq.html" style="color:#888;text-decoration:none;">FAQ</a> &nbsp;•&nbsp; <a href="https://4ever.ai.id/kebijakan-privasi.html" style="color:#888;text-decoration:none;">Kebijakan Privasi</a> &nbsp;•&nbsp; <a href="https://4ever.ai.id/syarat-ketentuan.html" style="color:#888;text-decoration:none;">Syarat & Ketentuan</a> &nbsp;•&nbsp; <a href="https://wa.me/6283895952782" style="color:#888;text-decoration:none;">Kontak</a><br>© 2026 4ever.ai.id — dibuat dengan 💙<br><span style="font-size:.72rem">Beberapa tautan di situs ini adalah link affiliate Shopee — kalau kamu beli lewat link itu, kami dapat komisi kecil tanpa menambah harga yang kamu bayar.</span></footer>
 </body>
 </html>
